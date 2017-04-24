@@ -1,6 +1,6 @@
 #----------------------------- tao makefile -----------------------------
 #
-#Read and modify options in ./src/Makefile
+#Modify options in ./config.mk
 #
 #Type  'make'  in this directory to compile tao 
 #
@@ -42,7 +42,7 @@ vers: 	clean_for_tar
 
 
 upload_version_starting_from_scratch:
-	(git init; git remote add tao https://github.com/danigeos/tao-geo; git add Makefile README bin config.mk demo doc include lib script src; git commit -a -mnewVersion; git push -u -f tao master)
+	#(git init; git remote add tao https://github.com/danigeos/tao-geo; git add Makefile README bin config.mk demo doc include lib script src; git commit -a -mnewVersion; git push -u -f tao master)
 
 
 upload:
