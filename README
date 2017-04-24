@@ -1,0 +1,57 @@
+********************************************************************************
+*************			tAo README file  		****************
+******         PSEUDO-2D (VERTICAL CROSS-SECTION) MODELLING OF           *******
+******                FLEXURAL ISOSTASY, EROSION,                        *******
+******          OROGRAPHIC PRECIPITATION, AND FORELAND BASIN             *******
+******               FORMATION USING FINITE DIFFERENCES                  *******
+********************************************************************************
+
+tAo is a C program for Linux to calculate the flexure of the lithosphere and, 
+more in general, to numerically simulate the formation of foreland basins in 
+pseudo 2D (vertical cross section). 
+The pseudo 3D version of tAo is called TISC and distributed apart.
+Read the 'tao/doc/tao.info.txt' file to know more about tAo.
+
+Disclaimer: tAo is a tool developed for my own research. I've never been a
+professional programmer, the code is not user-friendly as a mobile app, and i
+cannot guarantee assistance in case of  trouble. See other disclaimers in the
+license file in tao/doc/LICENSE.txt.
+
+License details in the documentation at tao/doc/.
+Author: Daniel Garcia-Castellanos
+
+Scientific citation: 
+	Garcia-Castellanos, D., M. Fernàndez & M. Torné, 1997. "Numerical 
+	modeling of foreland basin formation: a program relating thrusting, 
+	flexure, sediment geometry and lithosphere rheology". Computers & 
+	Geosciences, 23 (9), 993-1003.
+
+tAo has been developed in C under UNIX operating system (iOS, AIX IBM). It has 
+been also successfully compiled in linux UNIX PC and in a Hewlett Packard 
+Workstation using HP UX.
+
+
+TO INSTALL tAo:
+
+-Uncompress and untar the file containing tAo using the unix command 
+	'gunzip -c tao.tar.gz | tar -xvf -'
+this will create directory 'tao/' in your current directory.
+
+-Check the compiling options in 'tao/config.mk'.
+
+-Compile typing  'make' in the main directory. This will create the executable 
+tao in the bin/ directory. You should put tao/bin/ and tao/script/ in your path
+and define the tao_dir variable in your environment.
+
+-Optionally install GMT free-ware software (used for graphic output) and put 
+its bin/ directory in your path. This should work:
+	sudo apt-get update
+	sudo apt-get install gmt ksh csh tofrodos
+
+-Try examples of how to run tAo in the directory 'tao/demo/'. This will allow
+you to be sure that the code is working properly. Check that the graphic
+output is correctly produced in the postscript output files (*.ps).
+
+
+
+Read the 'doc/tao.info.txt' file to know more about how to use tAo.

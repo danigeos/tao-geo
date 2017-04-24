@@ -1,0 +1,104 @@
+WORKSET VERSION 1
+
+#
+# Workshop WorkSet File
+#
+
+%%File
+
+[FileData
+  (processDirectory "/home/tecto/pdoc/gard/soft/tao/demo")
+  (currentDirectory "/home/tecto/pdoc/gard/soft/tao/demo")
+  (files 
+    { 
+      "taoio.c"
+      "tao.c"
+      "taosp.c"
+      "/taosp.c"
+      "taolib.c"
+    })
+]
+
+%%Build
+
+[BuildData
+  (currentDirectory "/home/tecto/pdoc/gard/soft/tao/demo")
+  (targets 
+    { 
+      [BuildTarget
+        (makefile "<Default>")
+        (target "tao")
+        (options "")
+        (command "make")
+        (buildDirectory ".")
+      ]
+    })
+]
+
+%%Debug
+
+[DebugData
+  (currentDirectory "/home/tecto/pdoc/gard/soft/tao/demo")
+  (programs 
+    { 
+      [Program
+        (name "/home/tecto/pdoc/gard/soft/tao/bin/tao")
+        (args "Example_D -D")
+        (runDirectory ".")
+      ]
+      [Program
+        (name "/local/users/localgard/soft/tao/bin/tao")
+        (args "Example_E -F")
+        (runDirectory ".")
+      ]
+    })
+]
+
+%%Browse
+
+[BrowseData
+  (AccuBrowseDirectory "/home/tecto/pdoc/gard/soft/tao/demo")
+  (PatternSearchDirectory "/home/tecto/pdoc/gard/soft/tao/demo")
+  (mode "PatternSearch")
+  (directories 
+    { 
+      "/home/tecto/pdoc/gard/soft/tao/demo"
+      "/home/tecto/pdoc/gard/job/lakes/closing_param"
+      "/home/tecto/pdoc/gard/job/foreland_basins/Ebro/models/Ebro2D_capture"
+      "/home/tecto/pdoc/gard/soft/tao/src"
+      "/home/tecto/pdoc/gard/soft/tisc/src"
+      "/home/tecto/pdoc/gard/soft/tao/job/TEST"
+      "/local/users/localgard/soft/tisc/demo/lakes"
+      "/local/users/localgard/soft/tao/demo"
+      "/local/users/localgard/soft/tao/job/PARAMETRIZACION/buckling"
+      "/local/users/localgard/soft/tisc/job/PARAMETRIZACION/buckling"
+      "/local/users/localgard/soft/tao/job/PARAMETRIZACION/COMPENSATION"
+      "/local/users/localgard/soft/tao/src"
+      "/local/users/localgard/soft/tao/job/PARAMETRIZACION/EXEC_TIME"
+    })
+]
+
+%%SUNW_Analyzer
+
+
+
+%%f90browse
+
+
+
+%%SUNW_Looptool
+
+
+
+%%SUNW_Codemgrtool
+
+
+
+%%tha
+
+
+
+%%SUNW_Visual
+
+
+
