@@ -1,0 +1,11 @@
+#Upper crust geometry.
+#Resume this line for 
+#heterogeneous case:
+#0	15000
+#Resume next 3 lines for 
+#homogeneous case:
+0	4000
+120e3	11000
+160e3	14000
+170e3	15000
+700e3	15000

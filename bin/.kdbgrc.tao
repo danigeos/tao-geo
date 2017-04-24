@@ -1,0 +1,30 @@
+[Breakpoint 0]
+Enabled=true
+File=tao.c
+Line=58
+Temporary=false
+
+[General]
+DebuggerCmdStr=
+DriverName=GDB
+FileVersion=1
+OptionsSelected=
+ProgramArgs=atlas
+TTYLevel=7
+WorkingDirectory=/home/danielgc/work/regions/Atlas/parametrization_fault2
+
+[Memory]
+ColumnWidths=80,0
+NumExprs=0
+
+[Watches]
+Expr0=Nx
+Expr1=Nx
+Expr2=numUnits
+Expr3=sizeof(float)
+Expr4=calloc(Nx, sizeof(float))
+Expr5=Dheros
+Expr6=Dheros=calloc(Nx, sizeof(float))
+Expr7=Dheros
+Expr8=Dheros[1]
+Expr9=Dheros[2]
