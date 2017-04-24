@@ -2,7 +2,7 @@
 ***********			tAo main source file			********
 ********************************************************************************
 	For compilation and installation check the file ../tao/README.
-	Authorship: 1993-2012 Daniel Garcia-Castellanos. 
+	Main author: 2012 Daniel Garcia-Castellanos. 
 	Check copyright details and other information in ../tao/doc/ 
 *******************************************************************************/
 
