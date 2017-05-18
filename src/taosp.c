@@ -1,5 +1,5 @@
 /*
-	LIBRARY  FOR  SURFACE PROCESSES of tao.c
+LIBRARY  FOR  SURFACE PROCESSES of tao.c
 
 Three surface processes modify the topography in this model:
 1.- Constant rate approach.

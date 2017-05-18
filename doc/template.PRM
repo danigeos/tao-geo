@@ -152,8 +152,8 @@ temp_sea_level	8	If hydro_model>=2: Temperature at sea level [C].
 
 #EROSION/SEDIMENTATION PARAMETERS (params. used only if erosed_model=1):
 erosed_model	0	Sets the erosion/sedimentation model.
-			#0: means no surface transport. The following 
-				parameters have no effect.
+			#0: means no surface transport. The following parameters
+				have no effect.
 			#1: constant rate scheme (Keroseol+Ksedim+diffusion+
 				landsliding).
 			#2: as #1 + rivers following Beaumont et al. (1992) 
@@ -162,8 +162,8 @@ erosed_model	0	Sets the erosion/sedimentation model.
 			#3: as #1 + rivers following Tucker&Slingerland(1996) 
 				model. Incision rate under equilibrium capacity.
 			#6: as #1 + rivers following basal shear stress law 
-				(Garcia-Castellanos et al., 2009), accounting 
-				for channel width. Equivalent to 
+				(Garcia-Castellanos et al., 2009), accounting for
+				channel width. Equivalent to 
 				dh/dt=K'·Q^m·S^n
 			#7: as #1 + river incision following unit stream power
 				e=k_b*w^1; w=rho*g*Q*S/W, with w in [W/m^2], 
@@ -194,8 +194,8 @@ K_river_cap	60	For erosed_model>=2: Constant for river transport
 				compare). 
 erodibility	120e3	This default erodibility value is overwritten by the one 
 				in load files *.UNIT
-			For erosed_model=2: length scale of fluvial erosion 
-				[m] (~1e4); 
+			For erosed_model=2: length scale of fluvial erosion [m]
+				(~1e4); 
 			For erosed_model=3: erodibility in 
 				meters_rock/(s*(m3_water/s)^mm) ; 
 				~ 1e-7,1e-4 m_rock^(1-2m)/yr Stock&Montgomery,
@@ -235,8 +235,9 @@ switch_sea	0	To account for the effect of sea in terms of load,
 				underwater environment in regards to flexure 
 				(e.g., if you define densenv=water density to 
 				model oceanic lithospheric flexure). 
-grav_anom	0	Gravity anomaly output type. #0: No gravity 
-				calculations; #1: Bouguer anomaly;  
+grav_anom	0	Gravity anomaly output type. 
+				#0: No gravity calculations;
+				#1: Bouguer anomaly;  
 				#2:Free-Air
 
 #INPUT/OUTPUT:

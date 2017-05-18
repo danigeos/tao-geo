@@ -5,8 +5,7 @@ example 1:
 time	0
 density	2820
 fault	1
-ride	1
-vel	2
+vel	1 #mm/yr velocity
 
 
 x	height
