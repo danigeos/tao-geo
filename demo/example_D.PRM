@@ -16,7 +16,6 @@ version	tAo_2006-11-02	Version will be matched when starting tao.
 
 Gridding:
 Nx		801 	Number of x points (distance axis).
-Nz		201	Number of z points (depth axis for elastic-plastic model).
 
 Limits of x domain:
 x0		000e3	Left
@@ -31,8 +30,6 @@ zmax		3000	Top
 
 Lithospheric plate geometry:
 Te		20000	Default Elastic Thickness (if no .EET file). Te=0 => local isostasy.
-crust		32000	Default crustal geometry for gravity anomaly and rheological calculations when no .CRUST and .UCRUST
-ucrust		11000	Id. for upper crust.
 zini 		0	Altitude of the initial plate position from sea level.
 random_topo	0
 
@@ -40,7 +37,6 @@ random_topo	0
 Densities:
 densmantle	3250	Density of the fluid material beneath the plate (at the compensation level: either mantle or asthenosphere). 
 denscrust	2950	Crust (just for anomaly calculation).
-densinfill	2800	Infilling material (only when switch_topoest=1).
 denssedim	2200	Sediments.
 densenv 	0	Air (or water for oceanic flexure).
 

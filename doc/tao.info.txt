@@ -25,7 +25,7 @@
   tao  project  -A[1|2] -B<bound_type> -D[x0/xf] -d<dx> -F[file] -h[i|u|p]
 	  -M<lih_type>[t] -m<app_mom> -N<Nx> -o -P[c[geom]] -p<tec_force>
 	  -q<param=value> -Q<file>  -r<a|c|i|m|a><density> -s<app_force> -T<eet>
-	  -t<i|f|d|v|r><time> -V[<level>]
+	  -t<i|f|d|v|r><time> -V[<level>] -v[<dens>/<vel>]
 
   Options:
 	'project' is the root name of the project files names (i.e., if
@@ -83,6 +83,8 @@
 	'-V' Means verbose mode with additional run-time prints. Add '<level>'
 		for additional i/o information. See doc/template.PRM file for
 		level specification.
+	'-v' Gives a new velocity <vel> to all units with a density <dens>.
+		Use with '-F'.
 
 
   Examples:
@@ -424,7 +426,7 @@
 
 
 
-9.- IMPROVEMENTS IN SUCCESSIVE VERSIONS
+9.- VERSION HISTORY
   v1.0 (1993) Proto-model or numerical algorithm to calculate thin plate
     elastic and viscoelastic flexure.
   v2.0 (1994) Inclusion of moving loads and surface processes. Gravity anomaly
@@ -469,6 +471,7 @@
   tAo_
     Average erodibility is now calculated for the shallowest meters of bedrock.
     Erosion boundary conditions 0 and 1 are swapped.
+    -v command line option to change velocity of units based on density.
 
 10.- MODEL LIMITATIONS
       Units move only an entire number of nodes at each time step. Unit
