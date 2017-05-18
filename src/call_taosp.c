@@ -54,7 +54,7 @@ int init_surf_proc_ (
 	switch_verbose = SI;
 	switch_debug = NO;
 
-	if (switch_verbose) fprintf(stdout, "\nRunning tao model: \n\t%d nodes ; x=[%.1f,%.1f]",
+	if (switch_verbose) fprintf(stdout, "\nRunning tAo model: \n\t%d nodes ; x=[%.1f,%.1f]",
 		Nx, xmin, xmax);
 	if (switch_debug) fprintf(stdout, "\n\train=%.2f l/m2/a ; Krain=%.2f l/m2/a/km",
 		rain, Krain);
@@ -77,16 +77,16 @@ int init_surf_proc_ (
 	sea_level = 0;
 	
 	commstdout=stdout; 
-	numUnits=0;
+	numBlocks=0;
 	denssedim = 2200;
 	denscrust = 2780;
 
 	Allocate_Memory_for_external_use ();
 	
-	insert_new_unit(numUnits);
-	Units[numUnits-1].density=denssedim;
+	insert_new_Block(numBlocks);
+	Blocks[numBlocks-1].density=denssedim;
 	
-	if (switch_verbose) fprintf(stdout, "\ntao initialisation done.");
+	if (switch_verbose) fprintf(stdout, "\ntAo initialisation done.");
 /*	if (switch_debug)   fprintf(stdout, "\tswitch_hydro=%d", switch_hydro);*/
 }
 
@@ -115,11 +115,11 @@ int call_surf_proc_ (
 		dt/Matosec, Nx, *ad_write_files);
 
 	for (j=0; j<Nx; j++)  {
-		Units[numUnits-1].thick[j]=sed_thick[j]; 
-		Units_base[j] = topo[j] - Units[numUnits-1].thick[j];
+		Blocks[numBlocks-1].thick[j]=sed_thick[j]; 
+		Blocks_base[j] = topo[j] - Blocks[numBlocks-1].thick[j];
 	}
 	
-	/*Diffusive Erosion: adds to the topo and the next load Dq and removes material from units*/
+	/*Diffusive Erosion: adds to the topo and the next load Dq and removes material from Blocks*/
 	/*if (switch_debug) fprintf(stdout, "\nCalling Diffussive_Eros: ");
 	Diffusive_Eros_2D (topo, Kerosdif, dt, dt_eros/5);
 	*/
@@ -130,7 +130,7 @@ int call_surf_proc_ (
 	*/
 
 
-	/*Fluvial Transport: adds to the topo and the next load Dq and removes material from units*/
+	/*Fluvial Transport: adds to the topo and the next load Dq and removes material from Blocks*/
 	if (switch_debug) fprintf(stdout, "\nCalling Fluvial_Transport: ");
 	if (erosed_type>=2) Fluvial_Transport (topo, dt, dt_eros, erosed_type);
 
@@ -140,7 +140,7 @@ int call_surf_proc_ (
 	}
 
 	for (j=0; j<Nx; j++) {
-		topo[j]=topo[j]; sed_thick[j]=Units[numUnits-1].thick[j]; 
+		topo[j]=topo[j]; sed_thick[j]=Blocks[numBlocks-1].thick[j]; 
 	}
 	fflush (commstdout);
 
@@ -154,14 +154,14 @@ int Allocate_Memory_for_external_use()
 	/* Allocates dynamic memory for the arrays and initializes them to zero*/
 	int i, j;
 		
-	if (switch_verbose) fprintf(stdout, "\ntao memo initialisation.");
+	if (switch_verbose) fprintf(stdout, "\ntAo memo initialisation.");
 
 	topo		= calloc(Nx, sizeof(float));
-	Units_base	= calloc(Nx, sizeof(float));
+	Blocks_base	= calloc(Nx, sizeof(float));
 	Dq		= calloc(Nx, sizeof(float));
 	w		= calloc(Nx, sizeof(float));
 
-	Units =    	(struct UNIT_1D *) calloc(NmaxUnits, sizeof(struct UNIT_1D));
+	Blocks =    	(struct BLOCK_1D *) calloc(NmaxBlocks, sizeof(struct BLOCK_1D));
 
 	sortcell =    	calloc(Nx, sizeof(int));
 	for (j=0; j<Nx; j++)  {sortcell[j]=j;}

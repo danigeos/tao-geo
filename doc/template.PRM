@@ -1,7 +1,7 @@
 ###  tAo parameters file  ###
 
 #tAo VERSION FOR THIS FILE:
-version		tAo_2012-08-29
+version		tAo_2017-05-19
 
 #MODEL DOMAIN (if not present will take xmin,xmax):
 x0		-500e3	Left boundary. See '-D' command option. Default: xmin.
@@ -218,7 +218,7 @@ l_fluv_sedim	25e3	Length scale of fluvial sedimentation [m] (aggradation
 				deltas and a more gradual transition from river
 				incision to river aggradation.
 deform_sed	1	1 means that sediment will be automatically deformed by 
-				the motion of units.
+				the motion of Blocks.
 eros_bound_cond	1	Boundary Conditions for surface processes:
 			#0: means river has 0 eq. capacity at boundary.
 			#1: means that river keeps the same slope and transport 
