@@ -107,7 +107,7 @@ psbasemap -JX -R$xmin/$xmax/$ymin/$ymax -K -O -B:: >> $ps
 #Draws Sea:
 if ($switch_sea == 1) psxy $prj.sea.tao.gmt.tmp -JX -B/g1000 -R -O -K -L -G$color_sea	>> $ps
 
-#Draws base of units:
+#Draws base of Blocks:
 psxy $prj.basement.xz.tao.gmt.tmp -JX -R -O -K -L -G$color_basement >> $ps
 
 set col = 3

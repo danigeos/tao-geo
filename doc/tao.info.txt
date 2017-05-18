@@ -78,12 +78,12 @@
 		initial Te must not be constant or read from the '*.EET' file,
 		but from the '*.eeth' file.
 	'-t' Sets initial (i), final (f), increment (d), viscous relaxation
-		(v) or sediment-unit-record (r) times. Time is in My and goes
+		(v) or sediment-Block-record (r) times. Time is in My and goes
 		from negative to positive values (Timeini<Timefinal).
 	'-V' Means verbose mode with additional run-time prints. Add '<level>'
 		for additional i/o information. See doc/template.PRM file for
 		level specification.
-	'-v' Gives a new velocity <vel> to all units with a density <dens>.
+	'-v' Gives a new velocity <vel> to all Blocks with a density <dens>.
 		Use with '-F'.
 
 
@@ -107,7 +107,7 @@
   		  '!(m)' means the maximum Te variation criteria failed;
   		  '!(B)' means both criteria failed.
  
-	  u: New unit recorded (uT means the unit corresponds to the infill of
+	  b: New Block recorded (uT means the Block corresponds to the infill of
 		  a topographic load).
   	  v: Viscoelastic relaxation
 
@@ -127,8 +127,8 @@
 
     tAo can calculate the deflection due to multiple loads along the time using
   elastic, viscoelastic or elasto-plastic deformation models. Sedimentation and
-  erosion simple models are implemented and sea water load is considered. Unit
-  surfaces of sediments and loads are recorded.
+  erosion simple models are implemented and sea water load is considered. 
+  Sediments and loads are recorded and moved as 'Blocks'.
     Different boundary conditions are predefined for several cases: trench,
   foreland basin, seamount... Lateral loads related with tectonic horizontal
   forces are also accounted for.
@@ -223,7 +223,7 @@
 
   'projectN.UNIT'
 	File modifying the geometry/architecture of the model setup (adds 
-	tectonic units, vertical loads, moving blocks, faults, etc):
+	tectonic Blocks, vertical loads, moving blocks, faults, etc):
 	'N' is the number of this load: The first load file should be named 
 	'project1.UNIT'. The time of each UNIT ('doc/template.UNIT') must 
 	increase with 'N'. 
@@ -337,7 +337,7 @@
 			  loading event is wroten.
   'project.pfl'   A final profile of the model containing the final model
 			  geometry (elevation of the top and bottom of each
-			  unit, from basament to surface).
+			  Block, from basament to surface).
   'project.eros'  Erosion (>0) and sedimentation (<0) at each position. Note
 			  that eah value is the result of adding the thickness
 			  of eros/sedim at each time step at that particular
@@ -370,8 +370,8 @@
     A multipage postscript produced with GMT 4.0 software (Wessel & Smith,
     1995, http://www.soest.hawaii.edu/soest/gmt.html) (using a unix script:
     'tao.gmt.job'), with graphics of all the results of tAo:
-      .Distribution of loads/units and the deflected basament compared with the
-      'project.CMP' file if it exists.
+      .Distribution of loads/units/sediment and the deflected basament compared 
+      with the 'project.CMP' file if it exists.
       .Bouguer gravity anomaly and geoid anomaly if requested.
       .Stress distribution when rheological considerations have been requested.
       .Yield stress envelope and stress distribution at the maximum moment
@@ -443,11 +443,11 @@
     This will allow to keep compatibility easily in future versions. Moreover,
     now is possible to resume a model that was stopped, which will allow more
     freedom to change parameters during execution avoiding new input files
-    (option -F). Option 'c' in loads to cut units with faults (works better
+    (option -F). Option 'c' in loads to cut Blocks with faults (works better
     than 'C'.
   v4.0 (2002) Fluvial sediment transport. Loads and faults now defined in
     *n.UNIT input files (instead of *n.CRG) file, and the file accepts now
-    a list of parameters for the new unit. Files *.H0 and *.W0 are now
+    a list of parameters for the new Block. Files *.H0 and *.W0 are now
     called *.ZINI and *.WINI, respectively.
     (2004) Orographic precipitation implemented following a conservative
     scheme  (runoff=precipitation-evaporation).
@@ -465,18 +465,18 @@
     Erosion models 6 and 7.
     Graphic scripts now distiguish old sediment in cross section.
     Improved sediment deformation. 'deform_sed' parameter added. Sediment above 
-    moving units is transported. 
+    moving Blocks is transported and piled in front. 
     Change in units of precipitation and sed. load. Incorporation of 
     riverbasinwidth
   tAo_
     Average erodibility is now calculated for the shallowest meters of bedrock.
     Erosion boundary conditions 0 and 1 are swapped.
-    -v command line option to change velocity of units based on density.
+    -v command line option to change velocity of Blocks based on density.
 
 10.- MODEL LIMITATIONS
-      Units move only an entire number of nodes at each time step. Unit
+      Blocks move only an entire number of nodes at each time step. Block
     deformation during motions follows a vertical shear approach
-    (preserving vertical thickness). Rotation of units is not allowed.
+    (preserving vertical thickness). Rotation of Blocks is not allowed.
       tAo doesn't account for deformation in lower crust or mantle, and the
     deformation in the upper crust (by shortening) is kinematically
     introduced in the model. Subduction is not considered either. Different
@@ -484,7 +484,7 @@
     implemented.
       Gradual sediment compaction is not considered, but this shouldn't affect the
     sediment onlap/offlap geometry in the external side of the foreland
-    basin, but only the thickness of the units.
+    basin, but only the thickness of the Blocks.
       Grain size or sediment facies distribution of predicted deposits are
     not differentiated.
 
@@ -568,13 +568,16 @@
 	hidden loads. If you still need an extra load to explain the
 	deflection, then you have to define it as a file load with the 'hidden'
 	label ('H') so that it will not increase topography.
+
   Project
 	Group of input files corresponding to a work project. All files must
 	begin with same single word stored in the char variable 'project'.
+
   Switch
 	Variables names starting with 'switch_' correspond to Boolean type
 	switches with values true or false (1 or 0) and are used to turn on and
 	off options of the model.
+
   switch_topoestable
 	This is a variable-parameter switch that strongly affects the
 	conceptual modeling. When its value is 0 the load read from file will
@@ -584,23 +587,27 @@
 	density 'densinfill'. This second way is often used in the literature
 	and strongly simplifies the modeling, but it avoids to consider the
 	internal geometry of the orogen.
+
   Topographic load
 	This is a type of load (see load input file format) that, when loaded,
 	remains on the top of the profile and neither it nor the whole profile
 	subsides: only the basement, and the space created is filled with a
 	'densinfill' density material. See 'switch_topoestable' entry.
+
   Unit
-	The word 'unit' is used for two similar concepts: Input units are  the
-	input files described above to provide the geometry of faults  or
-	loads; 'output units' (written in *.hrz and in the screen output)  are
-	generally more numerous because they include the sediemntary  units
-	calculated by tAo. The numbering of the input and output  units does
-	not match.
-	A unit corresponds in the code with a 2D body (a sediment unit,
-	thrusting unit, an instantaneous load or whatever), with a density, 
+	Input files (*.UNIT) described above to provide the geometry of faults or
+	loads. Units are converted into internal 'Blocks' after being read.
+
+  Blocks
+	Blocks are 'bodies' written in *.hrz and listed in the screen output. 
+	They are generally more numerous than the units because they include 
+	the sedimentary blocks calculated by tAo. T
+	A Block corresponds in the code with a 2D body (a sediment Block,
+	thrusting Block, an instantaneous load or whatever), with a density, 
 	velocity, age and thickness profile associated. Internally, this is 
-	stored in the structure 'Units' and a summary of these units is written
-	to the standard output.
+	stored in a C-language structure called 'Blocks' and a summary of 
+	these Blocks is written to the standard output at the end of the run.
+
   YSE
 	Stands for Yield Stress Envelope. Curve defining the maximum stress
 	that can occur at each depth.

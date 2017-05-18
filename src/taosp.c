@@ -20,13 +20,13 @@ Daniel Garcia-Castellanos, 1994-2003
 extern int	*sortcell;
 extern struct DRAINAGE_1D	*drainage;
 extern struct LAKE_INFO_1D *Lake;		/*Lake[0] does not exist; Lake[1] is the sea or the first normal lake.*/
-extern struct UNIT_1D 	*Units;
+extern struct BLOCK_1D 	*Blocks;
 
 extern int
 	Nx, 
 	nlakes, 		/*number of lakes >= 0 */
 	nbasins, 
-	numUnits;
+	numBlocks;
 
 extern float 	
 	densenv, denssedim, denscrust, 
@@ -35,7 +35,7 @@ extern float
 	riverbasinwidth, 
 	K_river_cap, 		/*Constant of river transport capacity [kg/m3].*/
 	erodibility, 		/*Default length scale of fluvial erosion */
-	erodibility_sed, 	/*Length scale of fluvial erosion of sediment units*/
+	erodibility_sed, 	/*Length scale of fluvial erosion of sediment*/
 	spl_m, spl_n, 		/*exponents of the stream power law over Q and S; m/n is ca. 0.5*/
 	l_fluv_sedim, 		/*Length scale of fluvial sedimentation */
 	lost_rate, 		/*Percent of lost water per unit length */
@@ -58,7 +58,7 @@ extern float
 	*runoff_file, 
 	*topo, 
 	*total_erosion, 
-	*Units_base;
+	*Blocks_base;
 
 extern char
 	eros_bound_cond[2];
@@ -802,7 +802,7 @@ int Diffusive_Eros_1D (float *topo, float Kerosdif, float dt, float dt_eros)
 		    Dheros[i] += Dheros_dif;
 	    }
 	}
-	/*Adds results to the height and the next load Dq and removes material from the units*/
+	/*Adds results to the height and the next load Dq and removes material from the Blocks*/
 	for (i=0; i<Nx; i++) {
 		topo[i] += Dheros[i]; 
 		if (Dheros[i]>0) {
@@ -902,12 +902,12 @@ int Fluvial_Transport (float *topo, float dt, float dt_fv, int erosed_model)
 
 			switch (erosed_model) {
 #define ERODED_ERODIBILITY   /*Takes a mean erodibility*/ float depth2average=10., dh, weight, totalweight=0, basedepth=0, erodibility_aux=0;\
-				for (i=numUnits-1; i>=0; i--) {\
-					basedepth+=Units[i].thick[ind];\
+				for (i=numBlocks-1; i>=0; i--) {\
+					basedepth+=Blocks[i].thick[ind];\
 					basedepth=MIN_2(basedepth,depth2average+.1);\
-					weight=Units[i].thick[ind]/(basedepth+1.); totalweight+=weight;\
-					erodibility_aux+=weight*Units[i].erodibility; \
-					/*PRINT_ERROR("xxx %.2e %.2e %.2e %.2e", Units[i].erodibility, erodibility_aux, basedepth, weight);*/\
+					weight=Blocks[i].thick[ind]/(basedepth+1.); totalweight+=weight;\
+					erodibility_aux+=weight*Blocks[i].erodibility; \
+					/*PRINT_ERROR("xxx %.2e %.2e %.2e %.2e", Blocks[i].erodibility, erodibility_aux, basedepth, weight);*/\
 					if (basedepth>=depth2average) break;\
 				};\
 				if (basedepth<=depth2average) {\
@@ -1080,7 +1080,7 @@ int Fluvial_Transport (float *topo, float dt, float dt_fv, int erosed_model)
 		  	PRINT_ERROR("Fluvial Transport: node [%d] has no defined type.", ind);
 		}
 
-		/*Adds results to the topo and the next load Dq and removes/adds material to the units*/
+		/*Adds results to the topo and the next load Dq and removes/adds material to the Blocks*/
 		if (d_mass<0) {
 			/*SEDIMENTATION, limit d_mass with the masstr in this node*/
 			d_mass = MAX_2(d_mass, -drainage[ind].masstr*dt_fv);
@@ -1232,7 +1232,7 @@ int Landslide_Transport (float critical_slope, float dt, float dt_eros)
 	int 	i, j, k, n_iters;
 	
 	/*
-	  COMPUTES THE LOAD, HEIGHT & UNITS-THICKNESS INCREMENTS DUE TO 
+	  COMPUTES THE LOAD, HEIGHT & Block-THICKNESS INCREMENTS DUE TO 
 	  LANDSLIDING. This process approaches short scale 
 	  transport processes. Assumes that slope cannot exceed a critical 
 	  slope.
@@ -1248,7 +1248,7 @@ int Landslide_Transport (float critical_slope, float dt, float dt_eros)
 	PRINT_INFO("n_iters=%3d", n_iters);
 
 	for (k=0; k<n_iters; k++) {
- 	    /*Adds results to the height and the next load Dq and removes material from the units*/
+ 	    /*Adds results to the height and the next load Dq and removes material from the Blocks*/
  	    for(j=0; j<Nx; j++)  {
 	    	int imaxslope;
 		float maxdiff;
@@ -1288,7 +1288,7 @@ int Landslide_Transport (float critical_slope, float dt, float dt_eros)
 int Sediment (double d_mass, int ind) 
 {
 	/*
-	  Adds dh_sed to the highest unit.
+	  Adds dh_sed to the highest Block.
 	  d_mass > 0   (mass of deposited seds., subtracted from the river load, does not include the water deposited with the seds)
 	  dh_sed > 0   (thickness of sediments deposited)
 	*/
@@ -1297,9 +1297,9 @@ int Sediment (double d_mass, int ind)
 
 	dh_sed = MASS2SEDTHICK_1D(d_mass);
 	if (dh_sed < -10) PRINT_WARNING("trying to sediment negative mass: %f m", dh_sed);
-	/*Increment load, units and topo*/
+	/*Increment load, Blocks and topo*/
 	Dq[ind] +=  dh_sed * g * (denssedim-densenv);
-	Units[numUnits-1].thick[ind] += dh_sed;
+	Blocks[numBlocks-1].thick[ind] += dh_sed;
 	topo[ind] += dh_sed;
 	/*record of eros/sed is performed in kg*/
 	eros_now[ind]      -= d_mass ;
@@ -1313,33 +1313,33 @@ int Sediment (double d_mass, int ind)
 int Erode (double d_mass, int ind) 
 {
 	/*
-	  Erode a certain amount of rock mass from the uppermost units.
-	  Increment load, units and topo.
+	  Erode a certain amount of rock mass from the uppermost Blocks.
+	  Increment load, Blocks and topo.
 	  d_mass  > 0   (eroded mass)
 	  dh_eros > 0   (thickness of material eroded)
 	*/
 
 	int k;
-	float dh_eros=0, dh_eros_unit, mass_per_m2=d_mass/dx/riverbasinwidth;
+	float dh_eros=0, dh_eros_Block, mass_per_m2=d_mass/dx/riverbasinwidth;
 
-	for (k=numUnits-1; mass_per_m2>0 && k>=0; k--) {
-		if (Units[k].density == denssedim) {
-			dh_eros_unit = MIN_2(Units[k].thick[ind], MASS2SEDTHICK_1D(mass_per_m2)*dx*riverbasinwidth);
-			mass_per_m2 -= THICK2SEDMASS_1D(dh_eros_unit) / dx/riverbasinwidth;
-			total_sed_mass -= THICK2SEDMASS_1D(dh_eros_unit);
+	for (k=numBlocks-1; mass_per_m2>0 && k>=0; k--) {
+		if (Blocks[k].density == denssedim) {
+			dh_eros_Block = MIN_2(Blocks[k].thick[ind], MASS2SEDTHICK_1D(mass_per_m2)*dx*riverbasinwidth);
+			mass_per_m2 -= THICK2SEDMASS_1D(dh_eros_Block) / dx/riverbasinwidth;
+			total_sed_mass -= THICK2SEDMASS_1D(dh_eros_Block);
 		}
 		else {
-			dh_eros_unit = MIN_2(Units[k].thick[ind], fabs(mass_per_m2/Units[k].density));
-			mass_per_m2 -= dh_eros_unit * Units[k].density;
-			total_bedrock_eros_mass += dh_eros_unit * Units[k].density * dx*riverbasinwidth;
+			dh_eros_Block = MIN_2(Blocks[k].thick[ind], fabs(mass_per_m2/Blocks[k].density));
+			mass_per_m2 -= dh_eros_Block * Blocks[k].density;
+			total_bedrock_eros_mass += dh_eros_Block * Blocks[k].density * dx*riverbasinwidth;
 		}
-		Units[k].thick[ind] -= dh_eros_unit;
-		dh_eros += dh_eros_unit;
-		Dq[ind] -=  g * dh_eros_unit * (Units[k].density - densenv);
+		Blocks[k].thick[ind] -= dh_eros_Block;
+		dh_eros += dh_eros_Block;
+		Dq[ind] -=  g * dh_eros_Block * (Blocks[k].density - densenv);
 	}
 	/*Erode basement*/
 	if (mass_per_m2>0) {
-		Units_base[ind] -= mass_per_m2/denscrust;
+		Blocks_base[ind] -= mass_per_m2/denscrust;
 		dh_eros += mass_per_m2/denscrust;
 		Dq[ind] -=  g * mass_per_m2*(denscrust-densenv)/denscrust;
 		total_bedrock_eros_mass +=  mass_per_m2 * dx*riverbasinwidth;
@@ -1996,7 +1996,7 @@ int Orographic_Precipitation_Evaporation_conservative (float *precip_aux, float 
 		temp_air = TEMPERATURE_AIR(topoC, z);
 		L = 2.4995e6+(temp_air-TEMP_FREEZE_WATER)*2359;
 		esat = es0*exp(L/Rv*(1/TEMP_FREEZE_WATER - 1/temp_air));
-		Wmax += esat/temp_air/Rv/denswater*dz; /*units: m of water*/
+		Wmax += esat/temp_air/Rv/denswater*dz; /*Blocks: m of water*/
 		//fprintf(stderr, "\nz: %f m  temp=%f K  Wmax=%f m", z, temp_air, Wmax);
 	    }
 	    //fprintf(stderr, "\nz: %f m  Wmax=%f m  alpha0=%.2e", z, Wmax, alpha0*secsperyr);

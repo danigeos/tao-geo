@@ -8,7 +8,7 @@ INCLUDE FILE FOR tao.c
 #define	MAXETERR	10e6		/*Maximum error area allowed as Te convergence criteria in the stress distrib. algorithm (m2)*/
 #define	MAX_Te_LOC_VAR	200		/*Maximum error in Te at any point. Also a convergence criteria in the stress distrib. algorithm (m2)*/
 #define	NMAXRHEOITERS 	100		/*Maximum number of iterations to find Te convergence in the stress distrib. algorithm*/
-#define	NmaxUnits	400		/*Maximum number of units to be recorded*/
+#define	NmaxBlocks	400			/*Maximum number of Blocks to be recorded*/
 #define Read_Param(x, y)  {char line[MAXLENLINE+200]; while ((sscanf(lineptr=fgets(line, MAXLENLINE+200, file), x, y )) < 1) \
 	if (lineptr==NULL) {fprintf(stderr, "\nERROR reading parameters file: parameter not found.\n");	break;}}
 
@@ -34,7 +34,7 @@ INCLUDE FILE FOR tao.c
 int *sortcell;
 struct DRAINAGE_1D  *drainage;
 struct LAKE_INFO_1D *Lake;	/*Lake[0] does not exist; Lake[1] is the sea or the first normal lake.*/
-struct UNIT_1D	*Units ; 	/*Units array: Units[numUnits] first unit is 0, last is numUnits-1;*/
+struct BLOCK_1D	*Blocks ; 	/*Blocks array: Blocks[numBlocks] first Block is 0, last is numBlocks-1;*/
 
 int 	imomentmax, 
 	nmax_input_points,	/*Maximum number of input points in moving loads*/
@@ -73,7 +73,7 @@ float	*crust_thick,			/*Crust thickness array*/
 	*evaporation,
 	*total_erosion, 		/*Cumulated erosion at each point*/
 	*topo,  			/*Topography over sea level*/
-	*Units_base,			/*Height of the base of Units[1] (the lowest) measured from the present plate level.*/
+	*Blocks_base,			/*Base of Blocks[0] (the lowest) measured from the current position of the original datum surface (now deflected by isostasy).*/
 	*upper_crust_thick,		/*Upper crust thickness array*/
 	*w, 				/*Deflection		[m] */
 	**Temperature, 			/*[ºC]*/
@@ -86,7 +86,7 @@ char 	gif_geom[MAXLENLINE];
 
 
 /*Boolean type variables:*/
-BOOL	switch_insert_load=NO,		/*Si to insert the load height within the first load unit*/
+BOOL	switch_insert_load=NO,		/*Si to insert the load height beneath the first load Block*/
 	switch_strs_history, 
 	switch_YSE_file=NO;			/*SI if yield stress is given directly from a .YSE file*/
 
@@ -133,7 +133,9 @@ float 	Lake_Input_Discharge (int ilake);
 int 	Lake_Node_Number(int row);
 int 	Lake_Saddle_Number (int row);
 int 	New_Lake ();
+int 	Repare_Blocks();
 int 	Sediment (double d_mass, int row);
+int 	tectload();
 int 	Unify_Lakes (int i_lake, int i_lake_to_delete);
 int 	Landslide_Transport (float critical_slope, float dt, float dt_eros);
 

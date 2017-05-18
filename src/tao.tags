@@ -6,6 +6,7 @@ Add_Saddle_To_Lake	taosp.c	/^int Add_Saddle_To_Lake (int sd, int tr, int i_lake/
 Allocate_Memory	taolib.c	/^int Allocate_Memory()$/
 Allocate_Memory_for_external_use	call_taosp.c	/^int Allocate_Memory_for_external_use()$/
 Attempt_Delete_Node_From_Lake	taosp.c	/^int Attempt_Delete_Node_From_Lake (int ncell)$/
+BLOCK_1D	../include/types_n_defs.h	/^struct BLOCK_1D {	\/*for tAo*\/$/
 BOOL	../include/types_n_defs.h	/^typedef enum BOOLEAN	{NO, YES} BOOL;$/
 BORDER_INDEX	../include/types_n_defs.h	/^#define BORDER_INDEX(i,j)	(((j)==0)? 3 : ((j)==Nx-/
 BORDER_LIMIT	../include/types_n_defs.h	/^#define BORDER_LIMIT(i,j)	DOMAIN_LIMIT(i,j)$/
@@ -19,8 +20,8 @@ DRAINAGE_1D	../include/types_n_defs.h	/^struct DRAINAGE_1D {$/
 Deallocate_Lake	taosp.c	/^int Deallocate_Lake (int i_lake)$/
 Define_Drainage_Net	taosp.c	/^int Define_Drainage_Net (int *sortcell) $/
 Define_Lake	taosp.c	/^int Define_Lake (int i_lake)$/
+Delete_Block	taolib.c	/^int Delete_Block(int i_Block)$/
 Delete_Node_From_Lake	taosp.c	/^int Delete_Node_From_Lake (int ln)$/
-Delete_Unit	taolib.c	/^int Delete_Unit(int i_unit)$/
 Diffusive_Eros_1D	taosp.c	/^int Diffusive_Eros_1D (float *topo, float Kerosdif/
 Direct_mode	tao.c	/^int Direct_mode(char *load_file_name)$/
 Divide_Lake	taosp.c	/^int Divide_Lake (int ind) $/
@@ -83,7 +84,7 @@ ReSort_Array	../lib/libreria.c	/^float ReSort_Array (float *array, int *orden, i
 Read_Header_File	../include/tao+tisc.h	/^#define Read_Header_File(file) {\\$/
 Read_Open_Filename_Return	../include/tao+tisc.h	/^#define Read_Open_Filename_Return(ext,type,txt) {/
 Read_Param	../include/tao.h	/^#define Read_Param(x, y)  {char line[MAXLENLINE+20/
-RepareUnits	taolib.c	/^int RepareUnits()$/
+Repare_Blocks	taolib.c	/^int Repare_Blocks()$/
 Rheo_Flex_Iter	taolib.c	/^int Rheo_Flex_Iter () {$/
 SIGN	../include/types_n_defs.h	/^#define SIGN(x)		(((x)<0)? (-1) : (((x)>0)? (+1) :/
 SQUARE	../include/types_n_defs.h	/^#define SQUARE(x)	((x)*(x))$/
@@ -102,7 +103,6 @@ THICK2SEDMASS_1D	taosp.c	/^#define THICK2SEDMASS_1D(thick)	((thick)*(denssedi/
 The_End	tao.c	/^int The_End()$/
 TriangularizeAlmostDiagonalEquationSystem	../lib/libreria.c	/^int TriangularizeAlmostDiagonalEquationSystem($/
 UNIT	../include/types_n_defs.h	/^struct UNIT { 		\/*for TISC*\/$/
-UNIT_1D	../include/types_n_defs.h	/^struct UNIT_1D {	\/*for tAo*\/$/
 Unify_Lakes	taosp.c	/^int Unify_Lakes (int i_lake, int i_lake_to_delete)/
 VERTANOMCONTRIB	../lib/libreria.c	/^#define VERTANOMCONTRIB(s,x,y,z) {\\$/
 Viscous_Relaxation	tao.c	/^int Viscous_Relaxation()$/
@@ -131,12 +131,12 @@ free_matrix	../lib/libreria.c	/^int free_matrix (float **matrix, int n_fil)$/
 free_matrix_dbl	../lib/libreria.c	/^int free_matrix_dbl (double **matrix, int n_fil)$/
 free_matrix_int	../lib/libreria.c	/^int free_matrix_int (int **matrix, int n_fil)$/
 geoidanompolyg	../lib/libreria.c	/^float geoidanompolyg($/
-gradual_unit	taolib.c	/^int gradual_unit()$/
+gradual_Block	taolib.c	/^int gradual_Block()$/
 gravanompolyg	../lib/libreria.c	/^float gravanompolyg($/
 gravity_anomaly	tao.c	/^int gravity_anomaly()$/
 init_surf_proc_	call_taosp.c	/^int init_surf_proc_ ($/
 inputs	tao.c	/^int inputs(int argc, char **argv)$/
-insert_new_unit	taolib.c	/^int insert_new_unit(int num_new_unit)$/
+insert_new_Block	taolib.c	/^int insert_new_Block(int num_new_Block)$/
 interpol2D	../lib/libreria.c	/^int interpol2D ($/
 interpol_in_xy_data	../lib/libreria.c	/^float interpol_in_xy_data ($/
 interpol_point_in_mesh	../lib/libreria.c	/^float interpol_point_in_mesh ($/
@@ -145,7 +145,7 @@ make_gravi_body	taolib.c	/^int make_gravi_body(float *upper_hor, float *lower/
 match_parameter	taolib.c	/^int match_parameter(char *str1, char *str2, int sh/
 moment_calculator	taolib.c	/^float moment_calculator (float 	d2wdx2, $/
 moment_calculator_hist	taolib.c	/^float moment_calculator_hist ($/
-move_unit	tao.c	/^int move_unit()$/
+move_Blocks	tao.c	/^int move_Blocks()$/
 outin	../lib/libreria.c	/^int outin($/
 polygon_area	../lib/libreria.c	/^float polygon_area($/
 prism_vertical_atraction	../lib/libreria.c	/^double prism_vertical_atraction ($/
@@ -174,10 +174,10 @@ syntax	tao.c	/^int syntax()$/
 tectload	tao.c	/^int tectload()$/
 triangularizar	../lib/libreria.c	/^int triangularizar(float **a, float *b, int nx)$/
 water_load	taolib.c	/^int water_load()$/
+write_file_Blocks	taoio.c	/^int write_file_Blocks()$/
 write_file_Te	taoio.c	/^int write_file_Te () $/
 write_file_Temperature	taoio.c	/^int write_file_Temperature ()$/
 write_file_Temperature_initial	taoio.c	/^int write_file_Temperature_initial ()$/
-write_file_Units	taoio.c	/^int write_file_Units()$/
 write_file_erosed	taoio.c	/^int write_file_erosed (float *total_erosion)$/
 write_file_grav_anom	taoio.c	/^int write_file_grav_anom (float *gravanom, float */
 write_file_maxmompoint	taoio.c	/^int write_file_maxmompoint ()$/

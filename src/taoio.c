@@ -34,7 +34,7 @@ int read_file_horiz_record_time()
 		horiz_record_time[i] = aux1[i]*Matosec;
 	}
 	
-	/*desactivate automatic sediment units generation*/
+	/*desactivate automatic sediment Blocks generation*/
 	if (n_record_times) dt_record=0;
 	
 	free(aux1); 
@@ -185,7 +185,7 @@ int read_file_parameters (int show, int reformat)
 
 	if (x0==NO_DATA) x0 = xmin;
 	if (xf==NO_DATA) xf = xmax;
-	if (Kerosdif>1e5) PRINT_WARNING("Kerosdif expected in units [m2/yr] !") ;
+	if (Kerosdif>1e5) PRINT_WARNING("Kerosdif expected in Blocks [m2/yr] !") ;
 
 	fclose(file);
 	return(1);
@@ -196,7 +196,7 @@ int read_file_parameters (int show, int reformat)
 
 int read_file_resume(char *filename)
 {
-	int 	i, numUnits_aux, i_unit_insert_aux, run_type_aux, end_check;
+	int 	i, numBlocks_aux, i_Block_insert_aux, run_type_aux, end_check;
 	FILE 	*file;
 	char  	version_aux[LENGTHVERS], projectname_aux[MAXLENFILE];
 
@@ -261,9 +261,9 @@ int read_file_resume(char *filename)
 	fread(&n_sea_level_input_points, sizeof(int),	1, 	file);
 	fread(&n_eros_level_input_points, sizeof(int),	1, 	file);
 	fread(&n_record_times, 	sizeof(int),		1, 	file);
-	fread(&i_first_unit_load, sizeof(int),	1, 	file);
-	fread(&i_unit_insert_aux, sizeof(int),		1, 	file);
-	fread(&numUnits_aux, 	sizeof(int),		1, 	file);
+	fread(&i_first_Block_load, sizeof(int),	1, 	file);
+	fread(&i_Block_insert_aux, sizeof(int),		1, 	file);
+	fread(&numBlocks_aux, 	sizeof(int),		1, 	file);
 	fread(&nwrotenfiles, 	sizeof(int),		1, 	file);
 	fread(&run_type_aux, 	sizeof(int),		1, 	file);
 
@@ -279,7 +279,7 @@ int read_file_resume(char *filename)
 	fread(&switch_gradual, 	sizeof(BOOL),		1, 	file);
 	fread(&switch_insert_load, 	sizeof(BOOL),		1, 	file);
 	fread(&switch_topoest, 		sizeof(BOOL),		1, 	file);
-	fread(&switch_write_file_Units, sizeof(BOOL),		1, 	file);
+	fread(&switch_write_file_Blocks, sizeof(BOOL),		1, 	file);
 	fread(&deform_sed, sizeof(BOOL),		1, 	file);
 
 	/*Defined in tao.h:*/
@@ -332,7 +332,7 @@ int read_file_resume(char *filename)
 	fread(crust_thick, 	sizeof(float),	Nx, 	file);
 	fread(upper_crust_thick,sizeof(float),	Nx, 	file);
 	fread(topo, 		sizeof(float),	Nx, 	file);
-	fread(Units_base, 	sizeof(float),	Nx, 	file);
+	fread(Blocks_base, 	sizeof(float),	Nx, 	file);
 	fread(yieldcompres, 	sizeof(float),	Nz, 	file);
 	fread(yieldextens, 	sizeof(float),	Nz, 	file);
 
@@ -362,24 +362,24 @@ int read_file_resume(char *filename)
 	}
 
 
-	for (i=0; i<numUnits_aux; i++) {
+	for (i=0; i<numBlocks_aux; i++) {
 		float *ptr1, *ptr2, *ptr3;
-		insert_new_unit(numUnits);
-		ptr1 = Units[numUnits-1].thick; 
-		fread(&Units[numUnits-1], sizeof(struct UNIT_1D), 1, file);
-		Units[numUnits-1].thick = ptr1;
+		insert_new_Block(numBlocks);
+		ptr1 = Blocks[numBlocks-1].thick; 
+		fread(&Blocks[numBlocks-1], sizeof(struct BLOCK_1D), 1, file);
+		Blocks[numBlocks-1].thick = ptr1;
 	}
-	if (numUnits_aux != numUnits) PRINT_ERROR("in '%s', %d units?!", filename, numUnits_aux);
-	i_unit_insert=i_unit_insert_aux;
-	for (i=0; i<numUnits; i++) {
-		fread(Units[i].thick, 		sizeof(float),	Nx, 	file);
+	if (numBlocks_aux != numBlocks) PRINT_ERROR("in '%s', %d Blocks?!", filename, numBlocks_aux);
+	i_Block_insert=i_Block_insert_aux;
+	for (i=0; i<numBlocks; i++) {
+		fread(Blocks[i].thick, 		sizeof(float),	Nx, 	file);
 	}
-	for (i=0; i<numUnits; i++) {
-	    if (Units[i].type == 'S') {
-		Units[i].detr_ratio = calloc(Nx, sizeof(float));
-		Units[i].detr_grsize = calloc(Nx, sizeof(float));
-		fread(Units[i].detr_ratio, 	sizeof(float),	Nx, 	file);
-		fread(Units[i].detr_grsize, 	sizeof(float),	Nx, 	file);
+	for (i=0; i<numBlocks; i++) {
+	    if (Blocks[i].type == 'S') {
+		Blocks[i].detr_ratio = calloc(Nx, sizeof(float));
+		Blocks[i].detr_grsize = calloc(Nx, sizeof(float));
+		fread(Blocks[i].detr_ratio, 	sizeof(float),	Nx, 	file);
+		fread(Blocks[i].detr_grsize, 	sizeof(float),	Nx, 	file);
 	    }
 	}
 
@@ -819,7 +819,7 @@ int write_file_time (float *w, float *topo)
 	BOOL	return_cond;
 	float	youngest_age=-1e16;
 
-	for (i=0; i<numUnits; i++) youngest_age = MAX_2(Units[i].age, youngest_age);
+	for (i=0; i<numBlocks; i++) youngest_age = MAX_2(Blocks[i].age, youngest_age);
 	return_cond = (!switch_write_file && (Timefinal-Time) >= dt) 
 		|| !isost_model 
 		|| (((Time-last_time_file_time) < dt_record*.9999 || (!dt_record && youngest_age!=Time)) && (Timefinal-Time) >= dt) 
@@ -864,7 +864,7 @@ int write_file_time (float *w, float *topo)
 		rename(filename2, filename); remove(filename1);
 	}
 
-	switch_write_file_Units=YES;
+	switch_write_file_Blocks=YES;
 	nwrotenfiles++;
 	last_time_file_time = Time;
 
@@ -872,7 +872,7 @@ int write_file_time (float *w, float *topo)
 }
 
 
-int write_file_Units()
+int write_file_Blocks()
 {
 	int 	i, j, i_hori;
 	float	x, height_aux=0;
@@ -880,21 +880,21 @@ int write_file_Units()
 
 	/*PRINTS A FILE WITH HORIZON ALTITUDES IN COLUMNS*/
 
-	Write_Open_Filename_Return (".pfl", "wt", !switch_write_file_Units);
+	Write_Open_Filename_Return (".pfl", "wt", !switch_write_file_Blocks);
 
 	fprintf(file, "#tAo output file of project '%s'. t= %.2f My", projectname, Time/Matosec);
 	fprintf(file, "\n#Densities:\t%8.0f", denscrust);
-	for (i=0; i<numUnits; i++) fprintf(file, "\t%8.0f", Units[i].density);
+	for (i=0; i<numBlocks; i++) fprintf(file, "\t%8.0f", Blocks[i].density);
 	if (erosed_model>=2) fprintf(file, "\t%8.0f", denswater);
 	fprintf(file, "\n#x(km),Ages->\t%8.2f", Timeini/Matosec);
-	for (i=0; i<numUnits; i++) fprintf(file, "\t%8.2f", Units[i].age/Matosec);
+	for (i=0; i<numBlocks; i++) fprintf(file, "\t%8.2f", Blocks[i].age/Matosec);
 	if (erosed_model>=2) fprintf(file, "\t   water");
 	for (i=0; i<Nx; i++) {
 		x=x0+dx*i; 
 		if (x > xmin-dx && x < xmax+dx) {
 			fprintf(file, "\n%8.2f", (x0+i*dx)/1000);
-			for (j=0; j<=numUnits; j++) {
-				for (height_aux=-w[i]+Units_base[i], i_hori=1; i_hori<=j; height_aux+=Units[i_hori-1].thick[i], i_hori++);
+			for (j=0; j<=numBlocks; j++) {
+				for (height_aux=-w[i]+Blocks_base[i], i_hori=1; i_hori<=j; height_aux+=Blocks[i_hori-1].thick[i], i_hori++);
 				fprintf(file, "\t%8.1f",  height_aux);
 			}
 			if (erosed_model>=2) {
@@ -920,7 +920,7 @@ int write_file_resume()
 	  REQUIRED TO RESTART THE PROGRAM
 	*/
 
-	Write_Open_Filename_Return (".all", "wt", !switch_write_file_Units);
+	Write_Open_Filename_Return (".all", "wt", !switch_write_file_Blocks);
 
 	/*Defined in universal.h:*/
 	fwrite(&Nx, 		sizeof(int),		1, 	file);
@@ -973,9 +973,9 @@ int write_file_resume()
 	fwrite(&n_sea_level_input_points, sizeof(int),	1, 	file);
 	fwrite(&n_eros_level_input_points, sizeof(int),	1, 	file);
 	fwrite(&n_record_times, 	sizeof(int),		1, 	file);
-	fwrite(&i_first_unit_load, sizeof(int),	1, 	file);
-	fwrite(&i_unit_insert, sizeof(int),		1, 	file);
-	fwrite(&numUnits, 	sizeof(int),		1, 	file);
+	fwrite(&i_first_Block_load, sizeof(int),	1, 	file);
+	fwrite(&i_Block_insert, sizeof(int),		1, 	file);
+	fwrite(&numBlocks, 	sizeof(int),		1, 	file);
 	fwrite(&nwrotenfiles, 	sizeof(int),		1, 	file);
 	fwrite(&run_type, 	sizeof(int),		1, 	file);
 
@@ -991,7 +991,7 @@ int write_file_resume()
 	fwrite(&switch_gradual, 	sizeof(BOOL),		1, 	file);
 	fwrite(&switch_insert_load, 	sizeof(BOOL),		1, 	file);
 	fwrite(&switch_topoest, 		sizeof(BOOL),		1, 	file);
-	fwrite(&switch_write_file_Units, sizeof(BOOL),		1, 	file);
+	fwrite(&switch_write_file_Blocks, sizeof(BOOL),		1, 	file);
 	fwrite(&deform_sed, sizeof(BOOL),		1, 	file);
 
 	/*Defined in tao.h:*/
@@ -1043,7 +1043,7 @@ int write_file_resume()
 	fwrite(crust_thick, 	sizeof(float),	Nx, 	file);
 	fwrite(upper_crust_thick,sizeof(float),	Nx, 	file);
 	fwrite(topo, 		sizeof(float),	Nx, 	file);
-	fwrite(Units_base, 	sizeof(float),	Nx, 	file);
+	fwrite(Blocks_base, 	sizeof(float),	Nx, 	file);
 	fwrite(yieldcompres, 	sizeof(float),	Nz, 	file);
 	fwrite(yieldextens, 	sizeof(float),	Nz, 	file);
 	fwrite(horiz_record_time, sizeof(float), n_record_times, file);
@@ -1062,14 +1062,14 @@ int write_file_resume()
 			fwrite(stress[i], sizeof(float), Nz, file);
 	}
 
-	fwrite(Units, 		sizeof(struct UNIT_1D),	numUnits, file);
-	for (i=0; i<numUnits; i++) {
-		fwrite(Units[i].thick, 		sizeof(float),	Nx, 	file);
+	fwrite(Blocks, 		sizeof(struct BLOCK_1D),	numBlocks, file);
+	for (i=0; i<numBlocks; i++) {
+		fwrite(Blocks[i].thick, 		sizeof(float),	Nx, 	file);
 	}
-	for (i=0; i<numUnits; i++) {
-	    if (Units[i].type == 'S') {
-		fwrite(Units[i].detr_ratio, 	sizeof(float),	Nx, 	file);
-		fwrite(Units[i].detr_grsize, 	sizeof(float),	Nx, 	file);
+	for (i=0; i<numBlocks; i++) {
+	    if (Blocks[i].type == 'S') {
+		fwrite(Blocks[i].detr_ratio, 	sizeof(float),	Nx, 	file);
+		fwrite(Blocks[i].detr_grsize, 	sizeof(float),	Nx, 	file);
 	    }
 	}
 

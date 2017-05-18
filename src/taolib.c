@@ -24,11 +24,11 @@ int Allocate_Memory()
 	crust_thick = 	(float *) calloc(Nx, sizeof(float));
 	upper_crust_thick = (float *) calloc(Nx, sizeof(float));
 	topo =  	(float *) calloc(Nx, sizeof(float));
-	Units_base = 	(float *) calloc(Nx, sizeof(float));
+	Blocks_base = 	(float *) calloc(Nx, sizeof(float));
 	yieldcompres =	(float *) calloc(Nz, sizeof(float));
 	yieldextens = 	(float *) calloc(Nz, sizeof(float));
 
-	Units =    	(struct UNIT_1D *) calloc(NmaxUnits, sizeof(struct UNIT_1D));
+	Blocks =    	(struct BLOCK_1D *) calloc(NmaxBlocks, sizeof(struct BLOCK_1D));
 
 	if (hydro_model) {
 		int i; 
@@ -55,13 +55,13 @@ int Allocate_Memory()
 
 float calculate_topo(float *topo_new)
 {
-	int	i, i_unit, mean=0;
+	int	i, i_Block, mean=0;
 
 	/*Calculates topography */
 	for (i=0; i<Nx; i++) {
-	    topo_new[i] = Units_base[i]-w[i];
-	    for (i_unit=0; i_unit<numUnits; i_unit++) 
-		topo_new[i] += Units[i_unit].thick[i];
+	    topo_new[i] = Blocks_base[i]-w[i];
+	    for (i_Block=0; i_Block<numBlocks; i_Block++) 
+		topo_new[i] += Blocks[i_Block].thick[i];
 	    mean += topo_new[i];
 	}
 	mean /= Nx;
@@ -70,57 +70,57 @@ float calculate_topo(float *topo_new)
 
 
 
-int Delete_Unit(int i_unit)
+int Delete_Block(int i_Block)
 {
 	int  	k;
 
-	/*Deallocates one unit*/
+	/*Deallocates one Block*/
 
-	PRINT_DEBUG("Unit being deleted: %d ; numUnits= %d ; i_first_unit_load = %d ; i_unit_insert = %d", i_unit, numUnits, i_first_unit_load, i_unit_insert);
-	free(Units[i_unit].thick);
-	if (Units[i_unit].type == 'S') {
-		free(Units[i_unit].detr_ratio);
-		free(Units[i_unit].detr_grsize);
+	PRINT_DEBUG("Block being deleted: %d ; numBlocks= %d ; i_first_Block_load = %d ; i_Block_insert = %d", i_Block, numBlocks, i_first_Block_load, i_Block_insert);
+	free(Blocks[i_Block].thick);
+	if (Blocks[i_Block].type == 'S') {
+		free(Blocks[i_Block].detr_ratio);
+		free(Blocks[i_Block].detr_grsize);
 	}
-	for (k=i_unit; k<numUnits-1; k++) Units[k] = Units[k+1];
-	numUnits--;
+	for (k=i_Block; k<numBlocks-1; k++) Blocks[k] = Blocks[k+1];
+	numBlocks--;
 	return(1);
 }
 
 
 
-int gradual_unit()
+int gradual_Block()
 {
 	float 	Dhl;
 
 	/*Non-instantaneous loading of a file load (distributed along time).*/
 
 	/*interpolation can only last until next load because then the original load shape is then lost*/
-	if (!switch_gradual || Time>Units[i_unit_insert].time_stop-dt*.1) return(0);
+	if (!switch_gradual || Time>Blocks[i_Block_insert].time_stop-dt*.1) return(0);
 
 	for (int i=0; i<Nx; i++) { 
-		Dhl = h_last_unit[i]*dt/(Units[i_unit_insert].time_stop-Units[i_unit_insert].age);
+		Dhl = h_last_unit[i]*dt/(Blocks[i_Block_insert].time_stop-Blocks[i_Block_insert].age);
 		/*Increments the load for this time interval*/
-		if (Units[i_unit_insert].type != 'H') {
+		if (Blocks[i_Block_insert].type != 'H') {
 			if (Dhl>=0) {
-				Units[i_unit_insert].thick[i] += Dhl;
+				Blocks[i_Block_insert].thick[i] += Dhl;
 			}
 			else {
 				float 	h_load_aux, h_load_aux2;
 				int	k;
 				h_load_aux = fabs((double) Dhl);
-				for (k=i_unit_insert-1; h_load_aux>0 && k>=0; k--) {
-					h_load_aux2 = MIN_2(Units[k].thick[i], h_load_aux);
+				for (k=i_Block_insert-1; h_load_aux>0 && k>=0; k--) {
+					h_load_aux2 = MIN_2(Blocks[k].thick[i], h_load_aux);
 					h_load_aux -= h_load_aux2;
-					Units[k].thick[i] -= h_load_aux2;
+					Blocks[k].thick[i] -= h_load_aux2;
 				}
-				/*k is the deepest eroded unit*/
+				/*k is the deepest eroded Block*/
 				if (k==-1) {
-					Units_base[i] -= h_load_aux;
+					Blocks_base[i] -= h_load_aux;
 				}
 			}
 		}
-		Dq[i] += (Units[i_unit_insert].density-densenv)*g*Dhl;
+		Dq[i] += (Blocks[i_Block_insert].density-densenv)*g*Dhl;
 	}
 
 	fflush(stdout);
@@ -172,38 +172,38 @@ int Init_Stress()
 
 
 
-int insert_new_unit(int num_new_unit)
+int insert_new_Block(int num_new_Block)
 {
-	struct UNIT_1D	unit_aux;
+	struct BLOCK_1D	Block_aux;
 
-	/*Creates a new unit and increments numUnits by 1.
-		num_new_unit ranges from 0 to numUnits-1
-		Units above num_new_unit (inclusive) are shifted upwards.
+	/*Creates a new Block and increments numBlocks by 1.
+		num_new_Block ranges from 0 to numBlocks-1
+		Blocks above num_new_Block (inclusive) are shifted upwards.
 	*/
 
 	if (verbose_level>=2) fprintf(stdout, "  u"); fflush(stdout);
-	PRINT_DEBUG("New unit being created: %d ; numUnits= %d ; i_first_unit_load = %d ; i_unit_insert = %d", num_new_unit, numUnits, i_first_unit_load, i_unit_insert);
-	if (numUnits>NmaxUnits-5) PRINT_WARNING("Lots of units! "); 
+	PRINT_DEBUG("New Block being created: %d ; numBlocks= %d ; i_first_Block_load = %d ; i_Block_insert = %d", num_new_Block, numBlocks, i_first_Block_load, i_Block_insert);
+	if (numBlocks>NmaxBlocks-5) PRINT_WARNING("Lots of Blocks! "); 
 
-	Units[numUnits].thick = 	(float *) calloc(Nx, sizeof(float));
+	Blocks[numBlocks].thick = 	(float *) calloc(Nx, sizeof(float));
 
-	unit_aux = Units[numUnits];
-	for (int j_unit=numUnits; j_unit>num_new_unit; j_unit--) 
-		Units[j_unit] = Units[j_unit-1];
-	Units[num_new_unit] = unit_aux;
+	Block_aux = Blocks[numBlocks];
+	for (int j_Block=numBlocks; j_Block>num_new_Block; j_Block--) 
+		Blocks[j_Block] = Blocks[j_Block-1];
+	Blocks[num_new_Block] = Block_aux;
 
 	/*Default properties*/
-	Units[num_new_unit].type = '-';
-	Units[num_new_unit].age = Time;
-	Units[num_new_unit].density = 0;
-	Units[num_new_unit].erodibility = erodibility;
-	Units[num_new_unit].vel = 0;
-	Units[num_new_unit].last_vel_time = Time;
-	Units[num_new_unit].time_stop = 9999*Matosec;
-	Units[num_new_unit].shift = 0;
-	Units[num_new_unit].last_shift = 0;
+	Blocks[num_new_Block].type = '-';
+	Blocks[num_new_Block].age = Time;
+	Blocks[num_new_Block].density = 0;
+	Blocks[num_new_Block].erodibility = erodibility;
+	Blocks[num_new_Block].vel = 0;
+	Blocks[num_new_Block].last_vel_time = Time;
+	Blocks[num_new_Block].time_stop = 9999*Matosec;
+	Blocks[num_new_Block].shift = 0;
+	Blocks[num_new_Block].last_shift = 0;
 	
-	numUnits++;
+	numBlocks++;
 
 	return(1);
 }
@@ -759,24 +759,24 @@ float moment_calculator_hist (
 
 
 
-int RepareUnits()
+int Repare_Blocks()
 {
-	int  	unit_max_arrange;
+	int  	i_Block_max_arrange;
 
-	/*Avoids units to have negative thickness or zero area*/
+	/*Avoids Blocks to have negative thickness or zero area*/
 
-	unit_max_arrange = (switch_topoest)? i_first_unit_load : numUnits;
-	for (int unit=1; unit < unit_max_arrange; unit++) {
+	i_Block_max_arrange = (switch_topoest)? i_first_Block_load : numBlocks;
+	for (int i_Block=1; i_Block < i_Block_max_arrange; i_Block++) {
 		for (int i=0; i<Nx; i++) {
-			Units[unit-1].thick[i] = MAX_2(Units[unit-1].thick[i], 0);
+			Blocks[i_Block-1].thick[i] = MAX_2(Blocks[i_Block-1].thick[i], 0);
 		}
 	}
-	/*Delete empty units except if hidden*/
-	for (int unit=0; unit<numUnits; unit++) {
-		float unit_area=0;
-		for (int i=0; i<Nx; i++)  unit_area += Units[unit].thick[i];
-		unit_area *= dx;
-		if (unit_area<1e2 && Units[unit].type!='H' && Units[unit].type != 'I') {Delete_Unit(unit); unit--;}
+	/*Delete empty Blocks except if hidden*/
+	for (int i_Block=0; i_Block<numBlocks; i_Block++) {
+		float Block_area=0;
+		for (int i=0; i<Nx; i++)  Block_area += Blocks[i_Block].thick[i];
+		Block_area *= dx;
+		if (Block_area<1e2 && Blocks[i_Block].type!='H' && Blocks[i_Block].type != 'I') {Delete_Block(i_Block); i_Block--;}
 	}
 	return(1);
 }
