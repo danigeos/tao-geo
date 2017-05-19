@@ -70,12 +70,14 @@ set region	= $xmin/$xmax/$zmin/$zmax
 set color_heavy_basement = 140/100/0
 set color_basement = 160/127/0
 set color_heavy_sediment = 80/130/255
+set color_oldest_sediment = 220/120/0
 set color_old_sediment = 255/180/0
 set color_sediment = 255/255/20
 set color_sea = 120/190/255
 set color_ice = 190/190/240
 
-echo region = $region   
+echo
+echo -n PLOTTING... region = $region 
 
 #Intermidiate files:
 if (-r $prj.CRUST) then 

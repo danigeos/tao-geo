@@ -117,7 +117,7 @@ rain		500	Precipitation per unit length along the model profile.
 			To find this multiply  the precipitaion rate in your 
 			region by the width of the basin perpendicular to the 
 			model profile. 
-			[l/m/yr]=[mm/yr/m]=[1.58e-8 m3/m/s].
+			[l/m2/yr]=[mm/yr].
 			If hydro_model=1: Background precipitation (or runoff, 
 				water going to the drainage system) if no 
 				*.RAIN file is given or if the file value is 
@@ -169,8 +169,8 @@ erosed_model	0	Sets the erosion/sedimentation model.
 				e=k_b*w^1; w=rho*g*Q*S/W, with w in [W/m^2], 
 				e in mm/yr (Ferrier et al., 2013, 
 				Nature).
-Keroseol	.0	Continental background erosion rate in meters of 
-				sediment by meters elevation and My [m/(m·My)].
+Keroseol	.0	Continental erosion rate: meters of	erosion by 
+				meters elevation and My [m/(m·My)].
 Ksedim  	0e2	Sedimentation rate below sea level [m/My].
 Kerosdif   	.00	Diffusive transport coefficient [m2/yr] (e.g., Ks in 
 				Kooi&Beaumont,1994,p12193). Tucker&Bras(1998,

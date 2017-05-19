@@ -6,6 +6,7 @@ Add_Saddle_To_Lake	taosp.c	/^int Add_Saddle_To_Lake (int sd, int tr, int i_lake/
 Allocate_Memory	taolib.c	/^int Allocate_Memory()$/
 Allocate_Memory_for_external_use	call_taosp.c	/^int Allocate_Memory_for_external_use()$/
 Attempt_Delete_Node_From_Lake	taosp.c	/^int Attempt_Delete_Node_From_Lake (int ncell)$/
+BLOCK	../include/types_n_defs.h	/^struct BLOCK { 		\/*for TISC*\/$/
 BLOCK_1D	../include/types_n_defs.h	/^struct BLOCK_1D {	\/*for tAo*\/$/
 BOOL	../include/types_n_defs.h	/^typedef enum BOOLEAN	{NO, YES} BOOL;$/
 BORDER_INDEX	../include/types_n_defs.h	/^#define BORDER_INDEX(i,j)	(((j)==0)? 3 : ((j)==Nx-/
@@ -102,7 +103,6 @@ TEMPERATURE_ICE	../include/types_n_defs.h	/^#define TEMPERATURE_ICE(altitude)	(t
 THICK2SEDMASS_1D	taosp.c	/^#define THICK2SEDMASS_1D(thick)	((thick)*(denssedi/
 The_End	tao.c	/^int The_End()$/
 TriangularizeAlmostDiagonalEquationSystem	../lib/libreria.c	/^int TriangularizeAlmostDiagonalEquationSystem($/
-UNIT	../include/types_n_defs.h	/^struct UNIT { 		\/*for TISC*\/$/
 Unify_Lakes	taosp.c	/^int Unify_Lakes (int i_lake, int i_lake_to_delete)/
 VERTANOMCONTRIB	../lib/libreria.c	/^#define VERTANOMCONTRIB(s,x,y,z) {\\$/
 Viscous_Relaxation	tao.c	/^int Viscous_Relaxation()$/

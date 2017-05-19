@@ -34,7 +34,7 @@ psbasemap -JX$graph_width/$graph_height -R$xmin/$xmax/$zminkm/$zmaxkm \
 psbasemap -JX -R$xmin/$xmax/$zmin/$ymax -K -O -B:: >> $ps
 
 #Draws Sea:
-if ($switch_sea == 1) psxy $prj.sea.tao.gmt.tmp -JX -B/g1000 -R -O -K -L -G$color_sea >> $ps
+if ($switch_sea == 1) psxy $prj.sea.tao.gmt.tmp -JX -R -O -K -L -G$color_sea >> $ps
 
 #Draws basement:
 psxy $prj.basement.xz.tao.gmt.tmp -JX -R -O -K -L -G$color_heavy_basement >> $ps
@@ -68,7 +68,12 @@ while ($col <= $numcols)
 					if ($age_cond) then
 						set color = $color_sediment
 					else
-						set color = $color_old_sediment
+						set cond = `awk -v a=$age[$colant] -v ageini=$Timeini 'BEGIN{age=a*1.0; ageini*=1.; if (age==ageini) print 0; else print 1}' `
+						if ($cond) then
+							set color = $color_old_sediment
+						else
+							set color = $color_oldest_sediment
+						endif
 					endif
 				else
 					if ($dens[$col] > 970) then
@@ -105,10 +110,10 @@ psbasemap -JX$graph_width/$graph_height -R$xmin/$xmax/$yminkm/$ymaxkm \
 psbasemap -JX -R$xmin/$xmax/$ymin/$ymax -K -O -B:: >> $ps
 
 #Draws Sea:
-if ($switch_sea == 1) psxy $prj.sea.tao.gmt.tmp -JX -B/g1000 -R -O -K -L -G$color_sea	>> $ps
+if ($switch_sea == 1) psxy $prj.sea.tao.gmt.tmp -JX -R -O -K -L -G$color_sea	>> $ps
 
 #Draws base of Blocks:
-psxy $prj.basement.xz.tao.gmt.tmp -JX -R -O -K -L -G$color_basement >> $ps
+psxy $prj.basement.xz.tao.gmt.tmp -JX -R -O -K -L -G$color_heavy_basement >> $ps
 
 set col = 3
 while ($col <= $numcols)
@@ -130,7 +135,12 @@ while ($col <= $numcols)
 					if ($age_cond) then
 						set color = $color_sediment
 					else
-						set color = $color_old_sediment
+						set cond = `awk -v a=$age[$colant] -v ageini=$Timeini 'BEGIN{age=a*1.0; ageini*=1.; if (age==ageini) print 0; else print 1}' `
+						if ($cond) then
+							set color = $color_old_sediment
+						else
+							set color = $color_oldest_sediment
+						endif
 					endif
 				else
 					if ($dens[$col] > 970) then

@@ -34,11 +34,12 @@ ride		0	[0/1]	To let the previous overlaying Blocks be dragged
 cut_Blocks	0	[0/1]	Means that previously defined Blocks should be
 					cut by this new fault.
 cut_Block	0		If nonzero, this number minus 1 will be the 
-					number of the Block (in the internal
-					registry as shown at the end of the 
+					Block to cut by this fault. You are required to add 1 
+					to the Block number so that you can cut the lowermost 
+					Block (number 0). Block number as in the internal
+					registry shown at the end of each  
 					run, not the order of the user-specified
-					units) that will be cut by this new 
-					fault. If negative, it will take the 
+					units. If negative, it will take the 
 					absolute value as a density and cut 
 					the largest Block with that density.  
 cut_all 	0	[0/1]	Means that all Blocks should be cut by this new

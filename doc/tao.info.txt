@@ -24,8 +24,9 @@
 
   tao  project  -A[1|2] -B<bound_type> -D[x0/xf] -d<dx> -F[file] -h[i|u|p]
 	  -M<lih_type>[t] -m<app_mom> -N<Nx> -o -P[c[geom]] -p<tec_force>
-	  -q<param=value> -Q<file>  -r<a|c|i|m|a><density> -s<app_force> -T<eet>
-	  -t<i|f|d|v|r><time> -V[<level>] -v[<dens>/<vel>]
+	  -q<param=value> -Q<file>  -r<a|c|i|m|a><density> -S<b>/<n> 
+	  -s<app_force> -T<eet> -t<i|f|d|v|r><time> -V[<level>] 
+	  -v[<num>/<vel>]
 
   Options:
 	'project' is the root name of the project files names (i.e., if
@@ -62,7 +63,8 @@
  	'-p' Sets the tectonic horizontal force in the plate.
  		>0 means compressive.
 	'-q' Sets a value for any parameter listed in the parameter file
-		'*.PRM'.
+		'*.PRM'. Internal tAo units are expected (usually IS), rather
+		than those units used in the PRM.
 	'-Q' Quick flexural calculation. With this option tAo will just
 		calculate the elastic  deflection in response to <file> (2
 		columns:  x[m],pressure[Pa]). Will write deflection to  the
@@ -71,6 +73,7 @@
 		written.
 	'-r' Sets density of enviroment (e), crust (c), infill (i), mantle
 		(m), or asthenosphere (a).
+	'-S' Move block number <b> by <n> positions (use with '-F').
 	'-s' Sets the applied vertical shear force at left boundary. >0 means
 		upwards.
 	'-T' Sets elastic thickness to <eet_value>. For the case of
@@ -83,8 +86,8 @@
 	'-V' Means verbose mode with additional run-time prints. Add '<level>'
 		for additional i/o information. See doc/template.PRM file for
 		level specification.
-	'-v' Gives a new velocity <vel> to all Blocks with a density <dens>.
-		Use with '-F'.
+	'-v' Changes velocity to <vel> for block number <num)> or, if 
+		<num><0, to all blocks with density -<num> (use with '-F').
 
 
   Examples:
