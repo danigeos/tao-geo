@@ -608,6 +608,7 @@ int inputs(int argc, char **argv)
 	putenv("tao_dir=" TAODIR); 
 	
 	/*Version of tAo will be matched against the parameters file *.PRM*/
+	/*¡¡ UPDATE template.PRM !!*/
 	strcpy(version, "tAo_2017-05-19");
 
 	/*Default parameter values are read from ./tao/doc/template.PRM*/
@@ -905,6 +906,32 @@ int interpr_command_line_opts(int argc, char **argv)
 						case 'a':	densasthen = value2; 	break;
 					}
 					break;
+				case 'S':
+					{
+						int iblock, nblocks;
+						iblock = atoi(strtok(prm, "/"));
+						nblocks = atoi(strtok(NULL, "/"));
+						insert_new_Block(numBlocks); 
+						Blocks[numBlocks-1]=Blocks[iblock];
+						PRINT_INFO("%d = %d", numBlocks-1, iblock);
+						if (nblocks>0) {
+							for (int iu=iblock; iu<iblock+nblocks; iu++) {
+								Blocks[iu]=Blocks[iu+1];
+								PRINT_INFO("%d = %d", iu, iu+1);
+							}
+						}
+						else {
+							for (int iu=iblock; iu>iblock+nblocks; iu--) {
+								Blocks[iu]=Blocks[iu-1];
+								PRINT_INFO("%d = %d", iu, iu-1);
+							}
+						}
+						Blocks[iblock+nblocks]=Blocks[numBlocks-1];
+						PRINT_INFO("%d = %d", iblock+nblocks, numBlocks-1);
+						Delete_Block(numBlocks-1);
+					}
+					break;
+					break;
 				case 's':
 					vert_force = value;
 					break;
@@ -931,7 +958,7 @@ int interpr_command_line_opts(int argc, char **argv)
 						density = atof(strtok(prm, "/"));
 						velocity = atof(strtok(NULL, "/"));
 						for (int iu=0; iu<numBlocks; iu++) {
-							if (Blocks[iu].density==density) {
+							if (Blocks[iu].density==-density || iu==density) {
 								Blocks[iu].vel=velocity*1e3/Matosec;
 								Blocks[iu].last_vel_time=Time-dt;/*!!*/
 								Blocks[iu].last_shift=0;

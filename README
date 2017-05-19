@@ -1,6 +1,6 @@
 ********************************************************************************
-*************			tAo README file  		****************
-******         PSEUDO-2D (VERTICAL CROSS-SECTION) MODELLING OF           *******
+*************	  	         tAo README file                    ****************
+******       1D (PSEUDO-2D, VERTICAL CROSS-SECTION) MODELLING OF         *******
 ******                FLEXURAL ISOSTASY, EROSION,                        *******
 ******          OROGRAPHIC PRECIPITATION, AND FORELAND BASIN             *******
 ******               FORMATION USING FINITE DIFFERENCES                  *******
@@ -12,9 +12,9 @@ pseudo 2D (vertical cross section).
 The pseudo 3D version of tAo is called TISC and distributed apart.
 Read the 'tao/doc/tao.info.txt' file to know more about tAo.
 
-Disclaimer: tAo is a tool developed for my own research. I've never been a
-professional programmer, the code is not user-friendly as a mobile app, and i
-cannot guarantee assistance in case of  trouble. See other disclaimers in the
+Disclaimer: tAo is a tool developed for my own research. I'm not a true
+professional programmer, this code is not user-friendly as a mobile app, and i
+cannot guarantee assistance in case of trouble. See other disclaimers in the
 license file in tao/doc/LICENSE.txt.
 
 License details in the documentation at tao/doc/.
@@ -43,7 +43,7 @@ this will create directory 'tao/' in your current directory.
 tao in the bin/ directory. You should put tao/bin/ and tao/script/ in your path
 and define the tao_dir variable in your environment.
 
--Optionally install GMT free-ware software (used for graphic output) and put 
+-Optionally install GMT freeware software (used for graphic output) and put 
 its bin/ directory in your path. This should work:
 	sudo apt-get update
 	sudo apt-get install gmt ksh csh tofrodos
