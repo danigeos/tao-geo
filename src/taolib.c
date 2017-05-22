@@ -1,8 +1,6 @@
 /*
 	GENERAL  SUBS  LIBRARY  FOR  tao.c
 	Most input/output routines are here.
-
-	Copyright (C) 1993-2004 Daniel Garcia-Castellanos
 	See copyright and other information in tao/doc/ 
 */
 
@@ -188,6 +186,7 @@ int insert_new_Block(int num_new_Block)
 
 	Blocks[numBlocks].thick = 	(float *) calloc(Nx, sizeof(float));
 
+	//shift blocks upwards
 	Block_aux = Blocks[numBlocks];
 	for (int j_Block=numBlocks; j_Block>num_new_Block; j_Block--) 
 		Blocks[j_Block] = Blocks[j_Block-1];

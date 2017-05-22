@@ -14,7 +14,6 @@
 	-Implement grain size in transport.  This to calculate grain size distribution in basin, and as a first step for the next point once transitory flow is implemented. 
 	-Implement sediment load effect on erosion (Sklar). Intersting for acceleration of erosion during lake overtopping.
 	-Implement transitory water flow.
-	-Change UNIT1D and Blocks structure to BLOCK1D and Blocks or Bodies. To avoid confusion with input files (UNITS).
 */
 
 
@@ -909,11 +908,11 @@ int interpr_command_line_opts(int argc, char **argv)
 				case 'S':
 					{
 						int iblock, nblocks;
+						struct BLOCK_1D	Block_aux;
 						iblock = atoi(strtok(prm, "/"));
 						nblocks = atoi(strtok(NULL, "/"));
-						insert_new_Block(numBlocks); 
-						Blocks[numBlocks-1]=Blocks[iblock];
-						PRINT_INFO("%d = %d", numBlocks-1, iblock);
+						PRINT_INFO("Block %d will be moved by %d positions", iblock, nblocks);
+						Block_aux=Blocks[iblock];
 						if (nblocks>0) {
 							for (int iu=iblock; iu<iblock+nblocks; iu++) {
 								Blocks[iu]=Blocks[iu+1];
@@ -926,9 +925,8 @@ int interpr_command_line_opts(int argc, char **argv)
 								PRINT_INFO("%d = %d", iu, iu-1);
 							}
 						}
-						Blocks[iblock+nblocks]=Blocks[numBlocks-1];
+						Blocks[iblock+nblocks]=Block_aux;
 						PRINT_INFO("%d = %d", iblock+nblocks, numBlocks-1);
-						Delete_Block(numBlocks-1);
 					}
 					break;
 					break;
@@ -1446,7 +1444,7 @@ int The_End()
 			sprintf(command, "echo First use of %s by `whoami` at `hostname` > %s; date >> %s", version, filename, filename);
 			if (verbose_level>=3) fprintf(stdout, "\n%s", command);
 			system(command);
-			sprintf(command, "mail danielgc@ija.csic.es < %s", filename);
+			sprintf(command, "mail danielgc@ictja.csic.es < %s", filename);
 			if (verbose_level>=3) fprintf(stdout, "\n%s", command);
 			system(command);
 			fclose (file);
