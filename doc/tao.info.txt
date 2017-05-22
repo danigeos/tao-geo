@@ -471,10 +471,13 @@
     moving Blocks is transported and piled in front. 
     Change in units of precipitation and sed. load. Incorporation of 
     riverbasinwidth
-  tAo_
+  tAo_2017-05-19
     Average erodibility is now calculated for the shallowest meters of bedrock.
     Erosion boundary conditions 0 and 1 are swapped.
     -v command line option to change velocity of Blocks based on density.
+    Changed UNIT1D and Units structure to BLOCK1D and Blocks, to avoid confusion 
+	with input files (UNITS).
+  
 
 10.- MODEL LIMITATIONS
       Blocks move only an entire number of nodes at each time step. Block
