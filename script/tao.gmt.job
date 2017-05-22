@@ -200,7 +200,7 @@ gmtset BASEMAP_FRAME_RGB +150/100/0;   awk '{print $1, $6}'     $prj.eros | \
 	psxy -JX -R$xmin/$xmax/0/300 -W4/150/100/0 -O -K -B/50:"sed.load(kg/s)":E >> $ps
 gmtset BASEMAP_FRAME_RGB +0/0/0; 
 set total_rain = `awk '(NR>3){total+=$8}END{printf("%.0f", total)}' $prj.eros`
-if ($total_rain) then 
+if ($hydro_model) then 
 psbasemap -JX$graph_width/$graph_height -R$xmin/$xmax/-10/10 -B$ticklabels\:"":/ns -Y$vertshift -O -K >> $ps
 gmtset BASEMAP_FRAME_RGB +0/0/255;     awk '{print $1, $5}'     $prj.eros | \
 	psxy -JX -R$xmin/$xmax/0/1000 -W4/0/0/255 -O -K -B/200:"water disch.(m@+3@+/s)":E >> $ps

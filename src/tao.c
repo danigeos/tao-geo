@@ -956,7 +956,7 @@ int interpr_command_line_opts(int argc, char **argv)
 						density = atof(strtok(prm, "/"));
 						velocity = atof(strtok(NULL, "/"));
 						for (int iu=0; iu<numBlocks; iu++) {
-							if (Blocks[iu].density==-density || iu==density) {
+							if (Blocks[iu].density==-density || iu==density) {
 								Blocks[iu].vel=velocity*1e3/Matosec;
 								Blocks[iu].last_vel_time=Time-dt;/*!!*/
 								Blocks[iu].last_shift=0;
