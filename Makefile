@@ -49,5 +49,5 @@ upload:
 	#for initialization:  
 	#git init; git remote add tao https://github.com/danigeos/tao-geo; git add Makefile README config.mk bin demo doc include lib script src; git rm --cached doc/first_compilation.txt
 	git commit -a 
-	git push -u -f tao master
+	git push tao master
 
