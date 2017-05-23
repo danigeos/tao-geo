@@ -1,7 +1,6 @@
 /*
-	GENERAL  SUBS  LIBRARY  FOR  tao.c
-	Most input/output routines are here.
-	See copyright and other information in tao/doc/ 
+	GENERAL FUNCTION LIBRARY FOR tao.c
+	More info in tao/doc/ 
 */
 
 

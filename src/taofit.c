@@ -1,6 +1,4 @@
 /*
-
-
 	Program to find the pair of moment & shear force boundary conditions
 	which best fit the observed bathymetry of a trench using tao software. 
 	Evaluates the x-y resulting points from projectname.pfl tao output file
@@ -17,7 +15,6 @@
 	the boundary force passed to tao.
 
 				Daniel Garcia-Castellanos, I-1996
-
 */
 
 #define SYNTAX	fprintf(stderr, "Syntax:\t%s  <project_name> [-a<f|g>] [-m<moment>] [-p<tecforce>] [-s<shear>] [-M<d_mo> [-S<d_sh>] [-W]\n", *argv);
