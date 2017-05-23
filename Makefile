@@ -16,9 +16,10 @@ include config.mk
 
 all:
 	(cd src; make)
-	@echo; echo; echo Compilation done.
-	@(echo "ADD ./tao/bin/ AND ./tao/script/ TO YOUR PATH.")
-	@(echo "ADD  setenv tao_dir `pwd`  TO YOUR VARIABLES.")
+	@echo; echo; echo Compilation succeeded!
+	@(echo "ADD TO YOUR PATH: `pwd`/bin/  AND  `pwd`/script/")
+	@(echo "ADD IN .cshrc:    setenv tao_dir `pwd` ")
+	@(echo "ADD IN .bashrc:   export tao_dir=`pwd` ")
 
 clean_for_tar:
 	(cd src; make clean)

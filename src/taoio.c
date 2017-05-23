@@ -1,6 +1,5 @@
 /*
-INPUT/OUTPUT  SUBROUTINES  FOR  tao.c
-Daniel Garcia-Castellanos
+INPUT/OUTPUT  FUNCTIONS  FOR  tao.c
 */
 
 int read_file_horiz_record_time()
@@ -1092,6 +1091,4 @@ int write_file_resume()
 	fclose(file);
 	return(1);
 }
-
-
 

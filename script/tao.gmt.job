@@ -1,14 +1,14 @@
 #!/bin/csh -f
 ##############################################################################
-#	Script for tAo graphic output with GMT 4.0
+#	Script for tAo graphic output using GMT 4
 #	Daniel Garcia-Castellanos
 ##############################################################################
-#Syntax:  tao.gmt.job <prjname> <xmin> <xmax> <ymin> <ymax> <switch_sea> 
-#			<switch_rheo>
+#Syntax:  tao.gmt.job <prjname> [<xmin> <xmax> <ymin> <ymax> <switch_sea> 
+#			<switch_rheo>]
 ##############################################################################
 #Note that:
-# -This script uses bc unix command as a calculator. 
-# -<xmin> <xmax> must be inside x range defined in .PRM parameters file.
+# -This script uses the bc unix command as a calculator. 
+# -<xmin> <xmax> must be inside x range defined in the .PRM parameters file.
 ##############################################################################
 
 #Setting up variables:

@@ -43,7 +43,6 @@ set Timefinal 	= `awk '{if ($1=="Timefinal") {print $2; exit;}}' $prj.PRM`
 set switch_sea	= `awk '{if ($1 == "switch_sea")  {if (g=="") {g=1;exit}}}END{print g}' g=$6 $prj.PRM`
 set switch_rheo	= `awk '{if ($1 == "isost_model") {if ($2<3) g=0; else g=1; exit}}END{print g}' g=$7 $prj.PRM`
 set hydro_model	= `awk '{if ($1 == "hydro_model") {if (g=="") {g=1;exit}}}END{print g}' $prj.PRM`
-echo hydro_model=$hydro_model
 
 set numcols 	= `awk '(NR==4) {print NF; exit;}' $prj.pfl`
 set dens 	= `awk '(NR==2) {print $0; exit;}' $prj.pfl`
