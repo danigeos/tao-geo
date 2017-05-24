@@ -86,19 +86,19 @@
 	'-V' Means verbose mode with additional run-time prints. Add '<level>'
 		for additional i/o information. See doc/template.PRM file for
 		level specification.
-	'-v' Changes velocity to <vel> for block number <num)> or, if 
-		<num><0, to all blocks with density -<num> (use with '-F').
+	'-v' Changes velocity to <vel> for block number <num> or, if 
+		<num><0, to all blocks with density=-<num> (use with '-F').
 
 
   Examples:
-	  For examples see ./tao/demo/README file and subdirectories therein.
+	  For examples see ./tao/demo/ and subdirectories therein.
 
   Other important sources of information on the use and characteristics of tAo
   are found in the default parameter file ./tao/doc/template.PRM
 
   Signals meaning during execution:
   	  a: Gravity anomaly is being calculated
-  	  c: External load (types: F,H,I,M,R,S,T, see 'inputs', section 4)
+  	  c: External load (types: F,H,I,M,R,S,T, see 'Inputs' section)
   	  d: Load was defined
   	  e: Elastic flexure
   	  Rh:Depth-dependent (multilayered) plate moment-curvature

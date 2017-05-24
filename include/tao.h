@@ -108,36 +108,37 @@ int yield_stress_envelope (
 );
 
 /*Function prototypes in libreria.c:*/
-float 	**alloc_matrix  	(int num_fil, int num_col);
-double 	**alloc_matrix_dbl 	(int num_fil, int num_col);
-float 	geoidanompolig 		(float *, float *, int, float, float, float);
-float 	gravanompolig		(float *, float *, int, float, float, float);
+float **alloc_matrix  	(int num_fil, int num_col);
+double **alloc_matrix_dbl 	(int num_fil, int num_col);
+float geoidanompolig 		(float *, float *, int, float, float, float);
+float gravanompolig		(float *, float *, int, float, float, float);
 int	readinterplin		(FILE *, float *, int, float, float);
-float 	interpol_in_xy_data 	(float *x_array, float *y_array, int n_x, float x);
+float interpol_in_xy_data 	(float *x_array, float *y_array, int n_x, float x);
 
 /*Declaration of functions in taosp.c*/
-int 	Surface_Transport (float *topo, float dt, float dt_eros, int erosed_model);
-int 	Fluvial_Transport (float *topo, float dt, float dt_eros, int erosed_model);
+int Surface_Transport (float *topo, float dt, float dt_eros, int erosed_model);
+int Fluvial_Transport (float *topo, float dt, float dt_eros, int erosed_model);
 
-int 	Add_Node_To_Lake (int row, int i_lake);
-int 	Add_Saddle_To_Lake (int row_sd, int row_tr, int i_lake);
-int 	Attempt_Delete_Node_From_Lake (int row);
-int 	constant_rate_eros (float *topo, float Keroseol, float Ksedim, float sea_level, BOOL switch_sea, 	float dt, float dt_eros, float Time, 	int n_eros_level_input_points, float **var_eros_level, 	float *eros_level);
-int 	Deallocate_Lake (int i_lake);
-int 	Define_Lake (int i_lake);
-int 	Delete_Node_From_Lake (int row);
-int 	Diffusive_Eros_1D (float *topo, float Kerosdif, float dt, float dt_eros); 
-int 	Divide_Lake (int row);
-int 	Erode (double d_mass, int row);
-float 	Lake_Input_Discharge (int ilake);
-int 	Lake_Node_Number(int row);
-int 	Lake_Saddle_Number (int row);
-int 	New_Lake ();
-int 	Repare_Blocks();
-int 	Sediment (double d_mass, int row);
-int 	tectload();
-int 	Unify_Lakes (int i_lake, int i_lake_to_delete);
-int 	Landslide_Transport (float critical_slope, float dt, float dt_eros);
+int Add_Node_To_Lake (int row, int i_lake);
+int Add_Saddle_To_Lake (int row_sd, int row_tr, int i_lake);
+int Attempt_Delete_Node_From_Lake (int row);
+int constant_rate_eros (float *topo, float Keroseol, float Ksedim, float sea_level, BOOL switch_sea, 	float dt, float dt_eros, float Time, 	int n_eros_level_input_points, float **var_eros_level, 	float *eros_level);
+int Deallocate_Lake (int i_lake);
+int Define_Lake (int i_lake);
+int Delete_Node_From_Lake (int row);
+int Diffusive_Eros_1D (float *topo, float Kerosdif, float dt, float dt_eros); 
+int Divide_Lake (int row);
+int Erode (double d_mass, int row);
+float Lake_Input_Discharge (int ilake);
+int	Lake_Node_Number(int row);
+int	Lake_Saddle_Number (int row);
+int move_Blocks();
+int	New_Lake ();
+int	Repare_Blocks();
+int	Sediment (double d_mass, int row);
+int	tectload();
+int	Unify_Lakes (int i_lake, int i_lake_to_delete);
+int	Landslide_Transport (float critical_slope, float dt, float dt_eros);
 
 
 
