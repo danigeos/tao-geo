@@ -1,9 +1,9 @@
 /*******************************************************************************
-***********			tAo main source file			********
+***********						tAo main source file					********
 ********************************************************************************
 	For compilation and installation check the file ../tao/README.
 	Main author: 2012 Daniel Garcia-Castellanos. 
-	Check copyright details and other information in ../tao/doc/ 
+	Copyright details and other information in ../tao/doc/ 
 *******************************************************************************/
 
 
@@ -669,7 +669,7 @@ int inputs(int argc, char **argv)
 		}
 		else {
 			if (run_type != 2) run_type=10;
-			strcpy(projectname, argv[iarg]);
+			if (strlen(projectname)<1) strcpy(projectname, argv[iarg]);
 		}
 	}
 
@@ -693,7 +693,7 @@ int inputs(int argc, char **argv)
 	switch (run_type)
 	{
 		case 0:
-			fprintf(stdout, "\n\n\t*** END of program *** \n\n\n\n");
+			fprintf(stdout, "\n\n\t*** END of run *** \n\n\n\n");
 			exit(0);
 		case 1:
 			interpr_command_line_opts(argc, argv);
@@ -773,12 +773,12 @@ int inputs(int argc, char **argv)
 
 
 	/*Test of incompatibilities between parameters*/
-	if (densenv && switch_sea)		{ switch_sea=NO; 	fprintf(stdout, "\nWarning: Sea not possible when densenv<>0. Sea switch turned off.") ; }
-	if (!erosed_model && (Ksedim || Kerosdif || Keroseol))	{ Ksedim=Kerosdif=Keroseol=0 ; if (verbose_level>=1) fprintf(stdout, "\nWarning: Erosion-sedimentation unswitched. Parameters Ksedim, Kerosdif & Keroseol have no effect.") ; }
-	if (!switch_sea && Ksedim)		{ Ksedim=0;	fprintf(stdout, "\nWarning: Sea presence isn't switched, Ksedim has no effect.");}
+	if (densenv && switch_sea)		{ switch_sea=NO; 	PRINT_WARNING("Sea not possible when densenv<>0. Sea switch turned off.") ; }
+	if (!erosed_model && (Ksedim || Kerosdif || Keroseol))	{ Ksedim=Kerosdif=Keroseol=0 ; if (verbose_level>=1) PRINT_WARNING("Erosion-sedimentation unswitched. Parameters Ksedim, Kerosdif & Keroseol have no effect.") ; }
+	if (!switch_sea && Ksedim)		{ Ksedim=0;			PRINT_WARNING("Warning: Sea presence isn't switched, Ksedim has no effect.");}
 	if (!erosed_model)  			{ Ksedim=Kerosdif=Keroseol=0 ; }
-	if (!hydro_model && erosed_model>1)  	{ erosed_model=1 ; fprintf(stdout, "\nWarning: hydro_model is 0; erosed_model is switched to 1 accordingly.") ; }
-	if (switch_ps && !switch_write_file)	{ if (verbose_level>=3)	fprintf(stdout, "\nWarning: switch_write_file needed to make a postscript. Postscript may not be done.") ; }
+	if (!hydro_model && erosed_model>1)  	{ erosed_model=1 ; PRINT_WARNING("Warning: hydro_model is 0; erosed_model is switched to 1 accordingly.") ; }
+	if (switch_ps && !switch_write_file)	{ if (verbose_level>=3)	PRINT_WARNING("Warning: switch_write_file needed to make a postscript. Postscript may not be done.") ; }
 	if (isost_model!=2)  			{ tau=0; }
 	if (tau<=0 && isost_model==2)  		{ isost_model=1; }
 	if (boundary_conds == 0)		{ appmoment = 0; }
@@ -928,7 +928,6 @@ int interpr_command_line_opts(int argc, char **argv)
 						Blocks[iblock+nblocks]=Block_aux;
 						PRINT_INFO("%d = %d", iblock+nblocks, numBlocks-1);
 					}
-					break;
 					break;
 				case 's':
 					vert_force = value;
