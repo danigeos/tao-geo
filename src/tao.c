@@ -668,7 +668,7 @@ int inputs(int argc, char **argv)
 		}
 		else {
 			if (run_type != 2) run_type=10;
-			if (strlen(projectname)<200) strcpy(projectname, argv[iarg]);
+			if (strlen(projectname)<1) strcpy(projectname, argv[iarg]);
 		}
 	}
 
