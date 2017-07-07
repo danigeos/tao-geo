@@ -1,6 +1,4 @@
-********************************************************************************
-*************	   DOCUMENTATION OF  tAo   (file tao.info.txt)	****************
-********************************************************************************
+*************         tAo DOCUMENTATION (file tao.info.txt)        ****************
 
 	INDEX
 1.- Syntax and use of tAo
@@ -12,12 +10,14 @@
 7.- The conceptual model
 8.- Algorithms and numerical methods
 9.- Improvements in successive versions
-10.- Model limitations
-11.- Credit
+10.- Version history
+11.- Model limitations
 12.- FAQ - Frequently Asked Questions
 13.- Glossary
-14.- Acknowledgements
-15.- References
+14.- Authorship, Credits
+15.- Acknowledgements
+16.- Disclaimer
+17.- References
 
 
 1.- SYNTAX AND USE of tAo
@@ -187,34 +187,52 @@
     accounting for the depth-dependent yield stress envelope (YSE) (Lynch &
     Morgan, 1987).
 
-  You may want to visit https://sites.google.com/site/daniggcc/software/tao
-
-  tAo is a freeware program that you can use for teaching and research purposes
-  without requiring our license. Neither help on its use nor technical support
-  are guaranteed. Commercial use requires approval from the author.
-  If you are interested in using the program, please send me an e-mail
-  containing you e-mail address, institution, and name to
-  danielgc@ictja.csic.es
-
+  Examples and publications here: https://sites.google.com/site/daniggcc/software/tao
 
 
 3.- PROGRAM STRUCTURE AND COMPILATION
   tAo is written in C under Linux.
-  For instalation, please read the 'tao/README' file.
-  In case of troubles read the FAQ below in this document.
-  Requires GMT for graphic output. Also install either graphicsmagick or
-  imagemagick for -Pc option.
+  Check the file ./tao/README for details on compilation.
+  The main source code file is src/tao.c, description of variables use 
+  in file include/tao.h. 
+  Check the FAQ section below in this document.
+  tAo requires GMT4 to generate graphic output. 
 
 
+4.- USER GUIDE - HOW TO SETUP YOUR OWN PROJECT
+  See the examples in tao/demo!
+  Experiment with the shell scripts in tao/scripts to see what plots can
+  be made from the output files.
+  tAo can be used as a quick flexural calculator using option -Q.
+  Otherwise, tAo normally reads a set of input files that form a
+  'project'. Input files start with a common project name and have an
+  uppercase extension and are explained below, in section 'INPUTS'.  The
+  main input file is the *.PRM file, which contains the main parameters
+  of the project.  
+  The program then enters a time loop. At each time step the tectonic motion,
+  hydrology, erosion, and isostasy, are calculated. 
+  Signal meaning during execution:
+	l    calculating new load.
+	b    defining new Block.
+	e/s  calculating erosion/sedimentation.
+	ft   calculating fluvial transport.
+	e    calculating elastic deflection.
+	v    calculating viscoelastic deflection.
+  By the end of the run tao invoques a shell script to produce the 
+  postscript image of the results, using the system call
+  'tao.gmt.job projectname'.
+  This script tao.gmt.job is searched in your path, so if you prefer any
+  other of the figure scripts available in tao/script,  just link it or
+  copy it to your project directory as 'tao.gmt.job'.
 
-4.- INPUTS
-    Input files are named with an uppercase extension. Inputs are read 
-  sequentially from: (a) parameters file 'project.PRM', (b) command line 
-  options, (c) other input files named 'project.*' (files starting with the 
-  project name with an uppercase extension), and (d) from the 'project.all' 
-  file when -F option is used.  (b) values override (a);  (c) overrides (a) and
-  (b);  (d) overrides all. Default units are I.S. 
 
+5.- INPUTS
+	Input files are named with an uppercase extension. Inputs are read 
+	sequentially from: (a) parameters file 'project.PRM', (b) command line 
+	options, (c) other input files named 'project.*' (files starting with the 
+	project name with an uppercase extension), and (d) from the 'project.all' 
+	file when -F option is used.  (b) values override (a);  (c) overrides (a) and
+	(b);  (d) overrides all. Default units are I.S. 
 
   'project.PRM' 
 	Parameters file:
@@ -238,7 +256,6 @@
 	Myr, velocity is 5 km/Myr and cell size is 10 km, the block will move 
 	only once every 4 time steps. So, depending on the grid cell size, the 
 	motion will become more or less abrupt. 
-
 
   'project.EET'
 	Elastic thikness file (optional, defaults to default_Te parameter, 
@@ -330,7 +347,7 @@
 
 
 
-5.- OUTPUTS
+6.- OUTPUTS
     Ouputs are wroten to files that start with the project name with an
   lowercase extension. Please be careful because all these files are
   removed when running again the same project with tAo. Note that x units
@@ -368,7 +385,7 @@
 
 
 
-6.- GRAPHIC OUTPUT
+7.- GRAPHIC OUTPUT
   'project.ps'
     A multipage postscript produced with GMT 4.0 software (Wessel & Smith,
     1995, http://www.soest.hawaii.edu/soest/gmt.html) (using a unix script:
@@ -388,7 +405,7 @@
     tao/script directory. Do experiment.
 
 
-7.- THE CONCEPTUAL MODEL
+8.- THE CONCEPTUAL MODEL
     Take a look at Garcia-Castellanos et al., 1997, 2007.
     The conceptual model assumes the classical thin plate approach (Turcotte &
   Schubert, 1982) with either pure elastic (Turcotte & Schubert, 1982),
@@ -418,7 +435,7 @@
 
 
 
-8.- ALGORITHMS AND NUMERICAL METHODS
+9.- ALGORITHMS AND NUMERICAL METHODS
   Finite differences are used to solve the spatial partial differential
     equations as well as the time-dependent processes.
   Matrices arising from the diferential equations are solved using a classical
@@ -429,7 +446,7 @@
 
 
 
-9.- VERSION HISTORY
+10.- VERSION HISTORY
   v1.0 (1993) Proto-model or numerical algorithm to calculate thin plate
     elastic and viscoelastic flexure.
   v2.0 (1994) Inclusion of moving loads and surface processes. Gravity anomaly
@@ -476,10 +493,13 @@
     Erosion boundary conditions 0 and 1 are swapped.
     -v command line option to change velocity of Blocks based on density.
     Changed UNIT1D and Units structure to BLOCK1D and Blocks, to avoid confusion 
-	with input files (UNITS).
+	with input files (UNITS). 
+  tAo_
+	Gradual sediment compaction now implemented (see
+	new parameter compact_depth). 
   
 
-10.- MODEL LIMITATIONS
+11.- MODEL LIMITATIONS
       Blocks move only an entire number of nodes at each time step. Block
     deformation during motions follows a vertical shear approach
     (preserving vertical thickness). Rotation of Blocks is not allowed.
@@ -488,35 +508,11 @@
     introduced in the model. Subduction is not considered either. Different
     velocities of shortening for each detachment fault are (still) not
     implemented.
-      Gradual sediment compaction is not considered, but this shouldn't affect the
-    sediment onlap/offlap geometry in the external side of the foreland
+      Gradual sediment compaction is not considered, but this shouldn't affect 
+    the sediment onlap/offlap geometry in the external side of the foreland
     basin, but only the thickness of the Blocks.
       Grain size or sediment facies distribution of predicted deposits are
     not differentiated.
-
-
-11.- CREDITS
-    tAo is a freeware program (except for commercial purposes) developed
-  between Sept. 1993 and Jan. 2007 by Daniel Garcia-Castellanos.
-
-    Details on copyright are in the tao/doc/ directory.
-
-    Please, contact the author if you are interested in using the program.
-
-    When showing results of this program you, cite of of the following
-  references:
-    Garcia-Castellanos, D., M. Fernàndez & M. Torné, 1997. "Numerical modeling
-  of foreland basin formation: a program relating thrusting, flexure, sediment
-  geometry and lithosphere rheology". Computers & Geosciences, 23 (9),
-  993-1003.
-    Garcia-Castellanos, D., 2007. "The role of climate in high plateau
-  formation. Insights from numerical experiments". EPSL, 257, 372-390,
-  doi:10.1016/j.epsl.2007.02.039
-
-    You use this software in the understanding that it may contain mistakes. 
-  I cannot guarantee that I'll have the time to help you in solving possible
-  problems.
-
 
 
 12.- FAQ - Frequently Asked Questions
@@ -619,7 +615,25 @@
 	that can occur at each depth.
 		
 
-14.- ACKNOWLEDGEMENTS
+14.- AUTHORSHIP, CREDITS
+    tAo is a freeware program (except for commercial purposes) developed
+ 	between since Sept. 1993 by Daniel Garcia-Castellanos, with small 
+ 	contributions from others, cited in the code and the GitHub repository.
+
+    Details on copyright are in the tao/doc/LICENSE.txt directory.
+    Please, contact the author if you are interested in using the program.
+
+    When showing results of this program you, cite of of the following
+ 	references:
+
+	Garcia-Castellanos, D., M. Fernàndez & M. Torné, 1997. "Numerical modeling of foreland basin formation: a program relating thrusting, flexure, sediment	geometry and lithosphere rheology". Computers & Geosciences, 23 (9), 993-1003.
+
+	Garcia-Castellanos, D., 2007. "The role of climate in high plateau formation. Insights from numerical experiments". EPSL, 257, 372-390, doi:10.1016/j.epsl.2007.02.039
+
+ 	Please, check also the disclaimers section.
+
+
+15.- ACKNOWLEDGEMENTS
 	The present code has been developed mainly in the Instituto de Ciencias
 	de la Tierra Jaume Almera (Barcelona) and the Vrije Universiteit
 	(Amsterdam), although stages at the Dalhousie University (Halifax,
@@ -629,8 +643,10 @@
 	to:  
 	J.M. Gaspar-Escribano, Brian Shiro, Erica Emri.
 
+16.- DISCLAIMER 
+	tAo is a tool developed for my own research with no professional programmers involved, the code is thus not so user-friendly, and I cannot always guarantee my assistance in case of  trouble. See other warnings in the license file tao/doc/LICENSE.txt.
 
-15.- REFERENCES:
+17.- REFERENCES
   Works and people referred in this document and the source code (incomplete):
   (*) indicates works where tAo has been used. 
   Airy, G.B., 1855. On the computation of the effect of the atraction of
@@ -716,10 +732,7 @@
 	  evolution of foreland basins. Basin Research, 4, 169-178.
   Wessel, P., & W. H. F. Smith, 1995. New version of the Generic Mapping Tools
 	  released. EOS Trans. Amer. Geophys. U., 76, pp. 329.
-
-
-More information in the header of the main source code file 'tao.c'. Descrip-
-tion of variables meaning is in file tao.h.
+  Willett, 2010. Erosion on a line. Tectonophysics.
 
 
  	      "What Nature imparts to man  is called  human

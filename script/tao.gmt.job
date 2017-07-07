@@ -22,7 +22,7 @@ source $tao_dir/script/tao.common.gmt.job
 
 #
 #MAIN GRAPHIC VERTICALLY EXAGGERATED:
-set vertical_exag = 4
+set vertical_exag = 15
 set graph_width = 15
 #set ymincropkm = -17
 #set ymincrop 	= `echo $ymincropkm \* 1000 | bc -l` 

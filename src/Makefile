@@ -69,8 +69,8 @@ taofit : libreria.o
 	chmod a+x $(BIN)/taofit
 
 notify :
-	@if [ -f ../doc/first_compilation.txt ]; \
-	then echo ; else echo First compilation of tAo in `hostname` by `whoami`>../doc/first_compilation.txt; pwd>>../doc/first_compilation.txt; \
-		date>>../doc/first_compilation.txt ; echo>> ../doc/first_compilation.txt; finger `whoami` >> ../doc/first_compilation.txt; mail danielgc@ija.csic.es<../doc/first_compilation.txt; \
+	@if [ -f ../doc/.first_compilation.txt ]; \
+	then echo ; else echo First compilation of tAo in `hostname` by `whoami`>../doc/.first_compilation.txt; pwd>>../doc/.first_compilation.txt; \
+		date>>../doc/.first_compilation.txt ; echo>> ../doc/.first_compilation.txt; finger `whoami` >> ../doc/.first_compilation.txt; mail danielgc@ija.csic.es<../doc/.first_compilation.txt; \
 	fi
 

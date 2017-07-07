@@ -79,6 +79,11 @@ details.
 	Command:	example_F.job
 
 
+*example_G:
+	Simple setup to show the compaction of sediment 
+	tao example_G -qsed_porosity=.5 -qcompact_depth=2000 -T5e3 
+
+
 *Example run incorporating surface transport:
 	Go into doc/surface_transport directory and run:
 	Command:	tao margin

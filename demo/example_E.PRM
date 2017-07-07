@@ -98,7 +98,7 @@ i/o switches:
 switch_files	1	For extra file output.
 switch_ps	1	For postscript output.
 switch_output	0	
-verbose_level	4	For more runtime information.
+verbose_level	2	For more runtime information.
 
 
 (END OF PARAMETERS FILE)

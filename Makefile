@@ -33,7 +33,7 @@ vers: 	clean_for_tar
 	rm -R -f tao tao_version
 	mkdir tao tao/bin
 	cp -R -L Makefile config.mk README demo doc include lib script src   tao
-	rm -f tao/doc/first_compilation.txt #tao/lib/sistbanda* version_tmp/lib/surf_proc* version_tmp/lib/thin_sheet*
+	rm -f tao/doc/.first_compilation.txt #tao/lib/sistbanda* version_tmp/lib/surf_proc* version_tmp/lib/thin_sheet*
 	tar -chf tao.tar tao
 	gzip -f tao.tar
 	echo "UPLOADING to github."
@@ -48,7 +48,7 @@ upload_version_starting_from_scratch:
 
 upload:
 	#for initialization:  
-	#git init; git remote add tao https://github.com/danigeos/tao-geo; git add Makefile README config.mk bin demo doc include lib script src; git rm --cached doc/first_compilation.txt
+	#git init; git remote add tao https://github.com/danigeos/tao-geo; git add Makefile README config.mk bin demo doc include lib script src; git rm --cached doc/.first_compilation.txt
 	git commit -a 
 	git push tao master
 
