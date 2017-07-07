@@ -269,6 +269,7 @@ int read_file_resume(char *filename)
 	fread(&zini, 		sizeof(float),		1, 	file);
 	fread(&dt_record, 	sizeof(float),		1, 	file);
 	fread(&sed_porosity, 	sizeof(float),		1, 	file);
+	fread(&compact_depth, 	sizeof(float),		1, 	file);
 	fread(&Kerosdif, 	sizeof(float),		1, 	file);
 	fread(&last_time_file_time, 	sizeof(float),		1, 	file);
 	fread(&random_topo, 	sizeof(float),		1, 	file);
@@ -873,8 +874,6 @@ int write_file_time (float *w, float *topo)
 
 int write_file_Blocks()
 {
-	int 	i, j, i_hori;
-	float	x, height_aux=0;
 	FILE 	*file ;
 
 	/*PRINTS A FILE WITH HORIZON ALTITUDES IN COLUMNS*/
@@ -883,21 +882,29 @@ int write_file_Blocks()
 
 	fprintf(file, "#tAo output file of project '%s'. t= %.2f My", projectname, Time/Matosec);
 	fprintf(file, "\n#Densities:\t%8.0f", denscrust);
-	for (i=0; i<numBlocks; i++) fprintf(file, "\t%8.0f", Blocks[i].density);
+	for (int i=0; i<numBlocks; i++) fprintf(file, "\t%8.0f", Blocks[i].density);
 	if (erosed_model>=2) fprintf(file, "\t%8.0f", denswater);
 	fprintf(file, "\n#x(km),Ages->\t%8.2f", Timeini/Matosec);
-	for (i=0; i<numBlocks; i++) fprintf(file, "\t%8.2f", Blocks[i].age/Matosec);
+	for (int i=0; i<numBlocks; i++) fprintf(file, "\t%8.2f", Blocks[i].age/Matosec);
 	if (erosed_model>=2) fprintf(file, "\t   water");
-	for (i=0; i<Nx; i++) {
+	for (int i=0; i<Nx; i++) {
+		float x;
 		x=x0+dx*i; 
 		if (x > xmin-dx && x < xmax+dx) {
-			fprintf(file, "\n%8.2f", (x0+i*dx)/1000);
-			for (j=0; j<=numBlocks; j++) {
-				for (height_aux=-w[i]+Blocks_base[i], i_hori=1; i_hori<=j; height_aux+=Blocks[i_hori-1].thick[i], i_hori++);
-				fprintf(file, "\t%8.1f",  height_aux);
+			float thickness_above=0, top_block;
+			fprintf(file, "\n%8.2f", x/1000);
+			for (int i_Block=0; i_Block<numBlocks; i_Block++) 
+				thickness_above += Blocks[i_Block].thick[i];
+			top_block = Blocks_base[i]-w[i];
+			fprintf(file, "\t%8.1f",  top_block);
+			for (int i_Block=0; i_Block<numBlocks; i_Block++) {
+				thickness_above -= Blocks[i_Block].thick[i];
+				top_block += Blocks[i_Block].thick[i];
+				if (Blocks[i_Block].density==denssedim) top_block -= compaction(sed_porosity, compact_depth, thickness_above, thickness_above+Blocks[i_Block].thick[i]);
+				fprintf(file, "\t%8.1f",  top_block);
 			}
 			if (erosed_model>=2) {
-				float top_water=height_aux;
+				float top_water=top_block;
 				if (drainage[i].lake) top_water = Lake[drainage[i].lake].alt;
 				fprintf(file, "\t%8.1f", top_water);
 			}
@@ -981,6 +988,7 @@ int write_file_resume()
 	fwrite(&zini, 		sizeof(float),		1, 	file);
 	fwrite(&dt_record, 	sizeof(float),		1, 	file);
 	fwrite(&sed_porosity, 	sizeof(float),		1, 	file);
+	fwrite(&compact_depth, 	sizeof(float),		1, 	file);
 	fwrite(&Kerosdif, 	sizeof(float),		1, 	file);
 	fwrite(&last_time_file_time, 	sizeof(float),		1, 	file);
 	fwrite(&random_topo, 	sizeof(float),		1, 	file);

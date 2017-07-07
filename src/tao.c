@@ -2,18 +2,19 @@
 ***********						tAo main source file					********
 ********************************************************************************
 	For compilation and installation check the file ../tao/README.
-	Main author: 2012 Daniel Garcia-Castellanos. 
+	Main author since 1995 Daniel Garcia-Castellanos, danielgc@ictja.csic.es. 
 	Copyright details and other information in ../tao/doc/ 
-*******************************************************************************/
+********************************************************************************
 
+Memory debugging with: 
+valgrind --dsymutil=yes --track-origins=yes --tool=memcheck --leak-check=full `which tisc` linear_range -tf0
 
-/*
 	COMMENTS (programmer's agenda)
-	-Incorporate sediment compaction (easy in calculate_topo).
 	-Track rock particles in thrusts and sediments. 
-	-Implement grain size in transport.  This to calculate grain size distribution in basin, and as a first step for the next point once transitory flow is implemented. 
+	-Implement grain size in transport. This to calculate grain size distribution in sediment blocks, and as a first step for the next point once transitory flow is implemented. 
 	-Implement sediment load effect on erosion (Sklar). Intersting for acceleration of erosion during lake overtopping.
 	-Implement transitory water flow.
+	-DONE. Implement sediment compaction (easy in calculate_topo and when writting the pfl file).
 */
 
 
@@ -65,16 +66,14 @@ int main(int argc, char **argv)
 
 
 
-/*******************************************************/
-/******      SUBROUTINES  IN  RANDOM  ORDER     ********/
-/*******************************************************/
+/**************************************************/
+/****	  SUBROUTINES  IN  RANDOM  ORDER	 *****/
+/**************************************************/
 
 
 
 int tectload()
 {
-	BOOL	load_changes=NO;
-
 	/*
 	CALCULATES NEW LOAD INCREMENT FROM UNIT FILES, Returns 1 if elastic
 	flexure must be done (i.e, if changes in load  occurred), 0 otherwise.
@@ -149,16 +148,16 @@ int Elastoplastic_Deflection()
 	if (isost_model>0 && (load_changes || (Time==Timeini && (horz_force || vert_force || appmoment)))) {
 	  fprintf(stdout, " e");	  fflush(stdout);
 	  if (isost_model<3) {
-    	    if (!Te_default) {
-    		/*LOCAL ISOSTASY*/
-    		float Krest;
-    		for (i=0; i<Nx; i++) {
-    		    GET_KREST(Krest, q, i)
-    		    Dw[i] = Dq[i] / Krest;
-    		}
-    	    }
-    	    else {
-    	        /*REGIONAL ISOSTASY*/
+			if (!Te_default) {
+			/*LOCAL ISOSTASY*/
+			float Krest;
+			for (i=0; i<Nx; i++) {
+				GET_KREST(Krest, q, i)
+				Dw[i] = Dq[i] / Krest;
+			}
+			}
+			else {
+				/*REGIONAL ISOSTASY*/
 		/*Pure Elastic Flexure without rheological inputs*/
 		float 	*moment;
 		double	**A,		/*Linear System Matrix (diagonal terms)*/
@@ -182,7 +181,7 @@ int Elastoplastic_Deflection()
 		if (isost_model!=2) flexural_stats(moment);
 		free(moment);
 
-	    }
+		}
 	  }
 	  else {
 		/*Elasto-plastic flexure with EET rheological calculation*/
@@ -200,8 +199,8 @@ int Elastoplastic_Deflection()
 
 	/*Adds all this load to the total load array*/
 	for (int i=0; i<Nx; i++)  {
-	    q[i] += Dq[i];
-	    if (Dq[i]) load_changes = YES;
+		q[i] += Dq[i];
+		if (Dq[i]) load_changes = YES;
 	}
 	if (load_changes) fprintf(stdout, " d");
 	/*Resets deflection and load arrays*/
@@ -231,24 +230,24 @@ int surface_processes()
 
 	/*Creates a new sediment Block if necessary*/
 	if (erosed_model) {
-	    int i;
-	    float TimelastBlock=-9999*Matosec;
-	    for (int i=0; i<Nx; i++) eros_now[i]=0;
-	    for (int i=0; i<numBlocks; i++) 
+		int i;
+		float TimelastBlock=-9999*Matosec;
+		for (int i=0; i<Nx; i++) eros_now[i]=0;
+		for (int i=0; i<numBlocks; i++) 
 		if (Blocks[i].age > TimelastBlock && Blocks[i].density==denssedim) TimelastBlock = Blocks[i].age;
-	    for (int i=0; i<n_record_times; i++) 
+		for (int i=0; i<n_record_times; i++) 
 		if (Time>horiz_record_time[i]-dt/2 && Time<=horiz_record_time[i]+dt/2) 
 			switch_horiz_record=YES;
-	    if (Time == Timeini 
-	      || ((Time-TimelastBlock)>(dt_record-.001*dt) && dt_record && !n_record_times)
-	      || switch_horiz_record) {
-		  insert_new_Block(numBlocks);
-		  Blocks[numBlocks-1].type = 'S' ;
-		  Blocks[numBlocks-1].density = denssedim ;
-		  Blocks[numBlocks-1].erodibility = erodibility_sed ;
-		  Blocks[numBlocks-1].detr_ratio = calloc(Nx, sizeof(float));
-		  Blocks[numBlocks-1].detr_grsize = calloc(Nx, sizeof(float));
-	    }
+		if (Time == Timeini 
+		  || ((Time-TimelastBlock)>(dt_record-.001*dt) && dt_record && !n_record_times)
+		  || switch_horiz_record) {
+			insert_new_Block(numBlocks);
+			Blocks[numBlocks-1].type = 'S' ;
+			Blocks[numBlocks-1].density = denssedim ;
+			Blocks[numBlocks-1].erodibility = erodibility_sed ;
+			Blocks[numBlocks-1].detr_ratio = calloc(Nx, sizeof(float));
+			Blocks[numBlocks-1].detr_grsize = calloc(Nx, sizeof(float));
+		}
 	}
 	/*Calculates height at every point*/
 	calculate_topo(topo);
@@ -273,35 +272,35 @@ int surface_processes()
 			"\teros_lvl.: %8.1f m", eros_level);
 
 	if (verbose_level>=1) {
-	    if (erosed_model>1) {
-	    	int i, i_biggest_nosea=0, n_biggest_nosea=0;
-	    	double error_water;
-	    	for (i=1; i<=nlakes; i++) {
-	    	    if (Lake[i].n > n_biggest_nosea) {
-	    		    if (Lake[i].n_sd) {
-	    			if (topo[Lake[i].sd[0]] > sea_level)
-	    			    n_biggest_nosea = Lake[i].n; i_biggest_nosea = i;
-	    		    }
-	    		    else    n_biggest_nosea = Lake[i].n; i_biggest_nosea = i;
-	    	    }
-	    	}
-	    	for (i=1; i<=nlakes; i++) {
-	    	    float vol=0;
-	    	    if (i==i_biggest_nosea || (Lake[i].n>ceil((double) Nx/100) && verbose_level>=3) || verbose_level>=4) {
-	    		PRINT_SUMLINE("lake %d/%d: %6.2f km2 %6.1f km%5.0f m ", 
-				i, nlakes, Lake[i].vol/1e6, Lake[i].n*dx/1e3, Lake[i].alt);
-			/*write the position of the lowest node*/
-	    		if (Lake[i].n) fprintf(stdout, "bott@ %.0f km", (Lake[i].cell[0]*dx+x0)/1e3);
-	    		if (Lake[i].n_sd) {
-	    		    if (topo[Lake[i].sd[0]]>sea_level) {
-	    			 fprintf(stdout, " %d out@ %.0f km %8.2e m3/s", Lake[i].n_sd, (Lake[i].sd[0]*dx+x0)/1e3, drainage[Lake[i].sd[0]].discharge/*Lake_Input_Discharge(i)*/);
-	    		    }
-	    		    else fprintf(stdout, " Sea       %8.2e m3/s", Lake_Input_Discharge(i));
-	    		}
-	    		else     fprintf(stdout, " Endorheic %8.2e m3/s", Lake_Input_Discharge(i));
-	    	    }
-	    	}
-	    }
+		if (erosed_model>1) {
+			int i, i_biggest_nosea=0, n_biggest_nosea=0;
+			double error_water;
+			for (i=1; i<=nlakes; i++) {
+				if (Lake[i].n > n_biggest_nosea) {
+					if (Lake[i].n_sd) {
+					if (topo[Lake[i].sd[0]] > sea_level)
+						n_biggest_nosea = Lake[i].n; i_biggest_nosea = i;
+					}
+					else	n_biggest_nosea = Lake[i].n; i_biggest_nosea = i;
+				}
+			}
+			for (i=1; i<=nlakes; i++) {
+				float vol=0;
+				if (i==i_biggest_nosea || (Lake[i].n>ceil((double) Nx/100) && verbose_level>=3) || verbose_level>=4) {
+				PRINT_SUMLINE("lake %d/%d: %6.2f km2 %6.1f km%5.0f m ", 
+					i, nlakes, Lake[i].vol/1e6, Lake[i].n*dx/1e3, Lake[i].alt);
+				/*write the position of the lowest node*/
+				if (Lake[i].n) fprintf(stdout, "bott@ %.0f km", (Lake[i].cell[0]*dx+x0)/1e3);
+				if (Lake[i].n_sd) {
+					if (topo[Lake[i].sd[0]]>sea_level) {
+					 fprintf(stdout, " %d out@ %.0f km %8.2e m3/s", Lake[i].n_sd, (Lake[i].sd[0]*dx+x0)/1e3, drainage[Lake[i].sd[0]].discharge/*Lake_Input_Discharge(i)*/);
+					}
+					else fprintf(stdout, " Sea	   %8.2e m3/s", Lake_Input_Discharge(i));
+				}
+				else	 fprintf(stdout, " Endorheic %8.2e m3/s", Lake_Input_Discharge(i));
+				}
+			}
+		}
 	}
 	if (verbose_level>=1) {
 		int i, imaxerosion=SIGNAL, imaxsediment=SIGNAL, imaxaltsediment=SIGNAL;
@@ -369,19 +368,19 @@ int flexural_stats (float *moment) {
 				{ momentmin = moment[i];	xmomentmin=x0+dx*i; }
 		}
 		for (i=1; i<Nx-1; i++) {
-		    if (x0+i*dx>=xmin && x0+i*dx<=xmax) {
+			if (x0+i*dx>=xmin && x0+i*dx<=xmax) {
 			if (wmindt>w[i]) {		wmindt=w[i]; 	iwmindt=i; }
 			if (wmaxdt<w[i]) {		wmaxdt=w[i]; 	iwmaxdt=i; }
 			if (dwmindt>Dw[i]) {		dwmindt=Dw[i]; 	idwmindt=i; }
 			if (dwmaxdt<Dw[i]) {		dwmaxdt=Dw[i]; 	idwmaxdt=i; }
 			Warea += w[i]*dx;
 			Dmean += D[i]/Nx;
-		    }
+			}
 		}
-		PRINT_SUMLINE("moment_max.    = %10.3e N  \t@x= %5.1f km", momentmax, xmomentmax/1000);
-		PRINT_SUMLINE("moment_min.    = %10.3e N  \t@x= %5.1f km", momentmin, xmomentmin/1000);
-		PRINT_SUMLINE("shear_max.     = %10.3e N/m\t@x= %5.1f km", shearmax, xshearmax/1000);
-		PRINT_SUMLINE("shear_min.     = %10.3e N/m\t@x= %5.1f km", shearmin, xshearmin/1000);
+		PRINT_SUMLINE("moment_max.	= %10.3e N  \t@x= %5.1f km", momentmax, xmomentmax/1000);
+		PRINT_SUMLINE("moment_min.	= %10.3e N  \t@x= %5.1f km", momentmin, xmomentmin/1000);
+		PRINT_SUMLINE("shear_max.	 = %10.3e N/m\t@x= %5.1f km", shearmax, xshearmax/1000);
+		PRINT_SUMLINE("shear_min.	 = %10.3e N/m\t@x= %5.1f km", shearmin, xshearmin/1000);
 		PRINT_SUMLINE("deflection_max.= %8.1f m   \t@x= %5.1f km", wmaxdt, (x0+iwmaxdt*dx)/1000);
 		PRINT_SUMLINE("deflection_min.= %8.1f m   \t@x= %5.1f km", wmindt, (x0+iwmindt*dx)/1000);
 		PRINT_SUMLINE("defl.vel.max.  = %8.1f m/My\t@x= %5.1f km", dwmaxdt/(dt/Matosec), (x0+idwmaxdt*dx)/1000);
@@ -593,7 +592,7 @@ int gravity_anomaly()
 
 int inputs(int argc, char **argv)
 {
-	int 	i, numrheolayers, iarg, reformat=0 ;
+	int 	reformat=0 ;
 	char 	resume_filename[MAXLENFILE], 
 		command[MAXLENLINE], 
 		load_file_name[MAXLENLINE];
@@ -613,13 +612,13 @@ int inputs(int argc, char **argv)
 	/*Default parameter values are read from ./tao/doc/template.PRM*/
 	sprintf(projectname, "%s/doc/template", TAODIR);
 	success_def_prm = read_file_parameters(0, 0);
+	sprintf(projectname, "");
 
-	for (iarg=1; iarg<argc; iarg++) {
+	for (int iarg=1; iarg<argc; iarg++) {
 		if (argv[iarg][0] == '-') {
-			int ilet;
 			float 	value;
 			char 	prm[MAXLENLINE];
-			for (ilet=2; ilet < strlen(argv[iarg])+2; ilet++) 
+			for (int ilet=2; ilet < strlen(argv[iarg])+2; ilet++) 
 				prm[ilet-2] = argv[iarg][ilet];
 			value=atof(prm);
 			switch (argv[iarg][1]) {
@@ -633,22 +632,22 @@ int inputs(int argc, char **argv)
 					break;
 				case 'h':
 					switch (argv[iarg][2]) {
-					    case 'p':
-					    	fprintf(stderr, "\nFile ./tao/doc/template.PRM (sample parameters file) follows in stdout:\n") ;
+						case 'p':
+							fprintf(stderr, "\nFile ./tao/doc/template.PRM (sample parameters file) follows in stdout:\n") ;
 						sprintf(command, "cat %s/doc/template.PRM", TAODIR);
 						system(command) ;
 						break;
-					    case 'c':
-					    	fprintf(stderr, "\nFile ./tao/doc/template.PRM (sample parameters file) follows in stdout:\n") ;
+						case 'c':
+							fprintf(stderr, "\nFile ./tao/doc/template.PRM (sample parameters file) follows in stdout:\n") ;
 						sprintf(command, "cat %s/doc/template.PRM | %s/script/cleanPRM", TAODIR, TAODIR);
 						system(command) ;
 						break;
-					    case 'u':
-					    	fprintf(stderr, "\nFile ./tao/doc/template.UNIT (sample unit file) follows in stdout:\n") ;
+						case 'u':
+							fprintf(stderr, "\nFile ./tao/doc/template.UNIT (sample unit file) follows in stdout:\n") ;
 						sprintf(command, "cat %s/doc/template.UNIT", TAODIR);
 						system(command) ;
 						break;
-					    default:
+						default:
 						fprintf(stderr, "\nFile ./tao/doc/tao.info.txt follows:\n") ;
 						sprintf(command, "more %s/doc/tao.info.txt", TAODIR);
 						AUTHORSHIP;
@@ -693,7 +692,7 @@ int inputs(int argc, char **argv)
 	switch (run_type)
 	{
 		case 0:
-			fprintf(stdout, "\n\n\t*** END of run *** \n\n\n\n");
+			fprintf(stdout, "\n\n*** END of run *** \n\n");
 			exit(0);
 		case 1:
 			interpr_command_line_opts(argc, argv);
@@ -726,20 +725,20 @@ int inputs(int argc, char **argv)
 	}
 
 	{
-	    char filename[MAXLENLINE]; FILE *file;
-	    sprintf(filename, "%s.out", projectname);
-	    if (switch_file_out) {
-	    	if ((file = fopen(filename, "w")) == NULL) {
-	    	    PRINT_ERROR("Cannot open standard output file %s.\n", filename);
-	    	}
-	    	else {
-	    	    if (verbose_level>=1) fprintf(stdout, "\nInfo: standard output redirected to %s.\n", filename);
-		    stdout=file;
-	    	}
-	    }
-	    else {
+		char filename[MAXLENLINE]; FILE *file;
+		sprintf(filename, "%s.out", projectname);
+		if (switch_file_out) {
+			if ((file = fopen(filename, "w")) == NULL) {
+				PRINT_ERROR("Cannot open standard output file %s.\n", filename);
+			}
+			else {
+				if (verbose_level>=1) fprintf(stdout, "\nInfo: standard output redirected to %s.\n", filename);
+			stdout=file;
+			}
+		}
+		else {
 		remove(filename);
-	    }
+		}
 	}
 
 	dx = (xf-x0) / (Nx-1);
@@ -785,8 +784,7 @@ int inputs(int argc, char **argv)
 	if (boundary_conds == 2)		{ vert_force=0; appmoment = 0; }
 
 
-	sprintf(command, "rm -f %s.temp0 %s.mtrz %s.grv_mod", 
-		projectname, projectname, projectname);
+	sprintf(command, "rm -f %s.temp0 %s.mtrz %s.grv_mod", projectname, projectname, projectname);
 	system(command);
 
 	read_file_sea_level(); calculate_sea_level();
@@ -799,7 +797,7 @@ int inputs(int argc, char **argv)
 	Init_Stress();
 
 	switch_initial_geom = read_file_initial_deflection(w) + read_file_initial_topo(topo) ;
-	for (i=0; i<Nx; i++)  { 
+	for (int i=0; i<Nx; i++)  { 
 		topo[i] += random_topo * ((((float) rand()) / ((float) RAND_MAX)) -.5);
 		topo[i] += zini;
 		Blocks_base[i] = topo[i];
@@ -808,11 +806,11 @@ int inputs(int argc, char **argv)
 	}
 	if (switch_initial_geom && verbose_level>=1) {
 		float	altmax=-1e9, altmin=1e9;
-		for (i=0; i<Nx; i++) {
+		for (int i=0; i<Nx; i++) {
 			if (altmax<topo[i])	altmax=topo[i];
 			if (altmin>topo[i])	altmin=topo[i];
 		}
-		fprintf(stdout, "\n  alt.Init.:  max = %9.1f m     min = %9.1f m   ", altmax, altmin);
+		fprintf(stdout, "\n  alt.Init.:  max = %9.1f m	 min = %9.1f m   ", altmax, altmin);
 	}
 
 	return(1);
@@ -822,21 +820,20 @@ int inputs(int argc, char **argv)
 
 int interpr_command_line_opts(int argc, char **argv) 
 {
-	int	iarg;
-
 	/*Interpretates the command line options described in tao.info.txt*/
 
-	for (iarg=1; iarg<argc; iarg++) {
+	PRINT_INFO("Enetering command line interpretation.");
+	for (int iarg=1; iarg<argc; iarg++) {
 		if (argv[iarg][0] == '-') {
-			int 	ilet;
 			float 	value, value2;
 			char 	prm[MAXLENLINE], prm2[MAXLENLINE], *ptr;
-			for (ilet=2; ilet < strlen(argv[iarg])+2; ilet++) 
+			for (int ilet=2; ilet < strlen(argv[iarg])+2; ilet++) 
 				prm[ilet-2] = argv[iarg][ilet];
-			for (ilet=3; ilet < strlen(argv[iarg])+2; ilet++) 
+			for (int ilet=3; ilet < strlen(argv[iarg])+2; ilet++) 
 				prm2[ilet-3] = argv[iarg][ilet];
 			value  = atof(prm);
 			value2 = atof(prm2);
+			PRINT_DEBUG("\aArgument: %s", argv[iarg]);
 			switch (argv[iarg][1]) {
 				case 'A':
 					grav_anom_type = value;
@@ -846,8 +843,8 @@ int interpr_command_line_opts(int argc, char **argv)
 					break;
 				case 'D':
 					if (run_type!=2) {
-					    x0 = atof(strtok(prm, "/"));
-					    xf = atof(strtok(NULL, "/"));
+						x0 = atof(strtok(prm, "/"));
+						xf = atof(strtok(NULL, "/"));
 					}
 					if (xmin<x0) xmin=x0;
 					if (xmax>xf) xmax=xf;
@@ -898,7 +895,7 @@ int interpr_command_line_opts(int argc, char **argv)
 					break;
 				case 'r':
 					switch (argv[iarg][2]) {
-						case 'e':	densenv    = value2; 	break;
+						case 'e':	densenv	= value2; 	break;
 						case 'c':	denscrust  = value2; 	break;
 						case 'i':	densinfill = value2; 	break;
 						case 'm':	densmantle = value2; 	break;
@@ -937,11 +934,11 @@ int interpr_command_line_opts(int argc, char **argv)
 					break;
 				case 't':
 					switch (argv[iarg][2]) {
-						case 'i':	Timeini    = value2; 	if (run_type==2) Timeini *= Matosec;	break;
+						case 'i':	Timeini	= value2; 	if (run_type==2) Timeini *= Matosec;	break;
 						case 'f':	Timefinal  = value2; 	if (run_type==2) Timefinal *= Matosec;	break;
-						case 'd':	dt         = value2; 	if (run_type==2) dt *= Matosec;		break;
-						case 'e':	dt_eros    = value2; 	if (run_type==2) dt_eros *= Matosec;	break;
-						case 'v':	tau        = value2; 	if (run_type==2) tau *= Matosec; 	break;
+						case 'd':	dt		 = value2; 	if (run_type==2) dt *= Matosec;		break;
+						case 'e':	dt_eros	= value2; 	if (run_type==2) dt_eros *= Matosec;	break;
+						case 'v':	tau		= value2; 	if (run_type==2) tau *= Matosec; 	break;
 						case 'r':	dt_record = value2; 	if (run_type==2) dt_record *= Matosec;	break;
 					}
 					break;
@@ -986,17 +983,17 @@ int move_Blocks()
 
 	/*CRAWL UP along all Blocks to find the relevant moving ones first*/
 	for (int iu=0; iu<numBlocks; iu++) {
-	    PRINT_DEBUG("move_Block:  Block %d; nshift=%d", iu, nshift[iu]);
-	    if (Blocks[iu].density == denssedim) {
+		PRINT_DEBUG("move_Block:  Block %d; nshift=%d", iu, nshift[iu]);
+		if (Blocks[iu].density == denssedim) {
 		/*DEFORM SEDIMENT UNITS*/
 		for (int i=0; i<Nx; i++) new_thick[i] = Blocks[iu].thick[i];
 		for (int i=0; i<Nx; i++) {
-		    float sedthick;
-		    /*CRAWL DOWN Blocks to find the uppermost moving Block below this point*/
-		    for (int ju=iu-1, sedthick=Blocks[iu].thick[i]; ju>=0; ju--) {
+			float sedthick;
+			/*CRAWL DOWN Blocks to find the uppermost moving Block below this point*/
+			for (int ju=iu-1, sedthick=Blocks[iu].thick[i]; ju>=0; ju--) {
 			/*Calculate the thickness of sediments between the top of this sed. Block and the moving Block*/
 			if (Blocks[ju].density == denssedim) {
-			    sedthick += Blocks[ju].thick[i];
+				sedthick += Blocks[ju].thick[i];
 			}
 			else {
    			  /*Amount of cells to propagate the deformation: ~20 deg assumed.*/
@@ -1004,24 +1001,24 @@ int move_Blocks()
 			  int i_unprop = i-nprop;
 			  DOMAIN_LIMIT_1D(i_unprop);
 			  if (Blocks[ju].thick[i_unprop]>.1) {
-			    if (!nshift[ju]) 
-			    	break;
-			    else {
-    				int i_shift =   i+nshift[ju];
-    				/*If block ju is moving below [i] then shift seds.*/
-    				if (deform_sed && IN_DOMAIN_1D(i_shift)) 
+				if (!nshift[ju]) 
+					break;
+				else {
+					int i_shift =   i+nshift[ju];
+					/*If block ju is moving below [i] then shift seds.*/
+					if (deform_sed && IN_DOMAIN_1D(i_shift)) 
 					new_thick[i_shift] += Blocks[iu].thick[i];
-    				if (deform_sed && IN_DOMAIN_1D(i))  
-					new_thick[i]       -= Blocks[iu].thick[i];
-    				break;
-			    }
+					if (deform_sed && IN_DOMAIN_1D(i))  
+					new_thick[i]	   -= Blocks[iu].thick[i];
+					break;
+				}
 			  }
-		    	}
-		    }
+				}
+			}
 		}
-	    }
-	    else 
-	    {
+		}
+		else 
+		{
 		/*MOVE BLOCK UNITS and define nshift[]*/
 		float theor_shift = Blocks[iu].vel * (Time-Blocks[iu].last_vel_time);
 		nshift[iu] = floor((theor_shift - Blocks[iu].last_shift) /dx +.5);
@@ -1033,12 +1030,12 @@ int move_Blocks()
 			DOMAIN_LIMIT_1D(i_unshifted);
 			new_thick[i] = Blocks[iu].thick[i_unshifted];
 		}
-	    }
-	    for (int i=0; i<Nx; i++) {
-		    if (new_thick[i]<0) PRINT_ERROR("\aBlock %d has a negative thickness: %.2f m", iu, new_thick[i]);
-	    	    Dq[i] += g * (new_thick[i] - Blocks[iu].thick[i]) * Blocks[iu].density;
-	    	    Blocks[iu].thick[i] = new_thick[i];
-	    }
+		}
+		for (int i=0; i<Nx; i++) {
+			if (new_thick[i]<0) PRINT_ERROR("\aBlock %d has a negative thickness: %.2f m", iu, new_thick[i]);
+				Dq[i] += g * (new_thick[i] - Blocks[iu].thick[i]) * Blocks[iu].density;
+				Blocks[iu].thick[i] = new_thick[i];
+		}
 	}
 	fflush(stdout);
 	free(new_thick);
@@ -1075,17 +1072,17 @@ int read_file_unit()
 	}
 	time_unit = Timeini/Matosec;
 	{
-	    int nlines=0, nread, show, replace=0;
-	    char str1[MAXLENLINE], str2[MAXLENLINE], line[MAXLENLINE+200], *lineptr;
-	    show=(verbose_level>=3)? 1 : 0;
-	    rewind(file);
-	    while ((lineptr=fgets(line, MAXLENLINE+200-1, file)) != NULL && nlines<NMAXHEADERLINES) {
+		int nlines=0, nread, show, replace=0;
+		char str1[MAXLENLINE], str2[MAXLENLINE], line[MAXLENLINE+200], *lineptr;
+		show=(verbose_level>=3)? 1 : 0;
+		rewind(file);
+		while ((lineptr=fgets(line, MAXLENLINE+200-1, file)) != NULL && nlines<NMAXHEADERLINES) {
 		nlines++; nread=sscanf(lineptr, "%s %s", str1, str2);
 		if (nread == 2) {
 			Match_Param_Replace_flt ( "time",  	time_unit, 0 )
 			/*Old versions:*/
 		}
-	    }
+		}
 	}
 	time_unit *= Matosec;
 	/*Return if it isn't time yet to read the new unit file*/
@@ -1100,12 +1097,12 @@ int read_file_unit()
 
 	/*READS AND INTERPOLATES UNIT/LOAD FILE*/
 	{
-	    int nlines=0, nread, show, replace=0;
-	    char str1[MAXLENLINE], str2[MAXLENLINE], line[MAXLENLINE+200], *lineptr;
-	    rewind(file); 
-	    while ((lineptr=fgets(line, MAXLENLINE+200-1, file)) != NULL && nlines<NMAXHEADERLINES) {
-	    	    nlines++; nread=sscanf(lineptr, "%s %s", str1, str2);
-	    	    if (nread == 2) {
+		int nlines=0, nread, show, replace=0;
+		char str1[MAXLENLINE], str2[MAXLENLINE], line[MAXLENLINE+200], *lineptr;
+		rewind(file); 
+		while ((lineptr=fgets(line, MAXLENLINE+200-1, file)) != NULL && nlines<NMAXHEADERLINES) {
+				nlines++; nread=sscanf(lineptr, "%s %s", str1, str2);
+				if (nread == 2) {
 			Match_Param_Replace_flt ( "vel",		vel, 	0 )
 			Match_Param_Replace_flt ( "time_stop",  	time_stop, 	0 )
 			Match_Param_Replace_flt ( "density", 	 	density, 	0 )
@@ -1116,8 +1113,8 @@ int read_file_unit()
 			Match_Param_Replace_int ( "insert",		insert, 	0 )
 			Match_Param_Replace_int ( "top",		top, 	0 )
 			Match_Param_Replace_int ( "move",  		switch_move, 	0 )
-			Match_Param_Replace_int ( "fault",      	fault, 	0 )
-			Match_Param_Replace_int ( "z_absol",      	z_absol,   	0 )
+			Match_Param_Replace_int ( "fault",	  	fault, 	0 )
+			Match_Param_Replace_int ( "z_absol",	  	z_absol,   	0 )
 			Match_Param_Replace_int ( "cut_seds",  		cut_seds, 	0 )
 			Match_Param_Replace_int ( "cut_Block",  		cut_Block, 	0 )
 			Match_Param_Replace_int ( "cut_Blocks",  	cut_Blocks, 	0 )
@@ -1128,10 +1125,10 @@ int read_file_unit()
 			Match_Param_Replace_int ( "cut_unit",  		cut_Block, 	0 )
 			Match_Param_Replace_int ( "cut_units",  	cut_Blocks, 	0 )
 			Match_Param_Replace_flt ( "erodability",	erodibility_aux, 	1 )
-	    	    }
-	    	    if (strcmp(str1, "thickness_distribution")==0) break;
-	    }
-	    rewind(file); 
+				}
+				if (strcmp(str1, "thickness_distribution")==0) break;
+		}
+		rewind(file); 
 	}
 	if (fill_up_to == NO_DATA) 
 		readinterplin(file, h_last_unit, Nx, x0, xf) ;
@@ -1198,7 +1195,7 @@ int read_file_unit()
 				Blocks[numBlocks-1].detr_ratio  = calloc(Nx, sizeof(float));
 				Blocks[numBlocks-1].detr_grsize = calloc(Nx, sizeof(float));
 			}
-			if (density         != NO_DATA && Blocks[numBlocks-1].type != 'S') Blocks[numBlocks-1].density     = density;
+			if (density		 != NO_DATA && Blocks[numBlocks-1].type != 'S') Blocks[numBlocks-1].density	 = density;
 			if (erodibility_aux != NO_DATA && Blocks[numBlocks-1].type != 'S') Blocks[numBlocks-1].erodibility = erodibility_aux;
 		}
 		/*Modify Blocks_base and cut above the fault*/
@@ -1209,24 +1206,24 @@ int read_file_unit()
 			Blocks_base[i]  = MIN_2(Blocks_base[i], z_fault);
 			if (cut_Blocks) {
 				for (int k=0; k<numBlocks0; k++) {
-			    		float top_of_Block=base_of_Block+Blocks[k].thick[i];
+						float top_of_Block=base_of_Block+Blocks[k].thick[i];
 					if (Blocks[k].density == denssedim && !cut_all) {
 						break;
 					}
 					if (z_fault <= base_of_Block) {
 						Blocks[k+numBlocks0].thick[i] += Blocks[k].thick[i];
-						Blocks[k].thick[i]            = 0;
+						Blocks[k].thick[i]			= 0;
 					}
 					else {
 						Blocks[k+numBlocks0].thick[i] += MAX_2 (0, top_of_Block-z_fault);
-						Blocks[k].thick[i]           -= MAX_2 (0, top_of_Block-z_fault);
+						Blocks[k].thick[i]		   -= MAX_2 (0, top_of_Block-z_fault);
 					}
-			    		base_of_Block = top_of_Block;
+						base_of_Block = top_of_Block;
 				}
 			}
 		}
 	}
-	if (density        ==NO_DATA) density         = denscrust;
+	if (density		==NO_DATA) density		 = denscrust;
 	if (erodibility_aux==NO_DATA) erodibility_aux = erodibility;
 
 	/*Create a new Block for this file*/
@@ -1234,24 +1231,24 @@ int read_file_unit()
 
 	/*Add the thickness in file to the new Block; Thin Blocks and basement if the thickness is negative*/
 	if (!switch_gradual && !hidden && !cut_Block) {
-	    for (int i=0; i<Nx; i++) {
+		for (int i=0; i<Nx; i++) {
 		if (h_last_unit[i]>0) 
-		    Blocks[i_Block_insert].thick[i] = h_last_unit[i];
+			Blocks[i_Block_insert].thick[i] = h_last_unit[i];
 		else {
-		    float   h_load_aux, h_load_aux2;
-		    int     j;
-		    h_load_aux = fabs(h_last_unit[i]);
-		    for (j=i_Block_insert-1; h_load_aux>0 && j>=0; j--) {
-		    	    h_load_aux2 = MIN_2(Blocks[j].thick[i], h_load_aux);
-		    	    h_load_aux -= h_load_aux2;
-		    	    Blocks[j].thick[i] -= h_load_aux2;
-		    }
-		    /*j is the deepest eroded Block in i*/
-		    if (j==-1) {
-		    	    Blocks_base[i] -= h_load_aux;
-		    }
+			float   h_load_aux, h_load_aux2;
+			int	 j;
+			h_load_aux = fabs(h_last_unit[i]);
+			for (j=i_Block_insert-1; h_load_aux>0 && j>=0; j--) {
+					h_load_aux2 = MIN_2(Blocks[j].thick[i], h_load_aux);
+					h_load_aux -= h_load_aux2;
+					Blocks[j].thick[i] -= h_load_aux2;
+			}
+			/*j is the deepest eroded Block in i*/
+			if (j==-1) {
+					Blocks_base[i] -= h_load_aux;
+			}
 		}
-	    }
+		}
 	}
 	if (hidden) Blocks[i_Block_insert].type = 'H';
 	Blocks[i_Block_insert].density = density;
@@ -1262,10 +1259,10 @@ int read_file_unit()
 	if (ride) {
 		PRINT_DEBUG("ride %d %d", i_Block_insert, numBlocks);
 		for (int i_Block=i_Block_insert+1; i_Block<numBlocks; i_Block++) {
-			Blocks[i_Block].vel           = Blocks[i_Block_insert].vel; 
-			Blocks[i_Block].last_shift    = 0; 
+			Blocks[i_Block].vel		   = Blocks[i_Block_insert].vel; 
+			Blocks[i_Block].last_shift	= 0; 
 			Blocks[i_Block].last_vel_time = Time-dt;/*!!*/ 
-			Blocks[i_Block].time_stop     = Blocks[i_Block_insert].time_stop; 
+			Blocks[i_Block].time_stop	 = Blocks[i_Block_insert].time_stop; 
 		}
 	}
 
@@ -1406,7 +1403,7 @@ int The_End()
 	fprintf(stdout, "\nNo.\tDensity\tAge \tVolume \tVel   \tShift \tFrom x\tTo x \tStop\ttype");
 	if (erosed_model) fprintf(stdout, "\tErodabil.");
 	fprintf(stdout, "\n   \t(kg/m3)\t(My)\t(km2) \t(km/My)\t(km)  \t(km)  \t(km) \t (My)\t(-)");
-	if (erosed_model) fprintf(stdout, "\t         ");
+	if (erosed_model) fprintf(stdout, "\t		 ");
 	for (i=numBlocks-1; i>=0; i--) {
 		float volume;
 		for (xleft=x0,j=0; j<Nx; j++) {
