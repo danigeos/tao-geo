@@ -1,4 +1,4 @@
-load file containing the fault 
+file containing the fault 
 geometry of the second fault in 
 example 2:
 
@@ -8,7 +8,7 @@ ride	1
 vel	2
 
 
-x	height
+#x	height
 
 20e3	8600
 60e3	8400

@@ -74,7 +74,7 @@ Orographic_Precipitation	taosp.c	/^float Orographic_Precipitation (int i, float 
 Orographic_Precipitation_Evaporation_conservative	taosp.c	/^int Orographic_Precipitation_Evaporation_conservat/
 PRINT_ARRAY_INFO	../include/tao.h	/^#define PRINT_ARRAY_INFO(array, name, units, units/
 PRINT_DEBUG	../include/types_n_defs.h	/^#define PRINT_DEBUG(...)	{if (verbose_level>=4) {f/
-PRINT_DEBUGPLUS	../include/types_n_defs.h	/^#define PRINT_DEBUGPLUS(...)	{if (verbose_level>=5/
+PRINT_DEBUGPLUS	../include/types_n_defs.h	/^#define PRINT_DEBUGPLUS(...){if (verbose_level>=5)/
 PRINT_ERROR	../include/types_n_defs.h	/^#define PRINT_ERROR(...)	{if (verbose_level>=0) {f/
 PRINT_GRID_INFO	../include/types_n_defs.h	/^#define PRINT_GRID_INFO(grid, name, units) {\\$/
 PRINT_INFO	../include/types_n_defs.h	/^#define PRINT_INFO(...) 	{if (verbose_level>=2) {f/
@@ -117,6 +117,7 @@ alloc_matrix_int	../lib/libreria.c	/^int **alloc_matrix_int (int n_fil, int n_co
 anombloq	../lib/libreria.c	/^float anombloq(register float x1, register float x/
 calculate_sea_level	taolib.c	/^float calculate_sea_level()$/
 calculate_topo	taolib.c	/^float calculate_topo(float *topo_new)$/
+calculate_water_load	taolib.c	/^int calculate_water_load()$/
 call_surf_proc_	call_taosp.c	/^int call_surf_proc_ ($/
 compaction	../lib/libreria.c	/^float compaction(float phi0, float comp_depth, flo/
 constant_rate_eros	taosp.c	/^int constant_rate_eros ($/
@@ -149,7 +150,7 @@ moment_calculator_hist	taolib.c	/^float moment_calculator_hist ($/
 move_Blocks	tao.c	/^int move_Blocks()$/
 outin	../lib/libreria.c	/^int outin($/
 polygon_area	../lib/libreria.c	/^float polygon_area($/
-prism_vertical_attraction	../lib/libreria.c	/^double prism_vertical_attraction ($/
+prism_vert_grav	../lib/libreria.c	/^double prism_vert_grav ($/
 project_xy_line	../lib/libreria.c	/^float project_xy_line($/
 project_xy_segment	../lib/libreria.c	/^float project_xy_segment($/
 read_file_Crust_Thick	taoio.c	/^int read_file_Crust_Thick(float crust_thick_defaul/
@@ -174,7 +175,6 @@ surface_topo	../lib/libreria.c	/^double surface_topo($/
 syntax	tao.c	/^int syntax()$/
 tectload	tao.c	/^int tectload()$/
 triangularizar	../lib/libreria.c	/^int triangularizar(float **a, float *b, int nx)$/
-water_load	taolib.c	/^int water_load()$/
 write_file_Blocks	taoio.c	/^int write_file_Blocks()$/
 write_file_Te	taoio.c	/^int write_file_Te () $/
 write_file_Temperature	taoio.c	/^int write_file_Temperature ()$/

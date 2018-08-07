@@ -22,14 +22,15 @@
 
 1.- SYNTAX AND USE of tAo
 
-  tao  project  -A[1|2] -B<bound_type> -D[x0/xf] -d<dx> -F[file] -h[i|u|p]
-	  -M<lih_type>[t] -m<app_mom> -N<Nx> -o -P[c[geom]] -p<tec_force>
-	  -q<param=value> -Q<file>  -r<a|c|i|m|a><density> -S<b>/<n> 
-	  -s<app_force> -T<eet> -t<i|f|d|v|r><time> -V[<level>] 
-	  -v[<num>/<vel>]
+  tao  project  -A[1|2] -B<bound_type> -D[x0/xf] -d<dx> -F[file] -f[2] 
+	-h[i|u|p]
+	-M<lih_type>[t] -m<app_mom> -N<Nx> -o -P[c[geom]] -p<tec_force>
+	-q<param=value> -Q<file>  -r<a|c|i|m|a><density> -S<b>/<n> 
+	-s<app_force> -T<eet> -t<i|f|d|v|r><time> -V[<level>] 
+	-v[<num>/<vel>]
 
   Options:
-	'project' is the root name of the project files names (i.e., if
+	'project' is the root name for the project files (i.e., if
 		project=test then the parameters file should be test.PRM and
 		the first load test1.UNIT.
 	'-A' Switches gravity calculations on (1 for Bouguer; 2 for Free Air).
@@ -43,7 +44,8 @@
 		'project.all'). Put this option always *after* the project
 		name in the command.
 	'-f' Reformats the parameters file 'project.PRM' according to the
-		present version (using 'template.PRM').
+		present version (using 'template.PRM'). Writes to stnd. output.
+		Add '2' to shorten.
 	'-h' To show this information file. Append 'p' to print the default
 		parameters file in stdout; 'c' to print a clean version of it.
 		'u' to print an example of load file; 'i' (default) to print
@@ -257,6 +259,19 @@
 	only once every 4 time steps. So, depending on the grid cell size, the 
 	motion will become more or less abrupt. 
 
+  'project.ZINI'
+	Initial height (optional):		
+	Similar format.
+
+
+  Lithosphere rigidity or elastic thickness (for the isostaticcalcualtions) 
+  can be entered in 4 ways: 1) Constant EET provided in *.PRM; 2) Laterally 
+  varying EET defined in *.EET; 3) EET calculated from an input yield stress 
+  envelope in *.YSE; and 4) EET calculated from the temperature distribution
+  in the lithospheric plate and the crustal geoemtry (*.TMP, *.CRUST, *.UCRUST)
+  as in Garcia-Castellanos et al. (2002, Tectonics). 1) and 2) apply only when 
+  isost_model=1,2. 3) and 4) apply for isost_model>=3. 
+
   'project.EET'
 	Elastic thikness file (optional, defaults to default_Te parameter, 
       see *.PRM file). Also used as initial Te for the multilayered plate case.
@@ -267,27 +282,20 @@
 	x3	thickness3
 	...
 	
-	Attention: x3>x2>x1. tAo will linearly interpolate between the given 
-	points.
+	With: x3>x2>x1. 
 
-  'project.CRUST'
-	Crust thickness (optional):
-	Similar format.
+  'project.YSE'
+	YSE file (only in case isost_model>=2; overrides YSE calculations using 
+	temperature). Format (note different units relative to the output file
+	*.ysen):
 
-  'project.UCRUST'
-	Upper crust thickness (optional):
-	Similar format.
-
-  'project.WINI'
-	Initial deflection file (optional):
-	Similar format. Positive deflection downwards.
-
-  'project.ZINI'
-	Initial height (optional):		
-	Similar format.
+	z1[m]	yieldcompres1[Pa]	yieldextens1[Pa]
+	z2	yieldcompres2   	yieldextens2
+	z3	yieldcompres3   	yieldextens3
+	...	...
 
   'project.TMP'
-	Temperature file (only in case lith_type>=2). If a YSE input file is 
+	Temperature file (only in case isost_model>=2). If a YSE input file is 
 	given, then this TMP file is ignored.
 	
 	x1[m]	#this x is optional, if not present, only one geotherm will be 
@@ -305,15 +313,17 @@
 	geotherms at other  x locations can be supplied. Temperature will be
 	linearly interpolated  (laterally and in depth) in between them.
 
-  'project.YSE'
-	YSE file (only in case lith_type>=2; overrides YSE calculations using 
-	temperature). Format (note different units relative to the output file
-	*.ysen):
+  'project.CRUST'
+	Crust thickness. Used only if *.TMP is provided. If this file is not 
+	present, then the parameter 'crust' in *.PRM will be adopted (constant
+	along x).
+	Similar format.
 
-	z1[m]	yieldcompres1[Pa]	yieldextens1[Pa]
-	z2	yieldcompres2   	yieldextens2
-	z3	yieldcompres3   	yieldextens3
-	...	...
+  'project.UCRUST'
+	Upper crust thickness Used only if *.TMP is provided. If this file is not 
+	present, then the parameter 'ucrust' in *.PRM will be adopted (constant
+	along x).
+	Similar format.
 
   'project.SLV'
 	Sea and erosion/sedimentation levels along time file (optional):
@@ -323,6 +333,10 @@
 	time2	level2
 	time3	level3	[eroslevel2]
 	...	...	[...]
+
+  'project.WINI'
+	Initial deflection file (optional):
+	Similar format. Positive deflection downwards.
 
   'project.REC'
 	Horizon recording time file (optional, defaults to an interval of 
@@ -341,9 +355,11 @@
 	duces a postscript image of it.
 	Similar format (two columns) but x is expected in km (z in m).
 
-    All these files are interpoled (except the .CMP one) and accept comment 
+    All these files are interpolated (except the .CMP one) and accept comment 
   lines to be inserted everywhere. These lines will be simply ignored when two 
-  floats cannot be read in them.
+  floats cannot be read in them. Attention: x3>x2>x1. tAo will linearly 
+  interpolate between the given points.
+
 
 
 

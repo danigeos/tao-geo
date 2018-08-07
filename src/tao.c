@@ -72,29 +72,380 @@ int main(int argc, char **argv)
 
 
 
-int tectload()
+int inputs(int argc, char **argv)
 {
-	/*
-	CALCULATES NEW LOAD INCREMENT FROM UNIT FILES, Returns 1 if elastic
-	flexure must be done (i.e, if changes in load  occurred), 0 otherwise.
-	*/
+	int 	reformat=0 ;
+	char 	resume_filename[MAXLENFILE], 
+		command[MAXLENLINE], 
+		load_file_name[MAXLENLINE];
+	BOOL	success_def_prm=NO, switch_initial_geom=NO;
 
-	PRINT_ARRAY_INFO(topo, "topogr.", "m", "m2") 
+	run_type = 0;
+	nmax_input_points = 5000;
+	switch_strs_history = YES;
+	setbuf(stdout, NULL);
 
-	/*Reads external load from file(s)*/
-	while (read_file_unit());
+	putenv("tao_dir=" TAODIR); 
+	
+	/*Version of tAo will be matched against the parameters file *.PRM*/
+	/*¡¡ UPDATE template.PRM !!*/
+	strcpy(version, "tAo_2018-08-07");
 
-	/*Moves Blocks*/
-	move_Blocks();
+	/*Default parameter values are read from ./tao/doc/template.PRM*/
+	sprintf(projectname, "%s/doc/template", TAODIR);
+	success_def_prm = read_file_parameters(0, 0);
+	sprintf(projectname, "");
 
-	/*Interpolates loads through time*/
-	gradual_Block();
+	for (int iarg=1; iarg<argc; iarg++) {
+		if (argv[iarg][0] == '-') {
+			float 	value;
+			char 	prm[MAXLENLINE];
+			for (int ilet=2; ilet < strlen(argv[iarg])+2; ilet++) 
+				prm[ilet-2] = argv[iarg][ilet];
+			value=atof(prm);
+			switch (argv[iarg][1]) {
+				case 'f':
+					reformat=1;
+					if (argv[iarg][2]) reformat = value;
+					break;
+				case 'F':
+					run_type=2;
+					if (strlen(prm)>0) strcpy (resume_filename, prm);
+					else		   sprintf(resume_filename, "%s"".all", projectname);
+					break;
+				case 'h':
+					switch (argv[iarg][2]) {
+						case 'p':
+							fprintf(stderr, "\nFile ./tao/doc/template.PRM (sample parameters file) follows in stdout:\n") ;
+						sprintf(command, "cat %s/doc/template.PRM", TAODIR);
+						system(command) ;
+						break;
+						case 'c':
+							fprintf(stderr, "\nFile ./tao/doc/template.PRM (sample parameters file) follows in stdout:\n") ;
+						sprintf(command, "cat %s/doc/template.PRM | %s/script/cleanPRM", TAODIR, TAODIR);
+						system(command) ;
+						break;
+						case 'u':
+							fprintf(stderr, "\nFile ./tao/doc/template.UNIT (sample unit file) follows in stdout:\n") ;
+						sprintf(command, "cat %s/doc/template.UNIT", TAODIR);
+						system(command) ;
+						break;
+						default:
+						fprintf(stderr, "\nFile ./tao/doc/tao.info.txt follows:\n") ;
+						sprintf(command, "more %s/doc/tao.info.txt", TAODIR);
+						AUTHORSHIP;
+						system(command) ;
+						break;
+					}
+					fprintf(stderr, "\n") ;
+					exit(0);
+				case 'Q':
+					run_type=1;
+					strcpy(load_file_name, prm);
+					break;
+				case 'V':
+					verbose_level = 1;
+					if (argv[iarg][2]) verbose_level = value;
+					break;
+			}
+		}
+		else {
+			if (run_type != 2) run_type=10;
+			if (strlen(projectname)<1) strcpy(projectname, argv[iarg]);
+		}
+	}
 
-	Repare_Blocks();
+	if (verbose_level>=1) {
+	  fprintf(stdout, 	
+	  	"\n**** tAo: 2D LITHOSPHERIC FLEXURE, EROSION/SEDIMENTATION, AND FORELAND BASIN MODELING ****"
+	  	"\nVersion: %s", version);
+	  fflush(stdout);
+	}
 
-	return (1);
+	if (!run_type) {
+		syntax();
+		fprintf(stdout, "\n\nType %s -h for further information.\n", argv[0]);
+		exit(0);
+	}
+
+	nloads=0; n_image=0; nlakes=0;
+	numBlocks=0; i_first_Block_load=0; i_Block_insert=0;
+	nwrotenfiles=0; switch_topoest=NO;
+
+	switch (run_type)
+	{
+		case 0:
+			fprintf(stdout, "\n\n*** END of run *** \n\n");
+			exit(0);
+		case 1:
+			interpr_command_line_opts(argc, argv);
+			Direct_mode(load_file_name);
+			exit(0);
+		case 2:
+			read_file_resume(resume_filename);
+			interpr_command_line_opts(argc, argv);
+			if (verbose_level>=1) fprintf(stdout, "\nResuming project '%s'. Timefinal=%.1f My", projectname, Timefinal/Matosec);
+			if (switch_dt_output) n_image--; /*Don't produce 2 jpg's of the same stage of restart*/
+			return(1);
+		case 10:
+			if (!read_file_parameters(verbose_level>=1, 0)) {
+				syntax();
+				fprintf(stderr, "\n\tAvailable parameter files in this directory:\n");	
+				system("ls *.PRM");
+				if (!success_def_prm) {
+					PRINT_ERROR("\t\aDefault parameters file './tao/doc/template.PRM' could not be read.\n"); 
+				}
+				exit(0);
+			}
+			if (reformat) {
+				sprintf(projectname, "%s/doc/template", TAODIR);
+				read_file_parameters(0, reformat);
+				exit(0);
+			}
+			interpr_command_line_opts(argc, argv);
+			Allocate_Memory();
+			break;
+	}
+
+	{
+		char filename[MAXLENLINE]; FILE *file;
+		sprintf(filename, "%s.out", projectname);
+		if (switch_file_out) {
+			if ((file = fopen(filename, "w")) == NULL) {
+				PRINT_ERROR("Cannot open standard output file %s.\n", filename);
+			}
+			else {
+				if (verbose_level>=1) fprintf(stdout, "\nInfo: standard output redirected to %s.\n", filename);
+			stdout=file;
+			}
+		}
+		else {
+		remove(filename);
+		}
+	}
+
+	dx = (xf-x0) / (Nx-1);
+	dz = (100000) / (Nz-1);
+	dt *= Matosec;
+	tau *= Matosec; 
+	dt_record *= Matosec;
+	Timefinal *= Matosec;
+	Timeini *= Matosec;
+	Time = Timeini;
+	last_time_file_time = Timeini - 9999*dt_record;	/*very old*/
+	dt_eros *= Matosec;
+	Kerosdif /= secsperyr;
+	Keroseol /= Matosec;
+	Ksedim   /= Matosec;
+	rain /= secsperyr*1e3;
+	if (hydro_model==1) Krain *= 1e6/Matosec/1e3/1e3;
+	evaporation_ct /= secsperyr*1e3;
+	lost_rate *= 1e-2 * 1e-3;
+	temp_sea_level += TEMP_FREEZE_WATER;
+	switch_write_file_Blocks = 1;
+
+
+	if (verbose_level>=3) {
+		fprintf(stdout, "\nPlate model: %d \tBC=%d\tNx=%d from %.2f to %.2f (dx=%f m)", isost_model, boundary_conds, Nx, x0, xf, dx);
+		fprintf(stdout, "\nDensities: asthenosphere =%f; mantle=%f; crust=%.2f", densasthen, densmantle, denscrust);
+		fprintf(stdout, "\nTiming: from %.2f to %.2f every %.2f My\n", Timeini/Matosec, Timefinal/Matosec, dt/Matosec);
+	}
+
+
+	/*Test of incompatibilities between parameters*/
+	if (densenv && water_load)		{ water_load=NO; 	PRINT_WARNING("Sea not possible when densenv<>0. Sea switch turned off.") ; }
+	if (!erosed_model && (Ksedim || Kerosdif || Keroseol))	{ Ksedim=Kerosdif=Keroseol=0 ; if (verbose_level>=1) PRINT_WARNING("Erosion-sedimentation unswitched. Parameters Ksedim, Kerosdif & Keroseol have no effect.") ; }
+	if (!water_load && Ksedim)		{ Ksedim=0;			PRINT_WARNING("Warning: Sea presence isn't switched, Ksedim has no effect.");}
+	if (!erosed_model)  			{ Ksedim=Kerosdif=Keroseol=0 ; }
+	if (!hydro_model && erosed_model>1)  	{ erosed_model=1 ; PRINT_WARNING("Warning: hydro_model is 0; erosed_model is switched to 1 accordingly.") ; }
+	if (switch_ps && !switch_write_file)	{ if (verbose_level>=3)	PRINT_WARNING("Warning: switch_write_file needed to make a postscript. Postscript may not be done.") ; }
+	if (isost_model!=2)  			{ tau=0; }
+	if (tau<=0 && isost_model==2)  		{ isost_model=1; }
+	if (boundary_conds == 0)		{ appmoment = 0; }
+	if (boundary_conds == 2)		{ vert_force=0; appmoment = 0; }
+
+
+	sprintf(command, "rm -f %s.temp0 %s.mtrz %s.grv_mod", projectname, projectname, projectname);
+	system(command);
+
+	read_file_sea_level(); calculate_sea_level();
+	read_file_horiz_record_time();
+	read_file_Te();
+	read_file_Crust_Thick(crust_thick_default);
+	read_file_Upper_Crust_Thick(upper_crust_thick_default);	
+	read_file_YSE();
+	read_file_Temperature() ;
+	Init_Stress();
+
+	switch_initial_geom = read_file_initial_deflection(w) + read_file_initial_topo(topo) ;
+	for (int i=0; i<Nx; i++)  { 
+		topo[i] += random_topo * ((((float) rand()) / ((float) RAND_MAX)) -.5);
+		topo[i] += zini;
+		Blocks_base[i] = topo[i];
+		topo[i] -= w[i];
+		h_water[i] = MAX_2(sea_level-topo[i], 0);
+	}
+	if (switch_initial_geom && verbose_level>=1) {
+		float	altmax=-1e9, altmin=1e9;
+		for (int i=0; i<Nx; i++) {
+			if (altmax<topo[i])	altmax=topo[i];
+			if (altmin>topo[i])	altmin=topo[i];
+		}
+		fprintf(stdout, "\n  alt.Init.:  max = %9.1f m	 min = %9.1f m   ", altmax, altmin);
+	}
+
+	return(1);
 }
 
+
+
+int interpr_command_line_opts(int argc, char **argv) 
+{
+	/*Interpretates the command line options described in tao.info.txt*/
+
+	PRINT_INFO("Enetering command line interpretation.");
+	for (int iarg=1; iarg<argc; iarg++) {
+		if (argv[iarg][0] == '-') {
+			float 	value, value2;
+			char 	prm[MAXLENLINE], prm2[MAXLENLINE], *ptr;
+			for (int ilet=2; ilet < strlen(argv[iarg])+2; ilet++) 
+				prm[ilet-2] = argv[iarg][ilet];
+			for (int ilet=3; ilet < strlen(argv[iarg])+2; ilet++) 
+				prm2[ilet-3] = argv[iarg][ilet];
+			value  = atof(prm);
+			value2 = atof(prm2);
+			PRINT_DEBUG("\aArgument: %s", argv[iarg]);
+			switch (argv[iarg][1]) {
+				case 'A':
+					grav_anom_type = value;
+					break;
+				case 'B':
+					boundary_conds = value;
+					break;
+				case 'D':
+					if (run_type!=2) {
+						x0 = atof(strtok(prm, "/"));
+						xf = atof(strtok(NULL, "/"));
+					}
+					if (xmin<x0) xmin=x0;
+					if (xmax>xf) xmax=xf;
+					else fprintf(stdout, "\nWarning: Impossible to change the domain when resuming a model.");
+					break;
+				case 'd':
+					if (run_type!=2) Nx = (int) (xf-x0)/value + 1;
+					else fprintf(stdout, "\nWarning: Imposible to change dx or Nx value when restarting a model.");
+					break;
+				case 'L': /*OLD*/
+					if (run_type!=2) x0 = value;
+					else fprintf(stdout, "\nWarning: Imposible to change x0 value when restarting a model.");
+					if (xmin<x0) xmin=x0;
+					break;
+				case 'M':
+					isost_model = value;
+					if (prm[1] == 't') switch_strs_history = NO;
+					break;
+				case 'm':
+					appmoment = value;
+					break;
+				case 'N':
+					Nx = value;
+					break;
+				case 'o':
+					switch_file_out=YES;
+					break;
+				case 'P':
+					switch_ps=YES;
+					switch_write_file_Blocks=YES;
+					if (argv[iarg][2] == 'c') {
+						switch_dt_output=YES;
+						strcpy(gif_geom, "");
+						if (strlen(prm2)>0) strcpy(gif_geom, prm2);
+					}
+					break;
+				case 'p':
+					horz_force = value;
+					break;
+				case 'q':
+					ptr = strtok(prm, "=");
+					match_parameter(ptr, strtok(NULL, "/"), 1, 0, prm);
+					break;
+				case 'R': /*OLD*/
+					if (run_type!=2) xf = value;
+					else fprintf(stdout, "\nWarning: Imposible to change xf value when restarting a model.");
+					if (xmax>xf) xmax=xf;
+					break;
+				case 'r':
+					switch (argv[iarg][2]) {
+						case 'e':	densenv	= value2; 	break;
+						case 'c':	denscrust  = value2; 	break;
+						case 'i':	densinfill = value2; 	break;
+						case 'm':	densmantle = value2; 	break;
+						case 'a':	densasthen = value2; 	break;
+					}
+					break;
+				case 'S':
+					{
+						int iblock, nblocks;
+						struct BLOCK_1D	Block_aux;
+						iblock = atoi(strtok(prm, "/"));
+						nblocks = atoi(strtok(NULL, "/"));
+						PRINT_INFO("Block %d will be moved by %d positions", iblock, nblocks);
+						Block_aux=Blocks[iblock];
+						if (nblocks>0) {
+							for (int iu=iblock; iu<iblock+nblocks; iu++) {
+								Blocks[iu]=Blocks[iu+1];
+								PRINT_INFO("%d = %d", iu, iu+1);
+							}
+						}
+						else {
+							for (int iu=iblock; iu>iblock+nblocks; iu--) {
+								Blocks[iu]=Blocks[iu-1];
+								PRINT_INFO("%d = %d", iu, iu-1);
+							}
+						}
+						Blocks[iblock+nblocks]=Block_aux;
+						PRINT_INFO("%d = %d", iblock+nblocks, numBlocks-1);
+					}
+					break;
+				case 's':
+					vert_force = value;
+					break;
+				case 'T':
+					Te_default = value;
+					break;
+				case 't':
+					switch (argv[iarg][2]) {
+						case 'i':	Timeini	= value2; 	if (run_type==2) Timeini *= Matosec;	break;
+						case 'f':	Timefinal  = value2;if (run_type==2) Timefinal *= Matosec;	break;
+						case 'd':	dt		 = value2; 	if (run_type==2) dt *= Matosec;			break;
+						case 'e':	dt_eros	= value2; 	if (run_type==2) dt_eros *= Matosec;	break;
+						case 'v':	tau		= value2; 	if (run_type==2) tau *= Matosec; 		break;
+						case 'r':	dt_record = value2; if (run_type==2) dt_record *= Matosec;	break;
+					}
+					break;
+				case 'V':
+					verbose_level = 1;
+					if (argv[iarg][2]) verbose_level = value;
+					break;
+				case 'v':
+					{
+						float density, velocity;
+						density = atof(strtok(prm, "/"));
+						velocity = atof(strtok(NULL, "/"));
+						for (int iu=0; iu<numBlocks; iu++) {
+							if (Blocks[iu].density==-density || iu==density) {
+								Blocks[iu].vel=velocity*1e3/Matosec;
+								Blocks[iu].last_vel_time=Time-dt;/*!!*/
+								Blocks[iu].last_shift=0;
+							}
+						}
+					}
+					break;
+			}
+		}
+	}
+	return(1);
+}
 
 
 
@@ -128,6 +479,32 @@ int Direct_mode(char *load_file_name)
 		fprintf(stdout, "%8.1f\t%8.1f\t%8.1f\n", 
 			(x0+i*dx)/1e3, w[i], h_last_unit[i]);
 	fprintf(stdout, "\n"); 
+}
+
+
+
+
+int tectload()
+{
+	/*
+	CALCULATES NEW LOAD INCREMENT FROM UNIT FILES, Returns 1 if elastic
+	flexure must be done (i.e, if changes in load  occurred), 0 otherwise.
+	*/
+
+	PRINT_ARRAY_INFO(topo, "topogr.", "m", "m2") 
+
+	/*Reads external load from file(s)*/
+	while (read_file_unit());
+
+	/*Moves Blocks*/
+	move_Blocks();
+
+	/*Interpolates loads through time*/
+	gradual_Block();
+
+	Repare_Blocks();
+
+	return (1);
 }
 
 
@@ -256,14 +633,14 @@ int surface_processes()
 	Diffusive_Eros_1D (topo, Kerosdif, dt, dt_eros/5);
 
 	/*Adds background erosion and sea sedimentation*/
-	constant_rate_eros (topo, Keroseol, Ksedim, sea_level, switch_sea, dt, dt_eros, Time, n_eros_level_input_points, var_eros_level, &eros_level);
+	constant_rate_eros (topo, Keroseol, Ksedim, sea_level, water_load, dt, dt_eros, Time, n_eros_level_input_points, var_eros_level, &eros_level);
 
 	/*Adds fluvial transport*/
 	Surface_Transport (topo, dt, dt_eros, erosed_model);
 
 
 	/*Calculates water column load*/
-	water_load();
+	calculate_water_load();
 
 
 
@@ -467,7 +844,7 @@ int gravity_anomaly()
 	}
 
 	/*Calculates gravity atraction of sea water*/
-	if (switch_sea) {
+	if (water_load) {
 		for (ix=0; ix<Nx; ix++) {
 			upper_hori_aux[ix] = 0;
 			lower_hori_aux[ix] = MAX_2(-topo[ix], 0);
@@ -513,7 +890,7 @@ int gravity_anomaly()
 	}
 
 	/*Substracts the atraction of normal water layer*/
-	if (switch_sea && zini<0) {
+	if (water_load && zini<0) {
 		Block_aux_x[0] = x0 - 1e8;	Block_aux_z[0] = - zini;
 		Block_aux_x[1] = x0 - 1e8;	Block_aux_z[1] = 0;
 		Block_aux_x[2] = xf + 1e8;	Block_aux_z[2] = 0;
@@ -570,7 +947,7 @@ int gravity_anomaly()
 			if (topo[ix]>sea_level) 
 				gravanom[ix] -= 2*pi * 2670 * CGU * topo[ix];
 			if (topo[ix]<sea_level) 
-				gravanom[ix] -= 2*pi*(2670 - ((switch_sea)? 1000:0))* CGU * topo[ix];
+				gravanom[ix] -= 2*pi*(2670 - ((water_load)? 1000:0))* CGU * topo[ix];
 		}
 	}
 
@@ -587,384 +964,6 @@ int gravity_anomaly()
 	return(1);
 }
 
-
-
-
-int inputs(int argc, char **argv)
-{
-	int 	reformat=0 ;
-	char 	resume_filename[MAXLENFILE], 
-		command[MAXLENLINE], 
-		load_file_name[MAXLENLINE];
-	BOOL	success_def_prm=NO, switch_initial_geom=NO;
-
-	run_type = 0;
-	nmax_input_points = 5000;
-	switch_strs_history = YES;
-	setbuf(stdout, NULL);
-
-	putenv("tao_dir=" TAODIR); 
-	
-	/*Version of tAo will be matched against the parameters file *.PRM*/
-	/*¡¡ UPDATE template.PRM !!*/
-	strcpy(version, "tAo_2017-05-19");
-
-	/*Default parameter values are read from ./tao/doc/template.PRM*/
-	sprintf(projectname, "%s/doc/template", TAODIR);
-	success_def_prm = read_file_parameters(0, 0);
-	sprintf(projectname, "");
-
-	for (int iarg=1; iarg<argc; iarg++) {
-		if (argv[iarg][0] == '-') {
-			float 	value;
-			char 	prm[MAXLENLINE];
-			for (int ilet=2; ilet < strlen(argv[iarg])+2; ilet++) 
-				prm[ilet-2] = argv[iarg][ilet];
-			value=atof(prm);
-			switch (argv[iarg][1]) {
-				case 'f':
-					reformat=1;
-					break;
-				case 'F':
-					run_type=2;
-					if (strlen(prm)>0) strcpy (resume_filename, prm);
-					else		   sprintf(resume_filename, "%s"".all", projectname);
-					break;
-				case 'h':
-					switch (argv[iarg][2]) {
-						case 'p':
-							fprintf(stderr, "\nFile ./tao/doc/template.PRM (sample parameters file) follows in stdout:\n") ;
-						sprintf(command, "cat %s/doc/template.PRM", TAODIR);
-						system(command) ;
-						break;
-						case 'c':
-							fprintf(stderr, "\nFile ./tao/doc/template.PRM (sample parameters file) follows in stdout:\n") ;
-						sprintf(command, "cat %s/doc/template.PRM | %s/script/cleanPRM", TAODIR, TAODIR);
-						system(command) ;
-						break;
-						case 'u':
-							fprintf(stderr, "\nFile ./tao/doc/template.UNIT (sample unit file) follows in stdout:\n") ;
-						sprintf(command, "cat %s/doc/template.UNIT", TAODIR);
-						system(command) ;
-						break;
-						default:
-						fprintf(stderr, "\nFile ./tao/doc/tao.info.txt follows:\n") ;
-						sprintf(command, "more %s/doc/tao.info.txt", TAODIR);
-						AUTHORSHIP;
-						system(command) ;
-						break;
-					}
-					fprintf(stderr, "\n") ;
-					exit(0);
-				case 'Q':
-					run_type=1;
-					strcpy(load_file_name, prm);
-					break;
-				case 'V':
-					verbose_level = 1;
-					if (argv[iarg][2]) verbose_level = value;
-					break;
-			}
-		}
-		else {
-			if (run_type != 2) run_type=10;
-			if (strlen(projectname)<1) strcpy(projectname, argv[iarg]);
-		}
-	}
-
-	if (verbose_level>=1) {
-	  fprintf(stdout, 	
-	  	"\n**** tAo: 2D LITHOSPHERIC FLEXURE, EROSION/SEDIMENTATION, AND FORELAND BASIN MODELING ****"
-	  	"\nVersion: %s", version);
-	  fflush(stdout);
-	}
-
-	if (!run_type) {
-		syntax();
-		fprintf(stdout, "\n\nType %s -h for further information.\n", argv[0]);
-		exit(0);
-	}
-
-	nloads=0; n_image=0; nlakes=0;
-	numBlocks=0; i_first_Block_load=0; i_Block_insert=0;
-	nwrotenfiles=0; switch_topoest=NO;
-
-	switch (run_type)
-	{
-		case 0:
-			fprintf(stdout, "\n\n*** END of run *** \n\n");
-			exit(0);
-		case 1:
-			interpr_command_line_opts(argc, argv);
-			Direct_mode(load_file_name);
-			exit(0);
-		case 2:
-			read_file_resume(resume_filename);
-			interpr_command_line_opts(argc, argv);
-			if (verbose_level>=1) fprintf(stdout, "\nResuming project '%s'. Timefinal=%.1f My", projectname, Timefinal/Matosec);
-			if (switch_dt_output) n_image--; /*Don't produce 2 jpg's of the same stage of restart*/
-			return(1);
-		case 10:
-			if (!read_file_parameters(verbose_level>=1, 0)) {
-				syntax();
-				fprintf(stderr, "\n\tAvailable parameter files in this directory:\n");	
-				system("ls *.PRM");
-				if (!success_def_prm) {
-					PRINT_ERROR("\t\aDefault parameters file './tao/doc/template.PRM' could not be read.\n"); 
-				}
-				exit(0);
-			}
-			if (reformat) {
-				sprintf(projectname, "%s/doc/template", TAODIR);
-				read_file_parameters(0, 1);
-				exit(0);
-			}
-			interpr_command_line_opts(argc, argv);
-			Allocate_Memory();
-			break;
-	}
-
-	{
-		char filename[MAXLENLINE]; FILE *file;
-		sprintf(filename, "%s.out", projectname);
-		if (switch_file_out) {
-			if ((file = fopen(filename, "w")) == NULL) {
-				PRINT_ERROR("Cannot open standard output file %s.\n", filename);
-			}
-			else {
-				if (verbose_level>=1) fprintf(stdout, "\nInfo: standard output redirected to %s.\n", filename);
-			stdout=file;
-			}
-		}
-		else {
-		remove(filename);
-		}
-	}
-
-	dx = (xf-x0) / (Nx-1);
-	dz = (100000) / (Nz-1);
-	dt *= Matosec;
-	tau *= Matosec; 
-	dt_record *= Matosec;
-	Timefinal *= Matosec;
-	Timeini *= Matosec;
-	Time = Timeini;
-	last_time_file_time = Timeini - 9999*dt_record;	/*very old*/
-	dt_eros *= Matosec;
-	Kerosdif /= secsperyr;
-	Keroseol /= Matosec;
-	Ksedim   /= Matosec;
-	rain /= secsperyr*1e3;
-//	rain *= riverbasinwidth;
-//PRINT_ERROR("rainrainrain %f %f.\n", rain, riverbasinwidth);
-	if (hydro_model==1) Krain *= 1e6/Matosec/1e3/1e3;
-	evaporation_ct /= secsperyr*1e3;
-	lost_rate *= 1e-2 * 1e-3;
-	temp_sea_level += TEMP_FREEZE_WATER;
-	switch_write_file_Blocks = 1;
-
-
-	if (verbose_level>=3) {
-		fprintf(stdout, "\nPlate model: %d \tBC=%d\tNx=%d from %.2f to %.2f (dx=%f m)", isost_model, boundary_conds, Nx, x0, xf, dx);
-		fprintf(stdout, "\nDensities: asthenosphere =%f; mantle=%f; crust=%.2f", densasthen, densmantle, denscrust);
-		fprintf(stdout, "\nTiming: from %.2f to %.2f every %.2f My\n", Timeini/Matosec, Timefinal/Matosec, dt/Matosec);
-	}
-
-
-	/*Test of incompatibilities between parameters*/
-	if (densenv && switch_sea)		{ switch_sea=NO; 	PRINT_WARNING("Sea not possible when densenv<>0. Sea switch turned off.") ; }
-	if (!erosed_model && (Ksedim || Kerosdif || Keroseol))	{ Ksedim=Kerosdif=Keroseol=0 ; if (verbose_level>=1) PRINT_WARNING("Erosion-sedimentation unswitched. Parameters Ksedim, Kerosdif & Keroseol have no effect.") ; }
-	if (!switch_sea && Ksedim)		{ Ksedim=0;			PRINT_WARNING("Warning: Sea presence isn't switched, Ksedim has no effect.");}
-	if (!erosed_model)  			{ Ksedim=Kerosdif=Keroseol=0 ; }
-	if (!hydro_model && erosed_model>1)  	{ erosed_model=1 ; PRINT_WARNING("Warning: hydro_model is 0; erosed_model is switched to 1 accordingly.") ; }
-	if (switch_ps && !switch_write_file)	{ if (verbose_level>=3)	PRINT_WARNING("Warning: switch_write_file needed to make a postscript. Postscript may not be done.") ; }
-	if (isost_model!=2)  			{ tau=0; }
-	if (tau<=0 && isost_model==2)  		{ isost_model=1; }
-	if (boundary_conds == 0)		{ appmoment = 0; }
-	if (boundary_conds == 2)		{ vert_force=0; appmoment = 0; }
-
-
-	sprintf(command, "rm -f %s.temp0 %s.mtrz %s.grv_mod", projectname, projectname, projectname);
-	system(command);
-
-	read_file_sea_level(); calculate_sea_level();
-	read_file_horiz_record_time();
-	read_file_Te();
-	read_file_Crust_Thick(crust_thick_default);
-	read_file_Upper_Crust_Thick(upper_crust_thick_default);	
-	read_file_YSE();
-	read_file_Temperature() ;
-	Init_Stress();
-
-	switch_initial_geom = read_file_initial_deflection(w) + read_file_initial_topo(topo) ;
-	for (int i=0; i<Nx; i++)  { 
-		topo[i] += random_topo * ((((float) rand()) / ((float) RAND_MAX)) -.5);
-		topo[i] += zini;
-		Blocks_base[i] = topo[i];
-		topo[i] -= w[i];
-		h_water[i] = MAX_2(sea_level-topo[i], 0);
-	}
-	if (switch_initial_geom && verbose_level>=1) {
-		float	altmax=-1e9, altmin=1e9;
-		for (int i=0; i<Nx; i++) {
-			if (altmax<topo[i])	altmax=topo[i];
-			if (altmin>topo[i])	altmin=topo[i];
-		}
-		fprintf(stdout, "\n  alt.Init.:  max = %9.1f m	 min = %9.1f m   ", altmax, altmin);
-	}
-
-	return(1);
-}
-
-
-
-int interpr_command_line_opts(int argc, char **argv) 
-{
-	/*Interpretates the command line options described in tao.info.txt*/
-
-	PRINT_INFO("Enetering command line interpretation.");
-	for (int iarg=1; iarg<argc; iarg++) {
-		if (argv[iarg][0] == '-') {
-			float 	value, value2;
-			char 	prm[MAXLENLINE], prm2[MAXLENLINE], *ptr;
-			for (int ilet=2; ilet < strlen(argv[iarg])+2; ilet++) 
-				prm[ilet-2] = argv[iarg][ilet];
-			for (int ilet=3; ilet < strlen(argv[iarg])+2; ilet++) 
-				prm2[ilet-3] = argv[iarg][ilet];
-			value  = atof(prm);
-			value2 = atof(prm2);
-			PRINT_DEBUG("\aArgument: %s", argv[iarg]);
-			switch (argv[iarg][1]) {
-				case 'A':
-					grav_anom_type = value;
-					break;
-				case 'B':
-					boundary_conds = value;
-					break;
-				case 'D':
-					if (run_type!=2) {
-						x0 = atof(strtok(prm, "/"));
-						xf = atof(strtok(NULL, "/"));
-					}
-					if (xmin<x0) xmin=x0;
-					if (xmax>xf) xmax=xf;
-					else fprintf(stdout, "\nWarning: Impossible to change the domain when resuming a model.");
-					break;
-				case 'd':
-					if (run_type!=2) Nx = (int) (xf-x0)/value + 1;
-					else fprintf(stdout, "\nWarning: Imposible to change dx or Nx value when restarting a model.");
-					break;
-				case 'L': /*OLD*/
-					if (run_type!=2) x0 = value;
-					else fprintf(stdout, "\nWarning: Imposible to change x0 value when restarting a model.");
-					if (xmin<x0) xmin=x0;
-					break;
-				case 'M':
-					isost_model = value;
-					if (prm[1] == 't') switch_strs_history = NO;
-					break;
-				case 'm':
-					appmoment = value;
-					break;
-				case 'N':
-					Nx = value;
-					break;
-				case 'o':
-					switch_file_out=YES;
-					break;
-				case 'P':
-					switch_ps=YES;
-					switch_write_file_Blocks=YES;
-					if (argv[iarg][2] == 'c') {
-						switch_dt_output=YES;
-						strcpy(gif_geom, "");
-						if (strlen(prm2)>0) strcpy(gif_geom, prm2);
-					}
-					break;
-				case 'p':
-					horz_force = value;
-					break;
-				case 'q':
-					ptr = strtok(prm, "=");
-					match_parameter(ptr, strtok(NULL, "/"), 1, 0, prm);
-					break;
-				case 'R': /*OLD*/
-					if (run_type!=2) xf = value;
-					else fprintf(stdout, "\nWarning: Imposible to change xf value when restarting a model.");
-					if (xmax>xf) xmax=xf;
-					break;
-				case 'r':
-					switch (argv[iarg][2]) {
-						case 'e':	densenv	= value2; 	break;
-						case 'c':	denscrust  = value2; 	break;
-						case 'i':	densinfill = value2; 	break;
-						case 'm':	densmantle = value2; 	break;
-						case 'a':	densasthen = value2; 	break;
-					}
-					break;
-				case 'S':
-					{
-						int iblock, nblocks;
-						struct BLOCK_1D	Block_aux;
-						iblock = atoi(strtok(prm, "/"));
-						nblocks = atoi(strtok(NULL, "/"));
-						PRINT_INFO("Block %d will be moved by %d positions", iblock, nblocks);
-						Block_aux=Blocks[iblock];
-						if (nblocks>0) {
-							for (int iu=iblock; iu<iblock+nblocks; iu++) {
-								Blocks[iu]=Blocks[iu+1];
-								PRINT_INFO("%d = %d", iu, iu+1);
-							}
-						}
-						else {
-							for (int iu=iblock; iu>iblock+nblocks; iu--) {
-								Blocks[iu]=Blocks[iu-1];
-								PRINT_INFO("%d = %d", iu, iu-1);
-							}
-						}
-						Blocks[iblock+nblocks]=Block_aux;
-						PRINT_INFO("%d = %d", iblock+nblocks, numBlocks-1);
-					}
-					break;
-				case 's':
-					vert_force = value;
-					break;
-				case 'T':
-					Te_default = value;
-					break;
-				case 't':
-					switch (argv[iarg][2]) {
-						case 'i':	Timeini	= value2; 	if (run_type==2) Timeini *= Matosec;	break;
-						case 'f':	Timefinal  = value2; 	if (run_type==2) Timefinal *= Matosec;	break;
-						case 'd':	dt		 = value2; 	if (run_type==2) dt *= Matosec;		break;
-						case 'e':	dt_eros	= value2; 	if (run_type==2) dt_eros *= Matosec;	break;
-						case 'v':	tau		= value2; 	if (run_type==2) tau *= Matosec; 	break;
-						case 'r':	dt_record = value2; 	if (run_type==2) dt_record *= Matosec;	break;
-					}
-					break;
-				case 'V':
-					verbose_level = 1;
-					if (argv[iarg][2]) verbose_level = value;
-					break;
-				case 'v':
-					{
-						float density, velocity;
-						density = atof(strtok(prm, "/"));
-						velocity = atof(strtok(NULL, "/"));
-						for (int iu=0; iu<numBlocks; iu++) {
-							if (Blocks[iu].density==-density || iu==density) {
-								Blocks[iu].vel=velocity*1e3/Matosec;
-								Blocks[iu].last_vel_time=Time-dt;/*!!*/
-								Blocks[iu].last_shift=0;
-							}
-						}
-					}
-					break;
-			}
-		}
-	}
-	return(1);
-}
 
 
 
@@ -1524,7 +1523,7 @@ int Write_Ouput()
 	if (switch_ps) {
 		char 	command[200];
 		sprintf(command, "tao.gmt.job %s %.2f %.2f %.2f %.2f %d %d", 
-			projectname, xmin/1000, xmax/1000, zmin, zmax, switch_sea, (isost_model<3)? 0:1);
+			projectname, xmin/1000, xmax/1000, zmin, zmax, water_load, (isost_model<3)? 0:1);
 		if (verbose_level>=3) 
 			fprintf(stdout, "\nPostscript file '%s.ps' is going to be produced with command:", projectname) ;
 		if (verbose_level>=3) 

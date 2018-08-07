@@ -1,9 +1,5 @@
 #Upper crust geometry.
-#Resume this line for 
-#heterogeneous case:
-#0	15000
-#Resume next 3 lines for 
-#homogeneous case:
+#x and depth of the base of the upper crust (m):
 0	4000
 120e3	11000
 160e3	14000

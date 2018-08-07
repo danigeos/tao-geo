@@ -1,15 +1,15 @@
-#Just a test of running tao in multiple stages from a script.
+#Just a test running tAo in multiple stages from a script.
 #
 
 cat <<END> example_F.PRM
-	version		tAo_2006-11-02
 	Te		20e3
-	lith_type	1
+	isost_model	1
 	x0		0
 	xf		600e3
 	xmin		0
 	xmax		400e3
 	erosed_model	1
+	switch_sea 1
 	switch_ps	0
 END
 
@@ -30,9 +30,11 @@ set echo
 
 
 
-tao example_F -tf5
-tao example_F -F -tf10 -qKerosdif=1e-7
-tao example_F -F -tf15 -P
+tao example_F -tf5 -tr2 -Pc
+tao example_F -F -tf10 -qKerosdif=1e-6
+cp -f example_F.all example_F.t=10.all
+#Note: when using -q, units must be in IS, not the ones described in template.PRM
+tao example_F -Fexample_F.t=10.all -tf15 -qKerosdif=0 -qKeroseol=2e-14 -qKsedim=5e-12
 
 
 

@@ -91,7 +91,7 @@ int 	Orographic_Precipitation_Evaporation_conservative (float *, float *evaporat
 int 	Add_Node_To_Lake (int row, int i_lake);
 int 	Add_Saddle_To_Lake (int row_sd, int row_tr, int i_lake);
 int 	Attempt_Delete_Node_From_Lake (int row);
-int 	constant_rate_eros (float *topo, float Keroseol, float Ksedim, float sea_level, BOOL switch_sea, float dt, float dt_eros, float Time, 	int n_eros_level_input_points, float **var_eros_level, 	float *eros_level);
+int 	constant_rate_eros (float *topo, float Keroseol, float Ksedim, float sea_level, int water_load, float dt, float dt_eros, float Time, 	int n_eros_level_input_points, float **var_eros_level, 	float *eros_level);
 int 	Deallocate_Lake (int i_lake);
 int 	Define_Lake (int i_lake);
 int 	Delete_Node_From_Lake (int row);
@@ -327,7 +327,7 @@ int Calculate_Discharge (int *sortcell)
 
 
 int constant_rate_eros (
-	float *topo, float Keroseol, float Ksedim, float sea_level, BOOL switch_sea, 
+	float *topo, float Keroseol, float Ksedim, float sea_level, int water_load, 
 	float dt, float dt_eros, float Time, 
 	int n_eros_level_input_points, float **var_eros_level, 
 	float *eros_level) /*returns the eros_level*/
@@ -366,7 +366,7 @@ int constant_rate_eros (
 		    Erode (THICK2SEDMASS_1D(Dh), i);
 	    }
 	    /*SEDIMENTATION*/
-	    else if (switch_sea) {
+	    else if (water_load) {
 		    Dh = MIN_2(Ksedim*dt, sea_level+*eros_level-topo[i]);
 	    	    Sediment (THICK2SEDMASS_1D(Dh), i);
 	    }
