@@ -29,7 +29,7 @@ set graph_width = 15
 set txt = $prj
 set graph_height = `echo $vertical_exag \* $graph_width \* \($zmaxkm \- $zminkm\)\/\($xmax \- $xmin\) | bc -l` 
 psbasemap -JX$graph_width/$graph_height -R$xmin/$xmax/$zminkm/$zmaxkm \
-	-B$ticklabels\:"distance (km)":/$zticklabels\:"elevation (km)":nseW \
+	-B$ticklabels\:"distance (km)":/$zticklabels\:"elevation (km)":nSeW \
 	-P -K -X3.5 -Y3 -U"tAo graphic output. Project: "$txt >! $ps
 psbasemap -JX -R$xmin/$xmax/$zmin/$ymax -K -O -B:: >> $ps
 
@@ -101,11 +101,11 @@ psbasemap -JX -R -B:: -O -K >> $ps
 
 #
 #TRUE SCALE GRAPHIC:
-set vertshift = `echo $graph_height + 1.2 | bc -l`
+set vertshift = `echo $graph_height + 1.0 | bc -l`
 set vertical_exag = 1
 set graph_height = `echo $vertical_exag \* $graph_width \* \($ymaxkm \- $yminkm\)\/\($xmax \- $xmin\) | bc -l` 
 psbasemap -JX$graph_width/$graph_height -R$xmin/$xmax/$yminkm/$ymaxkm \
-	-B$ticklabels\:"distance (km)":/$zticklabels\:"elevation (km)":nSeW \
+	-B$ticklabels\:"distance (km)":/$zticklabels\:"elevation (km)":nseW \
 	-O -K -Y$vertshift 		>> $ps
 psbasemap -JX -R$xmin/$xmax/$ymin/$ymax -K -O -B:: >> $ps
 
@@ -166,10 +166,9 @@ psbasemap -JX -R -B:: -O -K >> $ps
 
 #
 #PARAMETER PROFILES:
+set vertshift = `echo $graph_height + .5 | bc -l`
 set graph_height = 2.5
-set vertshift = `echo $graph_height + .7 | bc -l`
 if (-r $prj.eros) then
-set vertshift = `echo $graph_height + .7 | bc -l`
 
 awk '{	if (NR==2) for (i=3;i<=NF;i++) {dens[i]=$i;}\
 	if (NR>2){ thick=0;\
@@ -191,6 +190,7 @@ awk '{print $1, $2/1e3}'     $prj.eros | \
 #paste $prj.basam_thick_ref $prj.basam_thick.tao.gmt.tmp | awk '{print $1,$4-$2}' | \
 #	psxy -JX -R -O -K -W3/255/0/0 >> $ps 
 #psxy $prj.sed_thick.tao.gmt.tmp -JX -R -O -K -W3/200/170/0 >> $ps 
+set vertshift = `echo $graph_height + .5 | bc -l`
 
 gmtset BASEMAP_FRAME_RGB +0/0/0
 psbasemap -JX$graph_width/$graph_height -R$xmin/$xmax/-10/10 -B$ticklabels\:"":/ns -Y$vertshift -O -K >> $ps
@@ -213,6 +213,7 @@ endif
 endif
 
 if (-r $prj.xzt) then
+set vertshift = `echo $graph_height + .5 | bc -l`
 gmtset BASEMAP_FRAME_RGB +0/0/0;   
 psbasemap -JX$graph_width/$graph_height -R$xmin/$xmax/-25/5 -B/Ns -Y$vertshift -O -K >> $ps
 gmtset BASEMAP_FRAME_RGB +0/0/0;       awk '{print $1, -$(NF-1)/1e3}' $prj.xzt | \
@@ -264,7 +265,7 @@ if (-r $prj.strs) then
 	#if (-r $prj.strs.grd) rm -f $prj.strs
 endif
 psbasemap -JX$graph_width/-5 -R$xmin/$xmax/-2/70 -Ba50f10:"distance (km)":/20f10:"Depth (km)":nSeW \
-	-X4 -Y3 -K 										>> $ps
+	-X2.5 -Y3 -K -P										>> $ps
 psclip	$prj.stress.clip.tao.gmt.tmp -JX -R -O -K 						>> $ps
 grdimage	$prj.strs.grd -C$prj.stress_cpt.tao.gmt.tmp -JX -R -O -K  			>> $ps
 grdcontour	$prj.strs.grd -JX -R -C$prj.contours1.z.tao.gmt.tmp -A10f10 -W1/255 -K -O 	>> $ps
@@ -273,7 +274,7 @@ psclip -C -O -K 										>> $ps
 psxy	$prj.stress.clip.tao.gmt.tmp -JX -R -O -K -W7						>> $ps
 psbasemap -JX -R -Bnsew -O -K >> $ps
 
-psscale -C$prj.stress_cpt.tao.gmt.tmp -B:."stress (MPa)": -D5/-.7/7/.2h -O -K			>> $ps
+psscale -C$prj.stress_cpt.tao.gmt.tmp -B:."stress (MPa)": -D5/-1.7/7/.2h -O -K			>> $ps
 
 if (-r $prj.xzt) awk '{print($1,-$(NF-1))}' $prj.xzt | \
 	psxy -JX$graph_width/3.75 -R$region -Ba50f10/2000:"deflection (m)":neW \
@@ -285,21 +286,21 @@ psbasemap -JX$graph_width/-2 -R$xmin/$xmax/0/70 -B:.$prj\:a50f10/20f10:"thicknes
 if (-r $prj.CRUST)  awk '{print $1/1000, $2}' $prj.CRUST |psxy  -JX -R$xmin/$xmax/0/60000 -W10/60 -L -G170 -O -K >> $ps
 if (-r $prj.UCRUST) awk '{print $1/1000, $2}' $prj.UCRUST |psxy  -JX -R -O -K -L -G200 -W10/130 >> $ps
 psxy $prj.eeth -JX -R$xmin/$xmax/0/60000 -O -W10 -K -H1 >> $ps
+
+
+#YSE MAXIMUM MOMENT POINT:
+if (-r $prj.ysen) then
+psxy $prj.ysen -JX6/-9 -R-1e3/1e3/0/1e2 -W8 -K -O -P -: -Y6 \
+	-B:."":a400f100:"Stress (MPa)":/a10f5:"Depth (km)":NsEW >> $ps
+awk '{print($1,$3)}' $prj.ysen | psxy -JX -R -W8 -O -K -: >> $ps
+awk '{print($1,$5)}' $prj.ysen | psxy -JX -R -W5/140 -H1 -M -O -K -: >> $ps
+awk '{print($1,$4)}' $prj.ysen | psxy -JX -R -W12to -B400f100:"Temperature (C)":nSew -O -K -: >> $ps
+endif
+
 pstext	-JX	-R  -O << END >> $ps
 #	0	25000	13  0   1  1	Te
 #	-30	48000	11  0   1  2	H
 END
 
-
-
-#4th PAGE of Postscript: _______________________________________________________
-#MAXIMUM MOMENT POINT:
-if (-r $prj.ysen) then
-psxy $prj.ysen -JX12.5/-22 -R-1e3/1e3/0/1e2 -W8 -P -K -: \
-	-B:."Yield Stress Envelope '$prj'":a200f100:"Stress (MPa)":/a10f5:"Depth (km)":NsEW >> $ps
-awk '{print($1,$3)}' $prj.ysen | psxy -JX -R -W8 -O -K -: >> $ps
-awk '{print($1,$5)}' $prj.ysen | psxy -JX -R -W5/140 -H1 -M -O -K -: >> $ps
-awk '{print($1,$4)}' $prj.ysen | psxy -JX -R -W12to -B200f100:"Temperature (C)":nSew -O -: >> $ps
-endif
 
 rm -f  $prj.*.tao.gmt.tmp

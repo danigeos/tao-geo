@@ -1,9 +1,5 @@
 #Moho geometry.
-#Resume this line for 
-#heterogeneous case:
-#0	34000
-#Resume next 3 lines for 
-#homogeneous case:
+#x and depth of the moho (m):
 0	7000
 120e3	19000
 160e3	30000

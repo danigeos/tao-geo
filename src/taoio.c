@@ -250,7 +250,7 @@ int read_file_resume(char *filename)
 	if (strcmp(projectname, projectname_aux)) fprintf(stdout, "\nERROR: restart file '%s' does not match present tAo project name '%s'.", filename, version);
 	fread(gif_geom, 	sizeof(char),	MAXLENLINE, 	file);
 
-	fread(&switch_sea, 	sizeof(BOOL),		1, 	file);
+	fread(&water_load, 	sizeof(BOOL),		1, 	file);
 
 
 	/*Defined in tao+tisc.h:*/
@@ -969,7 +969,7 @@ int write_file_resume()
 	fwrite(projectname, 	sizeof(char),	MAXLENFILE, 	file);
 	fwrite(gif_geom, 	sizeof(char),	MAXLENLINE, 	file);
 
-	fwrite(&switch_sea, 	sizeof(BOOL),		1, 	file);
+	fwrite(&water_load, 	sizeof(BOOL),		1, 	file);
 
 
 	/*Defined in tao+tisc.h:*/

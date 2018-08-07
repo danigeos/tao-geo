@@ -80,7 +80,7 @@ details.
 
 
 *example_G:
-	Simple setup to show the compaction of sediment 
+	Simple setup to play with the compaction of sediment 
 	tao example_G -qsed_porosity=.5 -qcompact_depth=2000 -T5e3 
 
 

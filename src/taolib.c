@@ -271,7 +271,7 @@ int match_parameter(char *str1, char *str2, int show, int replace, char *line)
 	Match_Param_Replace_flt ( "vert_force",	vert_force, 	0 )
 	Match_Param_Replace_flt ( "moment",	appmoment, 	0 )
 	Match_Param_Replace_int ( "isost_model",	isost_model, 	0 )
-	Match_Param_Replace_int ( "switch_sea", 	switch_sea, 	0 )
+	Match_Param_Replace_int ( "water_load", 	water_load, 	0 )
 	Match_Param_Replace_int ( "switch_topoest", switch_topoest, 	0 )
 	Match_Param_Replace_int ( "grav_anom",	grav_anom_type, 	0 )
 	Match_Param_Replace_int ( "switch_files",	switch_write_file, 	0 )
@@ -288,6 +288,7 @@ int match_parameter(char *str1, char *str2, int show, int replace, char *line)
 	Match_Param_Replace_int ( "lith_type",	isost_model, 	1 )
 	Match_Param_Replace_int ( "erosed_type",	erosed_model, 	1 )
 	Match_Param_Replace_int ( "switch_erosed",	erosed_model, 	1 )
+	Match_Param_Replace_int ( "switch_sea", 	water_load, 	1 )
 	Match_Param_Replace_flt ( "ymin", 	zmin, 	1 )
 	Match_Param_Replace_flt ( "ymax", 	zmax, 	1 )
 	Match_Param_Replace_flt ( "dtmemounit",	dt_record, 	1 )
@@ -508,9 +509,9 @@ float moment_calculator (float 	d2wdx2,
 	int	i, iter, j, itop, ifloor, layer=0, numlayers, numiter=50, k;
 	float	stress_distrib_slope,			/*Slope of the linear part.*/
 			total_moment=0, momentlayer, 	/*Total and layer moments.*/
-			decoupl_stress_limit=50e6, 	/*Default decoupling yield stress.*/
-			yield_stress_minim=10e6, 	/*Minimum yield stress. This defines mechanical thickness. Ranalli, 1994.*/
-			z, 				/*Depth.*/
+			decoupl_stress_limit=50e6, 		/*Default decoupling yield stress.*/
+			yield_stress_minim=10e6, 		/*Minimum yield stress. This defines mechanical thickness. Ranalli, 1994.*/
+			z, 	/*Depth.*/
 			ztoplayer[10], zfloorlayer[10], /*Top & base of each layer.*/
 			linearstress, z_null_strs, 
 			pressurelayer, pressure, 
@@ -518,8 +519,8 @@ float moment_calculator (float 	d2wdx2,
 			criterio, 
 			Dsigma, 
 			backpressure, refstress=0, 
-			*refstressv; 			/*Stress due to tect. force.*/
-	BOOL	switch_capasaturada;
+			*refstressv; 					/*Stress due to tect. force.*/
+	BOOL	switch_saturatedlayer;			/*YES if that decoupled layer is entirely at the yield stress due to horz_force*/
 
 	refstressv = (float *) calloc(Nz, sizeof(float));
 
@@ -535,14 +536,12 @@ float moment_calculator (float 	d2wdx2,
 				refstressv[i] = ((refstress>0) ? MIN_2(refstress, yieldextens[i]) : MAX_2(refstress, yieldcompres[i]) )  ;
 				backpressure += refstressv[i] * dz ;
 			}
-			/*horz_force tiene el criterio de signos contrario a stress.*/
+			/*horz_force has opposite sign criterion than stress.*/
 			criterio = (-horz_force - backpressure) ;
 			if ( fabs(criterio) < 1e9 ) break ;
 			refstress += criterio/fabs(criterio) * 1000e6 / pow(2,iter)  ;
-			/*printf ("\nrefstress=%.2e\tbackpress:%.2e\tcriterio:%.2e\titers:%d", refstress, backpressure, criterio, iter);*/
 		}
 		if (iter>=numiter && refstress<1000e6) fprintf(stderr, "_!_ ") ;
-		/*printf ("\nrefstress=%.2e\tbackpress:%.2e\tcriterio:%.2e\titers:%d", refstress, backpressure, criterio, iter);*/
 	}
 
 
@@ -551,7 +550,6 @@ float moment_calculator (float 	d2wdx2,
 		z = i*dz ;
 		if (yieldextens[i]-yieldcompres[i] > 2*yield_stress_minim /*decoupl_stress_limit*/) {
 			ztoplayer[layer] = z;
-			/*fprintf(stdout, "\n\tTop of layer: %.2f", ztoplayer[layer]);*/
 			for (; i<Nz; i++) {
 				z = i*dz;
 				Dsigma = yieldextens[i]-yieldcompres[i];
@@ -568,7 +566,6 @@ float moment_calculator (float 	d2wdx2,
 						iz--
 					) ;
 					zfloorlayer[layer] = iz*dz ;
-					/*fprintf(stdout, "\tBase of layer: %.2f", zfloorlayer[layer]);*/
 					mecanthick += zfloorlayer[layer] - ztoplayer[layer];
 					layer++;
 					break;
@@ -587,14 +584,15 @@ float moment_calculator (float 	d2wdx2,
 
 	/*Distribute bending stresses along each decoupled layer.*/
 	for (layer=0; layer<numlayers ; layer++) {
+		/*We need to find the depth where flexural bending stress is zero, crossing from positive to negative. This depth must accomplish that the integrated force equals horz_force*/
 		z_null_strs = (zfloorlayer[layer]+ztoplayer[layer])/2 ;
 		itop=ztoplayer[layer]/dz ; ifloor=zfloorlayer[layer]/dz ;
-		for (j=itop, switch_capasaturada=YES; j<=ifloor; j++) {
+		for (j=itop, switch_saturatedlayer=YES; j<=ifloor; j++) {
 			if ((refstressv[j]>0 && refstressv[j]<yieldextens[j]) || (refstressv[j]<=0 && refstressv[j]>yieldcompres[j])) {
-				switch_capasaturada=NO ;
+				switch_saturatedlayer=NO ;
 			}
 		}
-		if (switch_capasaturada==NO) {
+		if (switch_saturatedlayer==NO) {
 			for (i=1 ; i<=numiter; i++) {
 				/*Iterates until null stress point position reach convergence.*/
 				pressurelayer = abspressure = momentlayer = 0 ;
@@ -610,11 +608,7 @@ float moment_calculator (float 	d2wdx2,
 					pressurelayer += (stress[j] - refstressv[j])* dz ;
 					abspressure += fabs(stress[j]- refstressv[j]) * dz ;
 					momentlayer += (stress[j] - refstressv[j]) * (z-z_null_strs) * dz;
-					/*fprintf(stdout, "\n  Stress at %d: %.2e\tRef=%.2e\tl,e,c=%.2e %.2e %.2e", 
-						j, stress[j], refstressv[j], linearstress, yieldextens[j], yieldcompres[j]);*/
 				}
-				/*fprintf(stdout, "\n\tIter.%d; Pres.lay. %.2e; Abspres. %.2e;\tNullpoint:%.2f", 
-					i, pressurelayer, abspressure, z_null_strs) ;*/
 				criterio = pressurelayer ;
 				if (fabs(criterio)/abspressure < .001) break ;
 				z_null_strs -= (criterio*d2wdx2)/fabs(criterio*d2wdx2) * dz*(Nz-1) /pow(2, i) ;
@@ -625,7 +619,6 @@ float moment_calculator (float 	d2wdx2,
 			momentlayer = 0 ;
 			for (i=itop ; i<ifloor; i++) stress[i]=refstressv[i] ;
 		}
-		/*fprintf(stdout, "\n\t%d iters. en la capa %d, que tiene momento %.2e", i, layer+1, momentlayer) ;*/
 		total_moment += momentlayer ; 
 		pressure += pressurelayer ;
 	}
@@ -669,7 +662,7 @@ float moment_calculator_hist (
 		mecanthick=0, 
 		Dsigma, 
 		*newstress;
-	BOOL	switch_capasaturada;
+	BOOL	switch_saturatedlayer;
 
 	/*Define the n decoupled layers (top and bottom).*/
 	for (i=0; i<Nz; i++) {
@@ -714,12 +707,12 @@ float moment_calculator_hist (
 			layer_thick = zbotlayer[layer]-ztoplayer[layer];
 
 		itop=ztoplayer[layer]/dz; ibot=zbotlayer[layer]/dz;
-		for (j=itop, switch_capasaturada=YES; j<=ibot; j++) {
+		for (j=itop, switch_saturatedlayer=YES; j<=ibot; j++) {
 			if ((stress[j]>0 && stress[j]<yieldextens[j]) || (stress[j]<=0 && stress[j]>yieldcompres[j])) {
-				switch_capasaturada=NO ;
+				switch_saturatedlayer=NO ;
 			}
 		}
-		if (switch_capasaturada==NO) {
+		if (switch_saturatedlayer==NO) {
 			/*Iterates until null stress point position reach convergence.*/
 			for (i=1; i<=numiter; i++) {
 				layerforceincre = layerabsforceincre = cumulmomentlayer = incremomentlayer = 0;
@@ -1259,7 +1252,7 @@ float calculate_sea_level()
 	  in the water column (sea and lakes).
 	*/
 
-	if (!switch_sea) return (0);
+	if (!water_load) return (0);
 
 	/*Calculates sea level*/
 	if (n_sea_level_input_points) {
@@ -1283,7 +1276,7 @@ float calculate_sea_level()
 
 
 
-int water_load()
+int calculate_water_load()
 {
 	float	water_volume=0;
 
@@ -1293,7 +1286,7 @@ int water_load()
 
 	calculate_topo(topo);
 
-	if (!switch_sea) return(0);
+	if (!water_load) return(0);
 
 	for (int i=0; i<Nx; i++) {
 		int il;

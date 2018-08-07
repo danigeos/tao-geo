@@ -9,7 +9,8 @@
 #define	RIG2ET(x)	(pow((x)/E*12.*(1.-nu*nu), 1./3.))	/*Converts Rigidity into Elastic Thickness*/
 
 int	grav_anom_type, 	/*Gravity anomaly type [m]: 0 means no gravity calculation; 1 means Bouguer; 2 means free-Air*/
-	isost_model;		/*Type of isostasy / lithospheric plate*/
+	isost_model,		/*Type of isostasy / lithospheric plate*/
+	water_load; 		/*1 if sea presence has been required*/
 
 float
 	Te_default,				/*Default elastic plate thicknes [m]*/
@@ -37,5 +38,4 @@ char
 
 
 BOOL
-	switch_sea, 			/*SI if sea presence has been required*/
-	switch_geograph_coor;	/*SI if x-y are geographycal coordinates*/
+	switch_geograph_coor;	/*YES if x-y are geographycal coordinates*/
