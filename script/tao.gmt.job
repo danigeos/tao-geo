@@ -19,7 +19,6 @@ endif
 
 
 #Setting up variables:
-
 source $tao_dir/script/tao.common.gmt.job
 
 #1st PAGE of Postscript:
@@ -37,10 +36,10 @@ psbasemap -JX$graph_width/$graph_height -R$xmin/$xmax/$zminkm/$zmaxkm \
 psbasemap -JX -R$xmin/$xmax/$zmin/$zmax -K -O -B:: >> $ps
 
 #Draws Sea:
-if ($switch_sea == 1) psxy $prj.sea.tao.gmt.tmp -JX -R -O -K -L -G$color_sea >> $ps
+if ($switch_sea == 1) psxy $tmp.sea.xz.tmp -JX -R -O -K -L -G$color_sea >> $ps
 
 #Draws basement:
-psxy $prj.basement.xz.tao.gmt.tmp -JX -R -O -K -L -G$color_heavy_basement >> $ps
+psxy $tmp.basement.xz.tmp -JX -R -O -K -L -G$color_heavy_basement >> $ps
 
 #set uplift = `awk -v tn=$Timenow 'BEGIN{u=(tn+40)*3000/40; if (0) u=30*3000/40; print u; exit;}'`
 #echo uplift = $uplift
@@ -53,8 +52,8 @@ psxy $prj.basement.xz.tao.gmt.tmp -JX -R -O -K -L -G$color_heavy_basement >> $ps
 
 set col = 3
 while ($col <= $numcols)
-	awk '{print $1, $col}' col=$col $prj.pfl > $prj.0.tao.gmt.tmp
-	awk '{print $1, $(col-1)}' col=$col $prj.2.tao.gmt.tmp >> $prj.0.tao.gmt.tmp
+	awk '{print $1, $col}' col=$col $prj.pfl > $tmp.0.tmp
+	awk '{print $1, $(col-1)}' col=$col $tmp.invert_pfl.tmp >> $tmp.0.tmp
 
 	if ($dens[$col] > 2895) then
 		set color = $color_heavy_basement
@@ -89,7 +88,7 @@ while ($col <= $numcols)
 		endif
 	endif
 
-	psxy $prj.0.tao.gmt.tmp -JX -R -O -K -L -M -W1 -G$color >> $ps
+	psxy $tmp.0.tmp -JX -R -O -K -L -M -W1 -G$color >> $ps
 	set col = `echo $col + 1 | bc`
 end
 
@@ -113,16 +112,15 @@ psbasemap -JX$graph_width/$graph_height -R$xmin/$xmax/$zminkm/$zmaxkm \
 psbasemap -JX -R$xmin/$xmax/$zmin/$zmax -K -O -B:: >> $ps
 
 #Draws Sea:
-if ($switch_sea == 1) psxy $prj.sea.tao.gmt.tmp -JX -R -O -K -L -G$color_sea	>> $ps
+if ($switch_sea == 1) psxy $tmp.sea.xz.tmp -JX -R -O -K -L -G$color_sea	>> $ps
 
 #Draws base of Blocks:
-psxy $prj.basement.xz.tao.gmt.tmp -JX -R -O -K -L -G$color_heavy_basement >> $ps
+psxy $tmp.basement.xz.tmp -JX -R -O -K -L -G$color_heavy_basement >> $ps
 
 set col = 3
 while ($col <= $numcols)
-	awk '{print $1, $col}' col=$col $prj.pfl > $prj.0.tao.gmt.tmp
-	awk '{print $1, $(col-1)}' col=$col $prj.2.tao.gmt.tmp >> $prj.0.tao.gmt.tmp
-
+	awk '{print $1, $col}' col=$col $prj.pfl > $tmp.0.tmp
+	awk '{print $1, $(col-1)}' col=$col $tmp.invert_pfl.tmp >> $tmp.0.tmp
 	if ($dens[$col] > 2895) then
 		set color = $color_heavy_basement
 	else
@@ -156,7 +154,7 @@ while ($col <= $numcols)
 		endif
 	endif
 
-	psxy $prj.0.tao.gmt.tmp -JX -R -O -K -L -M -W1 -G$color >> $ps
+	psxy $tmp.0.tmp -JX -R -O -K -L -M -W1 -G$color >> $ps
 	set col = `echo $col + 1 | bc`
 end
 
@@ -178,21 +176,21 @@ awk '{	if (NR==2) for (i=3;i<=NF;i++) {dens[i]=$i;}\
 		   for (i=3;i<=NF;i++) if (dens[i]>2400) thick+=($i-$(i-1)); \
 		   print $1, thick;\
 		  }\
-}' $prj.pfl > $prj.basam_thick.tao.gmt.tmp
+}' $prj.pfl > $tmp.basement_thick.tmp
 
 awk '{	if (NR==2) for (i=3;i<=NF;i++) {dens[i]=$i;}\
 	if (NR>2){ thick=0;\
 		   for (i=3;i<=NF;i++) {if (dens[i]<=2400 && dens[i]>1100) thick+=($i-$(i-1)); } \
 		   print $1, thick/1e3;\
 		  }\
-}' $prj.pfl > $prj.sed_thick.tao.gmt.tmp
+}' $prj.pfl > $tmp.sed_thick.tmp
 
 awk '{print $1, $2/1e3}'     $prj.eros | \
 	psxy -JX$graph_width/$graph_height -R$xmin/$xmax/-10/25 -W4/150/100/0 \
 		-B$ticklabels\:"":/10f2g10:"erosion(km)":nseW -K -Y$vertshift -O >> $ps
-#paste $prj.basam_thick_ref $prj.basam_thick.tao.gmt.tmp | awk '{print $1,$4-$2}' | \
+#paste $prj.basam_thick_ref $tmp.basament_thick.tmp | awk '{print $1,$4-$2}' | \
 #	psxy -JX -R -O -K -W3/255/0/0 >> $ps 
-#psxy $prj.sed_thick.tao.gmt.tmp -JX -R -O -K -W3/200/170/0 >> $ps 
+#psxy $$tmp.sed_thick.tmp -JX -R -O -K -W3/200/170/0 >> $ps 
 set vertshift = `echo $graph_height + .5 | bc -l`
 
 gmtset BASEMAP_FRAME_RGB +0/0/0
@@ -238,6 +236,7 @@ psbasemap -JX -R -O -Bnsew >> $ps
 
 
 #2nd PAGE of Postscript: _______________________________________________________
+
 #Gravity Anomaly graphic:
 if (-r $prj.xg) then 
 	awk '{if (NR>=3) print $1, $2}' $prj.xg \
@@ -256,36 +255,36 @@ endif
 
 
 if ($switch_rheo == 0) then 
-	rm -f  $prj.*.tao.gmt.tmp
+	rm -f  $tmp.*.tmp
 	exit
 endif
 
 
 
-#DEFLECTION & STRESSES
+#STRESS DISTRIBUTION
 if (-r $prj.strs) then
-	#rm -f $prj.temp.grd $prj.strs.grd 
-	#awk '{print $1,$2,$4}' $prj.temp | surface -G$prj.temp.grd -I2/1 -R$xmin/$xmax/-5/70 -H2 
-	surface	$prj.strs -G$prj.strs.grd -I2/1 -R$xmin/$xmax/-2/70 -H2 
-	#if (-r $prj.temp.grd) rm -f $prj.temp
-	#if (-r $prj.strs.grd) rm -f $prj.strs
+	#awk '{print $1,$2,$4}' $prj.temp | surface -G$tmp.temp.grd.tmp -I2/1 -R$xmin/$xmax/-5/70 -H2 
+	awk '{print $1,$2,$3}' $prj.strs | surface -G$tmp.strs.grd.tmp -I$dx/$dz -R$xmin/$xmax/$zminlith/$zmaxlith -H2 
+	awk '{if ($3==$5) print $1,$2,1; else print $1,$2,0}' $prj.strs | surface -G$tmp.compr_deform.grd.tmp -I$dx/$dz -R$xmin/$xmax/$zminlith/$zmaxlith -H2 
+	awk '{print $1,$2,$5}' $prj.strs | surface -G$tmp.yieldcomp.grd.tmp -I$dx/$dz -R$xmin/$xmax/$zminlith/$zmaxlith -H2
+	awk '{print $1,$2,$6}' $prj.strs | surface -G$tmp.yieldextn.grd.tmp -I$dx/$dz -R$xmin/$xmax/$zminlith/$zmaxlith -H2
 endif
 psbasemap -JX$graph_width/-5 -R$xmin/$xmax/-2/70 -B$ticklabels\:"distance (km)":/20f10:"Depth (km)":nSeW \
 	-X2.5 -Y3 -K -P	>> $ps
-psclip	$prj.stress.clip.tao.gmt.tmp -JX -R -O -K >> $ps
-grdimage	$prj.strs.grd -C$prj.stress_cpt.tao.gmt.tmp -JX -R -O -K  			>> $ps
-grdcontour	$prj.strs.grd -JX -R -C$prj.contours1.z.tao.gmt.tmp -A10f10 -W1/255 -K -O 	>> $ps
-#grdcontour	$prj.strs.grd -JX -R -C$prj.contours2.z.tao.gmt.tmp -A10f10 -W1/255 -K -O 	>> $ps
+psclip $tmp.stress_clip.xz.tmp -JX -R -O -K >> $ps
+grdimage	$tmp.strs.grd.tmp -C$tmp.stress_cpt.tmp -JX -R -O -K >> $ps
+grdcontour	$tmp.strs.grd.tmp -JX -R -C$tmp.zcontours.tmp -A10f10 -W1/255 -K -O >> $ps
 psclip -C -O -K >> $ps
-psxy	$prj.stress.clip.tao.gmt.tmp -JX -R -O -K -W7 >> $ps
+psxy $tmp.stress_clip.xz.tmp -JX -R -O -K -W3ta >> $ps
 psbasemap -JX -R -Bnsew -O -K >> $ps
 
-psscale -C$prj.stress_cpt.tao.gmt.tmp -B:."stress (MPa)": -D7.5/-1.6/7/.2h -O -K >> $ps
+psscale -C$tmp.stress_cpt.tmp -B:."stress (MPa)": -D7.5/-1.6/7/.2h -O -K >> $ps
 
+
+#DEFLECTION and CRUST
 if (-r $prj.xzt) awk '{print($1,-$(NF-1)/1e3)}' $prj.xzt | \
 	psxy -JX$graph_width/3.75 -R$xmin/$xmax/$zminkm/$zmaxkm -B$ticklabels/$zticklabels\:"deflection (km)":neW \
-	-W7 -H2 -Y5.5 -O -K >> $ps
-
+		-W7 -H2 -Y5.5 -O -K >> $ps
 
 psbasemap -JX$graph_width/-2 -R$xmin/$xmax/0/70 -B:.$prj\:$ticklabels\/20f10:"thickness (km)":NeW \
 	-Y4.5 -O -K >> $ps
@@ -294,6 +293,7 @@ if (-r $prj.CRUST)  awk -v xmax=$xmax '{if (NR==1) {print xmax,0; print $1/1000,
 if (-r $prj.UCRUST) awk -v xmax=$xmax '{if (NR==1) {print xmax,0; print $1/1000,0;} print $1/1000, $2/1e3}' $prj.UCRUST |\
 	psxy -JX -R -O -K -G200 -W10/130 >> $ps
 psxy $prj.eeth -JX -R$xmin/$xmax/0/60000 -O -W10 -K -H1 >> $ps
+
 
 
 #YSE AND STRESS AT ONE LOCATION (MAXIMUM MOMENT POINT):
@@ -332,4 +332,4 @@ pstext	-JX	-R  -O << END >> $ps
 #	-30	48000	11  0   1  2	H
 END
 
-rm -f  $prj.*.tao.gmt.tmp
+rm -f  $tmp.*.tmp
