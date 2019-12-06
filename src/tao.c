@@ -12,8 +12,9 @@ valgrind --dsymutil=yes --track-origins=yes --tool=memcheck --leak-check=full `w
 	COMMENTS (programmer's agenda)
 	-Track rock particles in thrusts and sediments. 
 	-Implement grain size in transport. This to calculate grain size distribution in sediment blocks, and as a first step for the next point once transitory flow is implemented. 
-	-Implement sediment load effect on erosion (Sklar). Intersting for acceleration of erosion during lake overtopping.
+	-Implement sediment load effect on erosion (Sklar). Interesting for acceleration of erosion during lake overtopping.
 	-Implement transitory water flow.
+	-See also list in tisc.c.
 	-DONE. Implement sediment compaction (easy in calculate_topo and when writting the pfl file).
 */
 
@@ -89,7 +90,7 @@ int inputs(int argc, char **argv)
 	
 	/*Version of tAo will be matched against the parameters file *.PRM*/
 	/*¡¡ UPDATE template.PRM !!*/
-	strcpy(version, "tAo_2018-08-07");
+	strcpy(version, "tAo_2019-12-06");
 
 	/*Default parameter values are read from ./tao/doc/template.PRM*/
 	sprintf(projectname, "%s/doc/template", TAODIR);
@@ -329,15 +330,15 @@ int interpr_command_line_opts(int argc, char **argv)
 					}
 					if (xmin<x0) xmin=x0;
 					if (xmax>xf) xmax=xf;
-					else fprintf(stdout, "\nWarning: Impossible to change the domain when resuming a model.");
+					else if (run_type!=1) fprintf(stdout, "\nWarning: Impossible to change the domain when resuming a model.");
 					break;
 				case 'd':
 					if (run_type!=2) Nx = (int) (xf-x0)/value + 1;
-					else fprintf(stdout, "\nWarning: Imposible to change dx or Nx value when restarting a model.");
+					else if (run_type!=1) fprintf(stdout, "\nWarning: Imposible to change dx or Nx value when resuming a model.");
 					break;
 				case 'L': /*OLD*/
 					if (run_type!=2) x0 = value;
-					else fprintf(stdout, "\nWarning: Imposible to change x0 value when restarting a model.");
+					else if (run_type!=1) fprintf(stdout, "\nWarning: Imposible to change x0 value when resuming a model.");
 					if (xmin<x0) xmin=x0;
 					break;
 				case 'M':
@@ -523,53 +524,53 @@ int Elastoplastic_Deflection()
 
 	for (i=0; i<Nx; i++) if (Dq[i]) load_changes = YES;
 	if (isost_model>0 && (load_changes || (Time==Timeini && (horz_force || vert_force || appmoment)))) {
-	  fprintf(stdout, " e");	  fflush(stdout);
-	  if (isost_model<3) {
+		fprintf(stdout, " e");	  fflush(stdout);
+		if (isost_model<3) {
 			if (!Te_default) {
-			/*LOCAL ISOSTASY*/
-			float Krest;
-			for (i=0; i<Nx; i++) {
-				GET_KREST(Krest, q, i)
-				Dw[i] = Dq[i] / Krest;
-			}
+				/*LOCAL ISOSTASY*/
+				float Krest;
+				for (i=0; i<Nx; i++) {
+					GET_KREST(Krest, q, i)
+					Dw[i] = Dq[i] / Krest;
+				}
 			}
 			else {
 				/*REGIONAL ISOSTASY*/
-		/*Pure Elastic Flexure without rheological inputs*/
-		float 	*moment;
-		double	**A,		/*Linear System Matrix (diagonal terms)*/
-			*b;		/*Independent Column*/
-		int 	NDs=3, NDi=3;
-		A = alloc_matrix_dbl (Nx, NDi+1+NDs);
-		b = (double *) calloc (Nx , sizeof(double));
-		moment = (float *) calloc (Nx , sizeof(float));
-		LES_matrix(A, b, D, q, Dq, w, NO) ;
-		solveLES(A, b, Nx, NDs, NDi, Dw) ;
-		for (i=0; i<Nx; i++) free(A[i]);
-		free(A); free(b); 
+				/*Pure Elastic Flexure without rheological inputs*/
+				float 	*moment;
+				double	**A,		/*Linear System Matrix (diagonal terms)*/
+					*b;		/*Independent Column*/
+				int 	NDs=3, NDi=3;
+				A = alloc_matrix_dbl (Nx, NDi+1+NDs);
+				b = (double *) calloc (Nx , sizeof(double));
+				moment = (float *) calloc (Nx , sizeof(float));
+				LES_matrix(A, b, D, q, Dq, w, NO) ;
+				solveLES(A, b, Nx, NDs, NDi, Dw) ;
+				for (i=0; i<Nx; i++) free(A[i]);
+				free(A); free(b); 
 
-		for (i=0;i<Nx;i++) {
-			w[i] += Dw[i] ;
-			if (i != 0 && i != Nx-1) 
-				moment[i] += 
-					-D[i] * (Dw[i-1] - 2*Dw[i] + Dw[i+1]) 
-					/ pow(dx,2) ;
+				for (i=0;i<Nx;i++) {
+					w[i] += Dw[i] ;
+					if (i != 0 && i != Nx-1) 
+						moment[i] += 
+							-D[i] * (Dw[i-1] - 2*Dw[i] + Dw[i+1]) 
+							/ pow(dx,2) ;
+				}
+				if (isost_model!=2) flexural_stats(moment);
+				free(moment);
+
+			}
 		}
-		if (isost_model!=2) flexural_stats(moment);
-		free(moment);
-
+		else {
+			/*Elasto-plastic flexure with EET rheological calculation*/
+			Rheo_Flex_Iter();
 		}
-	  }
-	  else {
-		/*Elasto-plastic flexure with EET rheological calculation*/
-		Rheo_Flex_Iter();
-	  }
 
-	  if (switch_topoest) {
-	  	  /*Defines the thickness of last infill Block*/
-	  	  for (i=0; i<Nx; i++)
-	  		  Blocks[i_first_Block_load-1].thick[i] +=  MAX_2(Dw[i], 0) ;
-	  }
+		if (switch_topoest) {
+	  		/*Defines the thickness of last infill Block*/
+	  		for (i=0; i<Nx; i++)
+	  			Blocks[i_first_Block_load-1].thick[i] +=  MAX_2(Dw[i], 0) ;
+		}
 	}
 
 	PRINT_ARRAY_INFO(Dq, "load_incrm", "N/m2", "N/m") 
@@ -716,56 +717,6 @@ int surface_processes()
 	return(1);
 }
 
-
-
-int flexural_stats (float *moment) {
-	if (verbose_level>=1) {
-		/*prints flexural statistics*/
-		int 	i, iwmindt=SIGNAL, iwmaxdt=SIGNAL, idwmindt=SIGNAL, idwmaxdt=SIGNAL, ihmaxdt=SIGNAL;
-		float	shear=0, shearmax=-1e19, xshearmax=-1e19, shearmin=+1e19, xshearmin=+1e19, 
-			momentmax=-1e19, xmomentmax=-1e19, momentmin=+1e19, xmomentmin=+1e19, 
-			xfirstnodo=0, x, 
-			wmaxdt=-1e19, wmindt=+1e19, dwmaxdt=-1e19, dwmindt=+1e19;
-		float 	Warea=0, Dmean=0;
-
-		for (i=1; i<Nx-1; i++) {
-			if (w[i]*w[i+1] <= 0  &&  xfirstnodo == 0 )
-				xfirstnodo = i*dx+x0 ;
-			if ( i < Nx-2 )
-				shear = - D[i] * (w[i+2] - 3*w[i+1] + 3*w[i] -w[i-1]) / pow(dx,3);
-			if (shearmin > shear)
-				{ shearmin = shear;	xshearmin=x0+dx*(i+.5); }
-			if (shearmax < shear)
-				{ shearmax = shear;	xshearmax=x0+dx*(i+.5); }
-			if (shearmax < shear)
-				{ shearmax = shear;	xshearmax=x0+dx*(i+.5); }
-			if (momentmax < moment[i] && x0+dx*i>xmin && x0+dx*i<xmax)
-				{ momentmax = moment[i];	xmomentmax=x0+dx*i; }
-			if (momentmin > moment[i] && x0+dx*i>xmin && x0+dx*i<xmax)
-				{ momentmin = moment[i];	xmomentmin=x0+dx*i; }
-		}
-		for (i=1; i<Nx-1; i++) {
-			if (x0+i*dx>=xmin && x0+i*dx<=xmax) {
-			if (wmindt>w[i]) {		wmindt=w[i]; 	iwmindt=i; }
-			if (wmaxdt<w[i]) {		wmaxdt=w[i]; 	iwmaxdt=i; }
-			if (dwmindt>Dw[i]) {		dwmindt=Dw[i]; 	idwmindt=i; }
-			if (dwmaxdt<Dw[i]) {		dwmaxdt=Dw[i]; 	idwmaxdt=i; }
-			Warea += w[i]*dx;
-			Dmean += D[i]/Nx;
-			}
-		}
-		PRINT_SUMLINE("moment_max.	= %10.3e N  \t@x= %5.1f km", momentmax, xmomentmax/1000);
-		PRINT_SUMLINE("moment_min.	= %10.3e N  \t@x= %5.1f km", momentmin, xmomentmin/1000);
-		PRINT_SUMLINE("shear_max.	 = %10.3e N/m\t@x= %5.1f km", shearmax, xshearmax/1000);
-		PRINT_SUMLINE("shear_min.	 = %10.3e N/m\t@x= %5.1f km", shearmin, xshearmin/1000);
-		PRINT_SUMLINE("deflection_max.= %8.1f m   \t@x= %5.1f km", wmaxdt, (x0+iwmaxdt*dx)/1000);
-		PRINT_SUMLINE("deflection_min.= %8.1f m   \t@x= %5.1f km", wmindt, (x0+iwmindt*dx)/1000);
-		PRINT_SUMLINE("defl.vel.max.  = %8.1f m/My\t@x= %5.1f km", dwmaxdt/(dt/Matosec), (x0+idwmaxdt*dx)/1000);
-		PRINT_SUMLINE("defl.vel.min.  = %8.1f m/My\t@x= %5.1f km", dwmindt/(dt/Matosec), (x0+idwmindt*dx)/1000);
-		PRINT_SUMLINE("first zero @x= %8.1f km ", xfirstnodo/1000);
-		PRINT_SUMLINE("deflectn.area  = %8.1f km2 \tmean_rigid.= %.2e N m/m", Warea/1e6, Dmean);
-	}
-}
 
 
 
@@ -1497,7 +1448,7 @@ int Viscous_Relaxation()
 			Blocks[i_first_Block_load-1].thick[i] +=  MAX_2(Dw[i], 0) ;
 	}
 
-	flexural_stats(moment);
+	(moment);
 
 	free(moment);
 	for (i=0; i<Nx; i++) free(A[i]);

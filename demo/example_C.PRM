@@ -30,7 +30,6 @@ compact_depth	3000
          tau	5
 boundary_conds	1
      topoest 	1
-     switch_topoest 1
 erosed_model	1
     Keroseol	0
       Ksedim	0

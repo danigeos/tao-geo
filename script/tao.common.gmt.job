@@ -1,13 +1,13 @@
 #!/bin/csh
-#Common stuff for gmt jobs of tao:
+#Common stuff for gmt jobs for tAo:
 
-set model = $prj
-set tmp 	= tao.gmt.$prj
+set prj	= $argv[1]
+
+set tmp = tao.gmt.$prj
 
 set Timenow = `awk '(NR==1) {printf("%.2f", $(NF-1)); exit;}' $prj.pfl`
-set Lx 		= `echo $3 \- $2 | bc -l`
 
-if ( $Lx != "" ) then
+if ($#argv > 4) then
 	set xmin	= $2
 	set xmax	= $3
 	set zmin	= $4
@@ -35,6 +35,7 @@ else
     set zmin = `awk '{if ($1 == "zmin") {g=$2;     exit}}END{print g}' g=$geom[5] $prj.PRM`
     set zmax = `awk '{if ($1 == "zmax") {g=$2;     exit}}END{print g}' g=$geom[6] $prj.PRM`
 endif
+set Lx = `echo $xmax \- $xmin | bc -l`
 
 set dt   	= `awk '{if ($1=="dt")        {print $2; exit;}}' $prj.PRM`
 set Timeini 	= `awk '{if ($1=="Timeini")   {print $2; exit;}}' $prj.PRM`
@@ -42,7 +43,7 @@ set Timefinal 	= `awk '{if ($1=="Timefinal") {print $2; exit;}}' $prj.PRM`
 
 set switch_sea	= `awk '{if ($1 == "switch_sea")  {if (g=="") {g=1;exit}}}END{print g}' g=$6 $prj.PRM`
 set switch_rheo	= `awk '{if ($1 == "isost_model") {if ($2<3) g=0; else g=1; exit}}END{print g}' g=$7 $prj.PRM`
-set hydro_model	= `awk '{if ($1 == "hydro_model") {if (g=="") {g=1;exit}}}END{print g}' $prj.PRM`
+set hydro_model	= `awk '{if ($1 == "hydro_model") {print $2; exit}}' $prj.PRM`
 
 set numcols 	= `awk '(NR==4) {print NF; exit;}' $prj.pfl`
 set dens 	= `awk '(NR==2) {print $0; exit;}' $prj.pfl`
@@ -105,15 +106,16 @@ set ymaxkm = $zmaxkm
 set ymin = $zmin
 set ymax = $zmax
 
-set ticklabels 	= `awk -v meanL=$Lx 'BEGIN{if (meanL>=990) print "a200f20"; else if (meanL>=390) print "a100f10"; else if (meanL>=90) print "a20f20"; else print "a10f1";}'`
+set ticklabels 	= `awk -v L=$Lx 'BEGIN{if (L>=990) print "a500f100"; else if (L>=390) print "a200f50"; else if (L>=90) print "a50f10"; else print "a10f1";}'`
 set zticklabels	= `awk -v zmin=$zminkm -v zmax=$zmaxkm 'BEGIN{if (zmax-zmin>=30) print "a10f5g10"; else if (zmax-zmin>=10) print "a4f1g4"; else if (zmax-zmin>=3) print "a1f.5g1"; else print "a.5f.1g.1";}'`
+
 
 if (-r $prj.strs) then
 cat <<END> $prj.stress_cpt.tao.gmt.tmp
--600	250	0	0	-100	255	160	80
+-500	250	0	0	-100	255	160	80
 -100	255	160	80	0	255	252	250
 0	250	252	255	100	80	160	255
-100	80	160	255	600	0	0	255
+100	80	160	255	500	0	0	255
 F	0	0	0
 B	0	0	0
 END
@@ -136,7 +138,7 @@ END
 	#stress clip file:
 	if (-r $prj.xzt) then
 		awk '{if (substr($0,1,1) != "#") print $1, $(NF-1)/1000+alt0}' alt0=$alt0 $prj.xzt > $prj.stress.clip.tao.gmt.tmp
-		awk '{if (substr($0,1,1) != "#") print $1, ($(NF-1))/1000+alt0+mechthick}' alt0=$alt0 mechthick=$mechthick $prj.xzt | invertfile >> $prj.stress.clip.tao.gmt.tmp
+		awk '{if (substr($0,1,1) != "#") print $1, ($(NF-1))/1000+alt0+mechthick*99}' alt0=$alt0 mechthick=$mechthick $prj.xzt | invertfile >> $prj.stress.clip.tao.gmt.tmp
 	endif
 endif
 
