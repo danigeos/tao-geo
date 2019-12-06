@@ -29,7 +29,8 @@ random_topo	0	Adds noise to initial topo between -random_topo/2 and
 
 #DENSITIES [kg/m3]:
 densasthen	3200	Density beneath the lithospheric plate, at the isostatic
-				compensation level in the asthenosphere
+				compensation level in the asthenosphere (Lachenbruch & Morgan, 
+				1990).
 densmantle	3250	Density of the mantle (only relevant for gravity anomaly 
 				calculations).
 denscrust	2850	Mean density of crust (used for the basement).
@@ -37,7 +38,8 @@ densinfill	2800	Used only if switch_topoest==1 in *.PRM or topoest==1 in
 				*.UNIT. Sets the infill density used to fill under topographic
 				(fixed) loads. See example ?.
 denssedim	1900	Sediment density at deposition (bulk, including pores and
-				their water content).
+				their water content). denssedim = sed_porosity*denswater+
+				+(1-sed_porosity)*grain_density).
 densenv		0	Environment density (air or water) above the existing blocks.
 sed_porosity .3		Mean porosity of sediment at deposition (seafloor). For
 				density purposes, pores are assumed to be filled by water. The

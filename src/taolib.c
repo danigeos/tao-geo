@@ -5,7 +5,6 @@
 
 
 
-
 int Allocate_Memory()
 {
 	/* Allocates dynamic memory for the arrays and initializes them to zero*/
@@ -22,8 +21,8 @@ int Allocate_Memory()
 	upper_crust_thick = (float *) calloc(Nx, sizeof(float));
 	topo =  	(float *) calloc(Nx, sizeof(float));
 	Blocks_base = 	(float *) calloc(Nx, sizeof(float));
-	yieldcompres =	(float *) calloc(Nz, sizeof(float));
-	yieldextens = 	(float *) calloc(Nz, sizeof(float));
+	yieldcompres =	alloc_matrix(Nx, Nz);
+	yieldextens = 	alloc_matrix(Nx, Nz);
 
 	Blocks =		(struct BLOCK_1D *) calloc(NmaxBlocks, sizeof(struct BLOCK_1D));
 
@@ -151,13 +150,13 @@ int Init_Stress()
 				Temperature[ix], Nz, dz, 0, 
 				upper_crust_thick[ix], crust_thick[ix],
 				isost_model,
-				yieldcompres, yieldextens,
+				yieldcompres[ix], yieldextens[ix],
 				&mechanical_thickness
 			);
 
 			for (iter=0, refstress=-horz_force/Nz/dz ;  iter<numiter ; iter++) {
 				for (iz=iterforce=0; iz<Nz; iz++) {
-					stress[ix][iz] = ((refstress>0) ? MIN_2(refstress, yieldextens[iz]) : MAX_2(refstress, yieldcompres[iz]) ) ;
+					stress[ix][iz] = ((refstress>0) ? MIN_2(refstress, yieldextens[ix][iz]) : MAX_2(refstress, yieldcompres[ix][iz]) ) ;
 					iterforce += stress[ix][iz] * dz ;
 				}
 				/*horz_force tiene el criterio de signos contrario a stress.*/
@@ -788,7 +787,7 @@ int read_file_YSE()
 {
 	/*READS THE YIELD STRESS ENVELOPE FILE 'projectname.YSE'*/
 
-	int 	iz, nz_input;
+	int 	ix, iz, nz_input;
 	FILE 	*file;
 	char 	filename[MAXLENFILE];
 	float	*yse_comp, *yse_extn, *z_yse, z;
@@ -814,10 +813,12 @@ int read_file_YSE()
 	switch_YSE_file = YES;
 
 	/*Interpolates vertically the YSE*/
-	for (iz=0; iz<Nz; iz++) {
-		z = iz*dz;
-		yieldcompres[iz] = interpol_in_xy_data(z_yse, yse_comp, nz_input, z);
-		yieldextens[iz]  = interpol_in_xy_data(z_yse, yse_extn, nz_input, z);		
+	for (ix=0; ix<Nx; ix++) {
+		for (iz=0; iz<Nz; iz++) {
+			z = iz*dz;
+			yieldcompres[ix][iz] = interpol_in_xy_data(z_yse, yse_comp, nz_input, z);
+			yieldextens[ix][iz]  = interpol_in_xy_data(z_yse, yse_extn, nz_input, z);		
+		}
 	}
 
 	free(z_yse); free(yse_comp); free(yse_extn);
@@ -850,7 +851,7 @@ int Rheo_Flex_Iter () {
 	A = alloc_matrix_dbl (Nx, NDi+1+NDs);
 	b = (double *) calloc (Nx , sizeof(double));
 	moment = (float *) calloc (Nx , sizeof(float));
-		if (!switch_strs_history) {
+	if (!switch_strs_history) {
 		/*
 		  Note that in this case (no stress history) deflection is 
 		  calculated with all the present load. Therefore, the 
@@ -858,169 +859,217 @@ int Rheo_Flex_Iter () {
 		  and there is no possibility for viscous relaxation to 
 		  be taken into account.
 		*/
-			float max_Te_var;
+		float max_Te_var;
 		want =   (float *) calloc (Nx , sizeof(float));
+		for (i=0;i<Nx;i++) want[i] = w[i];
+		/*Calculates a pure elastic Initial deflection*/
+		LES_matrix(A, b, D, q, Dq, w, NO);
+		solveLES(A, b, Nx, 3, 3, w);
+		/*
+		  Uses this w deflection as a first value for an iteration that
+		  finds succesive EET and deflection distributions
+		  until convergence is reached.
+		*/
+		for (rheoiter=0; rheoiter<NMAXRHEOITERS; rheoiter++) {
+			max_Te_var=0;
+			fprintf(stdout, "\b\b%2d", rheoiter);  fflush(stdout);
+			/*For each x position calculates stress distribution & EET:*/
+			for (ix=0, criterioconv=momentmax=0; ix<Nx; ix++) {
+				x=x0+dx*ix;
+				/*Curvature from previous deflection (positive at forebulge)*/
+				if (ix>0 && ix<Nx-1)	d2wdx2 = (w[ix+1] -2*w[ix] + w[ix-1]) /dx/dx ;
+				if (ix==0)			d2wdx2 = (Dw[2] -2*Dw[1] + Dw[0]) /dx/dx;
+				if (ix==Nx-1) 		d2wdx2 = (Dw[Nx] -2*Dw[Nx-1] + Dw[Nx-2]) /dx/dx;
+				if (fabs(d2wdx2)<1e-12) d2wdx2 = -1e-12;
 
-			for (i=0;i<Nx;i++) want[i] = w[i];
-
-			/*Calculates a pure elastic Initial deflection*/
-			LES_matrix(A, b, D, q, Dq, w, NO);
-			solveLES(A, b, Nx, 3, 3, w);
-
-			/*
-			  Uses this w deflection as a first value for an iteration that
-			  finds succesive EET and deflection distributions
-			  until convergence is reached.
-			*/
-			for (rheoiter=0; rheoiter<NMAXRHEOITERS; rheoiter++) {
-				max_Te_var=0;
-		fprintf(stdout, "\b\b%2d", rheoiter);  fflush(stdout);
-		/*For each x position calculates stress distribution & EET:*/
-		for (ix=0, criterioconv=momentmax=0; ix<Nx; ix++) {
-			x=x0+dx*ix;
-			/*Curvature from previous deflection (positive at forebulge)*/
-			if (ix>0 && ix<Nx-1)	d2wdx2 = (w[ix+1] -2*w[ix] + w[ix-1]) /dx/dx ;
-			if (ix==0)			d2wdx2 = (Dw[2] -2*Dw[1] + Dw[0]) /dx/dx;
-			if (ix==Nx-1) 		d2wdx2 = (Dw[Nx] -2*Dw[Nx-1] + Dw[Nx-2]) /dx/dx;
-			if (fabs(d2wdx2)<1e-12) d2wdx2 = -1e-12;
-
-			/*Finds the yield stress envelope from temperature
+				/*Finds the yield stress envelope from temperature
 				and geometry:*/
-			if (!switch_YSE_file) yield_stress_envelope (
-				Temperature[ix], Nz, dz, 0, 
-				upper_crust_thick[ix], crust_thick[ix], 
-				isost_model, 
-				yieldcompres, yieldextens, 
-				&mechanical_thickness
-			);
-
-			/*Distributes stresses along vertical profile 
+				if (!switch_YSE_file) yield_stress_envelope (
+					Temperature[ix], Nz, dz, 0, 
+					upper_crust_thick[ix], crust_thick[ix], 
+					isost_model, 
+					yieldcompres[ix], yieldextens[ix], 
+					&mechanical_thickness
+				);
+				/*Distributes stresses along vertical profile 
 				depending on preliminar plate curvature and 
 				returns the moment at this x position.*/
-			moment[ix] = moment_calculator (
-				d2wdx2, horz_force, 
-				yieldcompres, yieldextens, 
-				stress[ix], isost_model, crust_thick[ix], 
-				Nz, dz, 
-				&refstress, &ncapas
-			);
-
-			Te_ant = Te[ix] ;
-			D[ix] = -moment[ix] / d2wdx2 ;	
-			Te[ix] = RIG2ET(D[ix]) ;
-			criterioconv += fabs(Te[ix] - Te_ant) ;
-			max_Te_var=MAX_2(max_Te_var, fabs(Te[ix] - Te_ant));
-			if (fabs(momentmax)<fabs(moment[ix])) {
-				momentmax=moment[ix]; imomentmax=ix;
+				moment[ix] = moment_calculator (
+					d2wdx2, horz_force, 
+					yieldcompres[ix], yieldextens[ix], 
+					stress[ix], isost_model, crust_thick[ix], 
+					Nz, dz, 
+					&refstress, &ncapas
+				);
+				Te_ant = Te[ix] ;
+				D[ix] = -moment[ix] / d2wdx2 ;	
+				Te[ix] = RIG2ET(D[ix]) ;
+				criterioconv += fabs(Te[ix] - Te_ant) ;
+				max_Te_var=MAX_2(max_Te_var, fabs(Te[ix] - Te_ant));
+				if (fabs(momentmax)<fabs(moment[ix])) {
+					momentmax=moment[ix]; imomentmax=ix;
+				}
 			}
+
+			/*Calculates new deflection with present EET*/
+			LES_matrix(A, b, D, q, Dq, w, NO) ;
+			solveLES(A, b, Nx, 3, 3, w) ;
+
+			/*Checks convergence*/
+			if ((criterioconv*dx < MAXETERR && max_Te_var<MAX_Te_LOC_VAR) || rheoiter>=NMAXRHEOITERS-1) break;
+		}
+		fprintf(stdout, "\b\b") ;
+		if (rheoiter>=NMAXRHEOITERS-1) {
+			fprintf(stdout, "! \b");
+			if (verbose_level>=3)
+				fprintf(stderr, "\nERROR: Lack of convergence in EET!. EET error area = %.2f km2", criterioconv*dx/1e6);
 		}
 
-		/*Calculates new deflection with present EET*/
-		LES_matrix(A, b, D, q, Dq, w, NO) ;
-		solveLES(A, b, Nx, 3, 3, w) ;
-
-		/*Checks convergence*/
-		if ((criterioconv*dx < MAXETERR && max_Te_var<MAX_Te_LOC_VAR) || rheoiter>=NMAXRHEOITERS-1) break;
-			}
-			fprintf(stdout, "\b\b") ;
-			if (rheoiter>=NMAXRHEOITERS-1) {
-				fprintf(stdout, "! \b");
-				if (verbose_level>=3)
-					fprintf(stderr, "\nERROR: Lack of convergence in EET!. EET error area = %.2f km2", criterioconv*dx/1e6);
-			}
-
-			for (i=0;i<Nx;i++) Dw[i] = w[i] - want[i];
-			free(want);
+		for (i=0;i<Nx;i++) Dw[i] = w[i] - want[i];
+		free(want);
 	}
 
 
 	else {
-			BOOL 	switch_last_repeat=NO;
-			float 	point_moment, max_Te_var;
+		BOOL 	switch_last_repeat=NO;
+		float 	point_moment, max_Te_var;
 
-			x_stress = calloc (Nz , sizeof(float));
+		x_stress = calloc (Nz , sizeof(float));
 
-			/*Calculates a pure elastic initial deflection*/
-			LES_matrix(A, b, D, q, Dq, w, NO);
-			solveLES(A, b, Nx, 3, 3, Dw);
+		/*Calculates a pure elastic initial deflection*/
+		LES_matrix(A, b, D, q, Dq, w, NO);
+		solveLES(A, b, Nx, 3, 3, Dw);
 
-			/*
-			  Uses this Dw deflection increment as a first value for an iteration
-			  that finds succesive EET and deflection increments until
-			  convergence is reached.
-			*/
-			for (rheoiter=0; rheoiter<NMAXRHEOITERS; rheoiter++) {
-				max_Te_var=0;
-		fprintf(stdout, "\b\b%2d", rheoiter);  fflush(stdout);
-		/*For each x position calculates stress distribution & EET:*/
-		for (ix=0, criterioconv=momentmax=0; ix<Nx; ix++) {
-			x=x0+dx*ix;
-			/*Curvature increment from previous deflection (positive at forebulge)*/
-			if (ix>0 && ix<Nx-1) 	d2wdx2 = (Dw[ix+1] -2*Dw[ix] + Dw[ix-1]) /dx/dx;
-			if (ix==0)	  	d2wdx2 = (Dw[2] -2*Dw[1] + Dw[0]) /dx/dx;
-			if (ix==Nx-1)   	d2wdx2 = (Dw[Nx-1] -2*Dw[Nx-2] + Dw[Nx-3]) /dx/dx;
-			if (fabs(d2wdx2)<1e-12) d2wdx2 = -1e-12;
+		/*
+		  Uses this Dw deflection increment as a first value for an iteration
+		  that finds succesive EET and deflection increments until
+		  convergence is reached.
+		*/
+		for (rheoiter=0; rheoiter<NMAXRHEOITERS; rheoiter++) {
+			max_Te_var=0;
+			fprintf(stdout, "\b\b%2d", rheoiter);  fflush(stdout);
+			/*For each x position calculates stress distribution & EET:*/
+			for (ix=0, criterioconv=momentmax=0; ix<Nx; ix++) {
+				x=x0+dx*ix;
+				/*Curvature increment from previous deflection (positive at forebulge)*/
+				if (ix>0 && ix<Nx-1) 	d2wdx2 = (Dw[ix+1] -2*Dw[ix] + Dw[ix-1]) /dx/dx;
+				if (ix==0)	  	d2wdx2 = (Dw[2] -2*Dw[1] + Dw[0]) /dx/dx;
+				if (ix==Nx-1)   	d2wdx2 = (Dw[Nx-1] -2*Dw[Nx-2] + Dw[Nx-3]) /dx/dx;
+				if (fabs(d2wdx2)<1e-12) d2wdx2 = -1e-12;
 
-			/*Finds the yield stress envelope from temperature
+				/*Finds the yield stress envelope from temperature
 				and geometry:*/
-			if (!switch_YSE_file) yield_stress_envelope (
-				Temperature[ix], Nz, dz, 0, 
-				upper_crust_thick[ix], crust_thick[ix], 
-				isost_model, 
-				yieldcompres, yieldextens, 
-				&mechanical_thickness
-			);
+				if (!switch_YSE_file) yield_stress_envelope (
+					Temperature[ix], Nz, dz, 0, 
+					upper_crust_thick[ix], crust_thick[ix], 
+					isost_model, 
+					yieldcompres[ix], yieldextens[ix], 
+					&mechanical_thickness
+				);
 
-			/*
-			  Distributes stresses along vertical profile 
-			  depending on preliminar plate curvature and 
-			  returns the moment at this x position.
-			*/
-			for (iz=0; iz<Nz; iz++) x_stress[iz]=stress[ix][iz];
-			incremoment = moment_calculator_hist (
-				d2wdx2, horz_force, 
-				yieldcompres, yieldextens, 
-				x_stress, isost_model, crust_thick[ix], 
-				Nz, dz, 
-				&point_moment, &ncapas
-			);
-			if (switch_last_repeat) {
-				moment[ix] += incremoment;
-				if (fabs(momentmax)<fabs(moment[ix])) {
-					momentmax=moment[ix]; imomentmax=ix;
+				/*
+				  Distributes stresses along vertical profile 
+				  depending on preliminar plate curvature and 
+				  returns the moment at this x position.
+				*/
+				for (iz=0; iz<Nz; iz++) x_stress[iz]=stress[ix][iz];
+				incremoment = moment_calculator_hist (
+					d2wdx2, horz_force, 
+					yieldcompres[ix], yieldextens[ix], 
+					x_stress, isost_model, crust_thick[ix], 
+					Nz, dz, 
+					&point_moment, &ncapas
+				);
+				if (switch_last_repeat) {
+					moment[ix] += incremoment;
+					if (fabs(momentmax)<fabs(moment[ix])) {
+						momentmax=moment[ix]; imomentmax=ix;
+					}
+					for (iz=0; iz<Nz; iz++) stress[ix][iz]=x_stress[iz];
 				}
-				for (iz=0; iz<Nz; iz++) stress[ix][iz]=x_stress[iz];
+
+				Te_ant = Te[ix];
+				D[ix] = -incremoment / d2wdx2;
+				Te[ix] = RIG2ET(D[ix]);
+				criterioconv += fabs(Te[ix] - Te_ant);
+				max_Te_var=MAX_2(max_Te_var, fabs(Te[ix] - Te_ant));
 			}
 
-			Te_ant = Te[ix];
-			D[ix] = -incremoment / d2wdx2;
-			Te[ix] = RIG2ET(D[ix]);
-			criterioconv += fabs(Te[ix] - Te_ant);
-			max_Te_var=MAX_2(max_Te_var, fabs(Te[ix] - Te_ant));
-		}
-
-		/*Calculates new deflection with present EET*/
-		LES_matrix(A, b, D, q, Dq, w, NO) ;
-		solveLES(A, b, Nx, 3, 3, Dw) ;
+			/*Calculates new deflection with present EET*/
+			LES_matrix(A, b, D, q, Dq, w, NO) ;
+			solveLES(A, b, Nx, 3, 3, Dw) ;
 		
-		/*Checks convergence*/
-		if ((criterioconv*dx < MAXETERR && max_Te_var<MAX_Te_LOC_VAR) || switch_last_repeat) {
-			if (switch_last_repeat) break;
-			else {switch_last_repeat=YES; rheoiter--;}
+			/*Checks convergence*/
+			if ((criterioconv*dx < MAXETERR && max_Te_var<MAX_Te_LOC_VAR) || switch_last_repeat) {
+				if (switch_last_repeat) break;
+				else {switch_last_repeat=YES; rheoiter--;}
+			}
 		}
-			}
-			fprintf(stdout, "\b\b") ;
-			if (rheoiter>=NMAXRHEOITERS-1) {
-				fprintf(stdout, "!(%s) \b", (criterioconv*dx<MAXETERR)? "M" : ((max_Te_var<MAX_Te_LOC_VAR)? "m" : "B"));
-				if (verbose_level>=3)
-					fprintf(stderr, "\nERROR: Lack of convergence in EET!. EET error area = %.2f km2  ", criterioconv*dx/1e6);
-			}
-
-			for (i=0;i<Nx;i++) w[i] += Dw[i];
-			free(x_stress);
+		fprintf(stdout, "\b\b") ;
+		if (rheoiter>=NMAXRHEOITERS-1) {
+			fprintf(stdout, "!(%s) \b", (criterioconv*dx<MAXETERR)? "M" : ((max_Te_var<MAX_Te_LOC_VAR)? "m" : "B"));
+			if (verbose_level>=3)
+				fprintf(stderr, "\nERROR: Lack of convergence in EET!. EET error area = %.2f km2  ", criterioconv*dx/1e6);
+		}
+		for (i=0;i<Nx;i++) w[i] += Dw[i];
+		free(x_stress);
 	}
 
+	flexural_stats(moment);
+
 	free (moment);
+	return(1);
+}
+
+
+
+int flexural_stats (float *moment) {
+	if (verbose_level>=1) {
+		/*prints flexural statistics*/
+		int 	i, iwmindt=SIGNAL, iwmaxdt=SIGNAL, idwmindt=SIGNAL, idwmaxdt=SIGNAL, ihmaxdt=SIGNAL;
+		float	shear=0, shearmax=-1e19, xshearmax=-1e19, shearmin=+1e19, xshearmin=+1e19, 
+			momentmax=-1e19, xmomentmax=-1e19, momentmin=+1e19, xmomentmin=+1e19, 
+			xfirstnodo=0, x, 
+			wmaxdt=-1e19, wmindt=+1e19, dwmaxdt=-1e19, dwmindt=+1e19;
+		float 	Warea=0, Dmean=0;
+
+		for (i=1; i<Nx-1; i++) {
+			if (w[i]*w[i+1] <= 0  &&  xfirstnodo == 0 )
+				xfirstnodo = i*dx+x0 ;
+			if ( i < Nx-2 )
+				shear = - D[i] * (w[i+2] - 3*w[i+1] + 3*w[i] -w[i-1]) / pow(dx,3);
+			if (shearmin > shear)
+				{ shearmin = shear;	xshearmin=x0+dx*(i+.5); }
+			if (shearmax < shear)
+				{ shearmax = shear;	xshearmax=x0+dx*(i+.5); }
+			if (shearmax < shear)
+				{ shearmax = shear;	xshearmax=x0+dx*(i+.5); }
+			if (momentmax < moment[i] && x0+dx*i>xmin && x0+dx*i<xmax)
+				{ momentmax = moment[i];	xmomentmax=x0+dx*i; }
+			if (momentmin > moment[i] && x0+dx*i>xmin && x0+dx*i<xmax)
+				{ momentmin = moment[i];	xmomentmin=x0+dx*i; }
+		}
+		for (i=1; i<Nx-1; i++) {
+			if (x0+i*dx>=xmin && x0+i*dx<=xmax) {
+			if (wmindt>w[i]) {		wmindt=w[i]; 	iwmindt=i; }
+			if (wmaxdt<w[i]) {		wmaxdt=w[i]; 	iwmaxdt=i; }
+			if (dwmindt>Dw[i]) {		dwmindt=Dw[i]; 	idwmindt=i; }
+			if (dwmaxdt<Dw[i]) {		dwmaxdt=Dw[i]; 	idwmaxdt=i; }
+			Warea += w[i]*dx;
+			Dmean += D[i]/Nx;
+			}
+		}
+		PRINT_SUMLINE("moment_max.	= %10.3e N  \t@x= %5.1f km", momentmax, xmomentmax/1000);
+		PRINT_SUMLINE("moment_min.	= %10.3e N  \t@x= %5.1f km", momentmin, xmomentmin/1000);
+		PRINT_SUMLINE("shear_max.	 = %10.3e N/m\t@x= %5.1f km", shearmax, xshearmax/1000);
+		PRINT_SUMLINE("shear_min.	 = %10.3e N/m\t@x= %5.1f km", shearmin, xshearmin/1000);
+		PRINT_SUMLINE("deflection_max.= %8.1f m   \t@x= %5.1f km", wmaxdt, (x0+iwmaxdt*dx)/1000);
+		PRINT_SUMLINE("deflection_min.= %8.1f m   \t@x= %5.1f km", wmindt, (x0+iwmindt*dx)/1000);
+		PRINT_SUMLINE("defl.vel.max.  = %8.1f m/My\t@x= %5.1f km", dwmaxdt/(dt/Matosec), (x0+idwmaxdt*dx)/1000);
+		PRINT_SUMLINE("defl.vel.min.  = %8.1f m/My\t@x= %5.1f km", dwmindt/(dt/Matosec), (x0+idwmindt*dx)/1000);
+		PRINT_SUMLINE("first zero @x= %8.1f km ", xfirstnodo/1000);
+		PRINT_SUMLINE("deflectn.area  = %8.1f km2 \tmean_rigid.= %.2e N m/m", Warea/1e6, Dmean);
+	}
 	return(1);
 }
 
@@ -1138,7 +1187,7 @@ int yield_stress_envelope_semibrittle (
 
 
 int yield_stress_envelope (
-			float *Temperatura, 	/*Temperature array*/
+			float *Temperatura, /*Temperature array*/
 			int   Nz, 		/*Number of depth finite differences points*/
 			float dz, 		/*Depth gridding interval*/
 			float z0, 		/*Equivalent meters of crust to determine the pressure and strength at the top of the plate*/
@@ -1160,7 +1209,7 @@ int yield_stress_envelope (
 	int 	i, 
 		numlayers=0;
 		
-	float	betaexten = 16e3, 		/*Brittle failure coefs.*/
+	float	betaexten = 16e3, 	/*Brittle failure coefs.*/
 		betacomp = -40e3,
 		Quc = 140e3, 			/*Power flow activation energies*/
 		Qlc = 250e3, 
@@ -1170,15 +1219,15 @@ int yield_stress_envelope (
 		epsml = 7e-14,
 		Dorn_Qml = 545e3, 		/*Dorn law activation energy; Sonder & England (1985) say 540e3: it's changed to fit with power law*/
 		Dorn_strnrateref = 5.7e11, 
-		Dorn_stressref = 8.5e9, 	/*[Pa] Bodine et al, 1981; Sonder & England, 1985*/
-		n_exp = 3, 			/*Power law exponent*/
-		R = 8.317, 			/*in J/mol/K */
+		Dorn_stressref = 8.5e9, /*[Pa] Bodine et al, 1981; Sonder & England, 1985*/
+		n_exp = 3, 				/*Power law exponent*/
+		R = 8.317, 				/*in J/mol/K */
 		mecanlimit = 10e6, 		/*Mechanical thickness criteria [Pa]*/
 		z, Q = SIGNAL, T, 
 		brittleext, 
 		brittlecomp, 
 		espmecan=0;
-	double	strainrate = 1e-16,		/*This is the assumed strain rate, which corresponds with a strain of .1 in 31.6 Ma */
+	double	strainrate = 1e-16,	/*This is the assumed strain rate, which corresponds with a strain of .1 in 31.6 Ma */
 		strainrateref = SIGNAL, 
 		ductil_power_law, 
 		ductil_Dorn_law, 
@@ -1315,7 +1364,5 @@ int calculate_water_load()
 	fflush(stdout);
 	return(1);
 }
-
-
 
 

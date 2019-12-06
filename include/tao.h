@@ -78,8 +78,8 @@ float	*crust_thick,			/*Crust thickness array*/
 	*w, 				/*Deflection		[m] */
 	**Temperature, 			/*[ºC]*/
 	**stress, 			/*[Pa]*/
-	*yieldcompres,			/*yield stress envelope -- compresive  [Pa]*/
-	*yieldextens;			/*yield stress envelope -- extensive  [Pa]*/
+	**yieldcompres,			/*yield stress envelope -- compresive  [Pa]*/
+	**yieldextens;			/*yield stress envelope -- extensive  [Pa]*/
 
 
 char 	gif_geom[MAXLENLINE];
@@ -139,6 +139,33 @@ int	Sediment (double d_mass, int row);
 int	tectload();
 int	Unify_Lakes (int i_lake, int i_lake_to_delete);
 int	Landslide_Transport (float critical_slope, float dt, float dt_eros);
+int flexural_stats (float *moment);
+int Rheo_Flex_Iter ();
+int solveLES (double **A, double *b, int Nx, int nds, int ndi, float *x);
+float moment_calculator (float 	d2wdx2, 
+			float 	horz_force, 
+			float 	*yieldcompres, 
+			float 	*yieldextens, 
+			float 	*stress, 
+			int 	isost_model, 		/*3:oceanic; 4:cont always decoupled; 5:cont. never deoupled; 6:cont. auto deoupled*/
+			float 	decoupl_depth, 		/*In m. Only used when isost_model==4*/
+			int 	Nz, 
+			float 	dz, 
+			float 	*refstressdir, 
+			int 	*ncapas); 		/*Number of decoupled layers*/
+float moment_calculator_hist (
+			float 	d2wdx2, 
+			float 	horz_force, 		/*not used ! */
+			float 	*yieldcompres, 
+			float 	*yieldextens, 
+			float 	*stress, 
+			int 	isost_model, 		/*3:oceanic; 4:cont always decoupled; 5:cont. never deoupled; 6:cont. auto deoupled*/
+			float 	decoupl_depth, 		/*In m. Only used when isost_model==4*/
+			int 	Nz, 
+			float 	dz, 
+			float 	*totalmoment,  		/*Total (cumulative) moment at this point*/
+			int 	*nlayers); 		/*Number of decoupled layers*/
+
 
 
 

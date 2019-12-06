@@ -83,7 +83,7 @@
 		initial Te must not be constant or read from the '*.EET' file,
 		but from the '*.eeth' file.
 	'-t' Sets initial (i), final (f), increment (d), viscous relaxation
-		(v) or sediment-Block-record (r) times. Time is in My and goes
+		(v) or sediment-block-record (r) times. Time is in My and goes
 		from negative to positive values (Timeini<Timefinal).
 	'-V' Means verbose mode with additional run-time prints. Add '<level>'
 		for additional i/o information. See doc/template.PRM file for
@@ -370,34 +370,35 @@
   in the output files are in km.
 
   'project.xzt'   An output file with the deflection and the topography at each
-			  loading event is wroten.
+		loading event is wroten.
   'project.pfl'   A final profile of the model containing the final model
-			  geometry (elevation of the top and bottom of each
-			  Block, from basament to surface).
+		geometry (elevation of the top and bottom of each
+		Block, from basament to surface).
   'project.eros'  Erosion (>0) and sedimentation (<0) at each position. Note
-			  that eah value is the result of adding the thickness
-			  of eros/sedim at each time step at that particular
-			  location. A final  value of 1000 m of erosion) may be
-			  the  result of 1000 m deposition + 2000 m erosion.
-			  Besides, this is recorded where it happened, so the
-			  values of eros./sedim. are not shifted with the
-			  movement of the sediment or mother rock units.
+		that eah value is the result of adding the thickness
+		of eros/sedim at each time step at that particular
+		location. A final  value of 1000 m of erosion) may be
+		the  result of 1000 m deposition + 2000 m erosion.
+		Besides, this is recorded where it happened, so the
+		values of eros./sedim. are not shifted with the
+		movement of the sediment or mother rock units.
   'project.xg'    A file with the gravity anomaly.
   'project.ps'    Some postscript graphics with results are made with GMT if
-			  'switch_ps' is turned on.
+		'switch_ps' is turned on.
   'project.ysen'  Calculated yield stress envelope and stress distribution at
-			  the maximum moment point. Only if a multilayered
-			  plate was selected (isost_model>2).
-  'project.strs'  Stress distribution (also only if isost_model>2).
+		the maximum moment point. Only if a multilayered
+		plate was selected (isost_model>2).
+  'project.strs'  (only if isost_model>2) x-z distribution of stress,
+		temperature, and yield stress envelope.
   'project.temp'  Temperature distribution within lithosphere (only
-			  isost_model>2 and with swith_verbose=1).
+		isost_model>2 and with swith_verbose=1).
   'project.eeth'  Elastic thickness distribution resulting calculated when
-			  isost_model>2. If this file is present and the
-			  default Te value is a signal '-1', then this '*.eeth'
-			  file is used as the initial value of the
-			  moment-curvature iteration.
+		isost_model>2. If this file is present and the
+		default Te value is a signal '-1', then this '*.eeth'
+		file is used as the initial value of the
+		moment-curvature iteration.
   'project.all'   Binary file to be read when the model is going to be resumed
-			  (continued) with option '-F'.
+		(continued) with option '-F'.
 
 
 
@@ -510,9 +511,11 @@
     -v command line option to change velocity of Blocks based on density.
     Changed UNIT1D and Units structure to BLOCK1D and Blocks, to avoid confusion 
 	with input files (UNITS). 
-  tAo_
-	Gradual sediment compaction now implemented (see
-	new parameter compact_depth). 
+  tAo_2019-12-06
+	Gradual sediment compaction now implemented (see new parameter compact_depth).
+	For isost_model>=3: yield stress is now written in *.strs output file. Main 
+	graphic script tao.gmt.job is now accepting a number as 2nd argument, to 
+	predefine the x coordinate for the stress distribution and envelope.  
   
 
 11.- MODEL LIMITATIONS

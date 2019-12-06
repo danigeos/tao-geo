@@ -128,7 +128,7 @@ dist_xy_line	../lib/libreria.c	/^float dist_xy_line($/
 dist_xy_pol	../lib/libreria.c	/^float dist_xy_pol($/
 dist_xy_segment	../lib/libreria.c	/^float dist_xy_segment($/
 evaluate_xy_points	../lib/libreria.c	/^float evaluate_xy_points($/
-flexural_stats	tao.c	/^int flexural_stats (float *moment) {$/
+flexural_stats	taolib.c	/^int flexural_stats (float *moment) {$/
 free_matrix	../lib/libreria.c	/^int free_matrix (float **matrix, int n_fil)$/
 free_matrix_dbl	../lib/libreria.c	/^int free_matrix_dbl (double **matrix, int n_fil)$/
 free_matrix_int	../lib/libreria.c	/^int free_matrix_int (int **matrix, int n_fil)$/

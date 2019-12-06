@@ -333,8 +333,6 @@ int read_file_resume(char *filename)
 	fread(upper_crust_thick,sizeof(float),	Nx, 	file);
 	fread(topo, 		sizeof(float),	Nx, 	file);
 	fread(Blocks_base, 	sizeof(float),	Nx, 	file);
-	fread(yieldcompres, 	sizeof(float),	Nz, 	file);
-	fread(yieldextens, 	sizeof(float),	Nz, 	file);
 
 	horiz_record_time = calloc(n_record_times, sizeof(float));
 	fread(horiz_record_time, sizeof(float), n_record_times, file);
@@ -357,8 +355,13 @@ int read_file_resume(char *filename)
 	}
 	if (isost_model>=3) {
 		stress = alloc_matrix(Nx, Nz);
-		for (i=0; i<Nx; i++) 
+		yieldcompres = alloc_matrix(Nx, Nz);
+		yieldextens = alloc_matrix(Nx, Nz);
+		for (i=0; i<Nx; i++) {
 			fread(stress[i], sizeof(float), Nz, file);
+			fread(yieldcompres[i], sizeof(float), Nz, file);
+			fread(yieldextens[i], sizeof(float), Nz, file);
+		}
 	}
 
 
@@ -704,13 +707,13 @@ int write_file_maxmompoint ()
 
 	Write_Open_Filename_Return (".ysen", "wt", isost_model<3);
 
-	fprintf(file, 	"#MMP: \tx=%.2f km\n"
-			"#z(m)  Compress(MPa) Extens(MPa)  Temp(C)  Stress [MPa]\n",
+	fprintf(file, 	"#MMP_x= %.2f km\n"
+			"#z(km)  Compress(MPa) Extens(MPa)  Temp(C)  Stress [MPa]\n",
 			(imomentmax*dx+x0)/1e3);
 	for (i=0; i<Nz; i++) {
 		fprintf(file, "%.2f\t%.2f\t%.2f\t%.2f\t%.2f\n", 
 			i*dz/1e3, 
-			yieldcompres[i]/1e6, yieldextens[i]/1e6, 
+			yieldcompres[imomentmax][i]/1e6, yieldextens[imomentmax][i]/1e6, 
 			(switch_YSE_file)? NO_DATA:Temperature[imomentmax][i], 
 			stress[imomentmax][i]/1e6);
 	}
@@ -728,12 +731,13 @@ int write_file_stress ()
 	Write_Open_Filename_Return (".strs", "wt", isost_model<3);
 
 	fprintf(file, "#2D Stress grid (x-z) distribution.\n") ;
-	fprintf(file, "#x(km)\tz(km)\tstress(MPa)\ttemper.(C)\n");
+	fprintf(file, "#x(km)\tz(km)\tstress[MPa]\ttemp[C]\tyieldcomp\tyieldext[MPa]\n");
 	/*Write stresses in the grid file*/
 	ix_min = MAX_2((xmin-x0-.1*dx)/dx, 0) ;	ix_max = MIN_2(floor((xmax-x0+.1*dx)/dx) + 2, Nx);
 	for (ix=ix_min; ix<ix_max; ix++) for (iz=0; iz<Nz; iz++) {
-		fprintf (file, "%.2f\t%.2f\t%.2f\t%.2f\n", 
-			(ix*dx+x0)/1e3, (iz*dz+w[ix]-zini)/1e3, stress[ix][iz]/1e6, (switch_YSE_file)? NO_DATA:Temperature[ix][iz]);
+		fprintf (file, "%.2f\t%.2f\t%.2f\t%.2f\t%.2f\t%.2f\n", 
+			(ix*dx+x0)/1e3, (iz*dz+w[ix]-zini)/1e3, stress[ix][iz]/1e6, (switch_YSE_file)? NO_DATA:Temperature[ix][iz], 
+			yieldcompres[ix][iz]/1e6, yieldextens[ix][iz]/1e6);
 	}
 	fclose(file);
 	return (1);
@@ -1051,8 +1055,6 @@ int write_file_resume()
 	fwrite(upper_crust_thick,sizeof(float),	Nx, 	file);
 	fwrite(topo, 		sizeof(float),	Nx, 	file);
 	fwrite(Blocks_base, 	sizeof(float),	Nx, 	file);
-	fwrite(yieldcompres, 	sizeof(float),	Nz, 	file);
-	fwrite(yieldextens, 	sizeof(float),	Nz, 	file);
 	fwrite(horiz_record_time, sizeof(float), n_record_times, file);
 
 	for (i=0; i<n_sea_level_input_points; i++) 
@@ -1065,8 +1067,11 @@ int write_file_resume()
 			fwrite(Temperature[i], sizeof(float), Nz, file);
 	}
 	if (isost_model>=3) {
-		for (i=0; i<Nx; i++) 
+		for (i=0; i<Nx; i++) {
 			fwrite(stress[i], sizeof(float), Nz, file);
+			fwrite(yieldcompres[i], sizeof(float), Nz, file);
+			fwrite(yieldextens[i], sizeof(float), Nz, file);
+		}
 	}
 
 	fwrite(Blocks, 		sizeof(struct BLOCK_1D),	numBlocks, file);
