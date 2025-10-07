@@ -54,6 +54,6 @@ upload:
 	#git remote add tao https://github.com/danigeos/tao-geo; 
 	#git add .; 
 	git config http.postBuffer 524288000; git config http.maxRequestBuffer 100M; git config core.compression 0; 
-	git commit -a -mnewVersion; 
+	git commit -a -mtAo_newVersion; 
 	git push -u -f tao master
 
