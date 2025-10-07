@@ -166,6 +166,32 @@ float moment_calculator_hist (
 			float 	*totalmoment,  		/*Total (cumulative) moment at this point*/
 			int 	*nlayers); 		/*Number of decoupled layers*/
 
+int write_file_Temperature_initial ();
+int inputs(int argc, char **argv);
+int Elastoplastic_Deflection();
+int Viscous_Relaxation();
+int surface_processes();
+int Write_Ouput();
+int syntax();
+int The_End();
+int interpr_command_line_opts();
+int Direct_mode();
+int read_file_unit();
+float geoidanompolyg(
+	float *y_pol, 			/*horizontal coordinate of line points clock-wise sorted*/
+	float *z_pol, 			/*vertical coordinate of line points clock-wise sorted. z>0 downwards*/
+	int numpoints, 			/*Number of line points*/
+	float ym, float zm, 		/*position of measurement*/
+	float dens_contrast);		/*Density of the body*/
+float gravanompolyg(
+	float *x_pol, 				/*x-y points of polygon clock-wise sorted*/
+	float *z_pol, 				/*x-y points of polygon clock-wise sorted. z>0 downwards*/
+	int numpoints, 				/*Number of polygon points*/
+	float x_measure, float z_measure, 	/*position of measurement*/
+	float dens_contrast);			/*Density of the body*/
+
+float ReSort_Array (float *array, int *orden, int Nx);
+float calculate_topo(float *topo_new);
 
 
 

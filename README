@@ -16,6 +16,17 @@ Details on authorship, disclaimers, and citation in 'tisc/doc/tisc.info.txt'.
 License details in the documentation at tao/doc/.
 
 
+TO INSTALL a Ubuntu Linux virtual machine with GMT4 (required for graphic output):
+
+    Install Virtualbox: https://www.virtualbox.org/wiki/Downloads
+
+	Download https://geo3bcnbox.geo3bcn.csic.es/index.php/s/mlQPch1DQDsY0ih/download
+
+    Import VM with Ubuntu 20.04 + GMT 4.5.18.
+	Virtualbox > File > Import...
+
+
+
 TO INSTALL tAo:
 
 tAo has been developed in C under Linux, and is ready for compilation in a Mac 

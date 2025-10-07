@@ -274,7 +274,6 @@ int read_file_resume(char *filename)
 	fread(&last_time_file_time, 	sizeof(float),		1, 	file);
 	fread(&random_topo, 	sizeof(float),		1, 	file);
 
-	fread(&switch_dt_output, 	sizeof(BOOL),		1, 	file);
 	fread(&switch_file_out, 	sizeof(BOOL),		1, 	file);
 	fread(&switch_gradual, 	sizeof(BOOL),		1, 	file);
 	fread(&switch_insert_load, 	sizeof(BOOL),		1, 	file);
@@ -997,7 +996,6 @@ int write_file_resume()
 	fwrite(&last_time_file_time, 	sizeof(float),		1, 	file);
 	fwrite(&random_topo, 	sizeof(float),		1, 	file);
 
-	fwrite(&switch_dt_output, 	sizeof(BOOL),		1, 	file);
 	fwrite(&switch_file_out, 	sizeof(BOOL),		1, 	file);
 	fwrite(&switch_gradual, 	sizeof(BOOL),		1, 	file);
 	fwrite(&switch_insert_load, 	sizeof(BOOL),		1, 	file);

@@ -441,6 +441,14 @@
     Appart from these well-defined loads, other forces such as tectonic
   horizontal force, vertical force at the boundary and moment at the boundary,
   are taken into account.
+	Three approaches to surface processes are available:
+	1. Constant rate scheme (prescribed rates of erosion/deposition).
+	2. Diffusive (surface rock flow proportional to slope) for short range 
+  scale.
+	3. Fluvial (stream power law, but limited by transport capacity). Several 
+	models implemented (see erosed _model in template.PRM) for large scale 
+	river erosion. Sea & lake sedimentation are included. Evaporationin lakes.
+
     The surface process model includes river incision and transport allowing 
   four different source-limited, transport -limited, an hybrid approaches. It
   assumes that the modeling profile corresponds to the main river of the 
@@ -453,8 +461,8 @@
 
 
 9.- ALGORITHMS AND NUMERICAL METHODS
-  Finite differences are used to solve the spatial partial differential
-    equations as well as the time-dependent processes.
+  An explicit finite difference scheme is used to solve the spatial partial 
+  	differential equations as well as the time-dependent processes.
   Matrices arising from the diferential equations are solved using a classical
     band solver.
   Gravity anomaly is calculated using Talwani et al. (1959) algorithm.
@@ -639,15 +647,20 @@
  	between since Sept. 1993 by Daniel Garcia-Castellanos, with small 
  	contributions from others, cited in the code and the GitHub repository.
 
-    Details on copyright are in the tao/doc/LICENSE.txt directory.
+    Details on copyright are in tao/doc/LICENSE.txt.
     Please, contact the author if you are interested in using the program.
 
     When showing results of this program you, cite of of the following
  	references:
 
-	Garcia-Castellanos, D., M. Fernàndez & M. Torné, 1997. "Numerical modeling of foreland basin formation: a program relating thrusting, flexure, sediment	geometry and lithosphere rheology". Computers & Geosciences, 23 (9), 993-1003.
+	Garcia-Castellanos, D., M. Fernàndez & M. Torné, 1997. "Numerical modeling
+		of foreland basin formation: a program relating thrusting, flexure, 
+		sediment geometry and lithosphere rheology". Computers & Geosciences, 
+		23 (9), 993-1003.
 
-	Garcia-Castellanos, D., 2007. "The role of climate in high plateau formation. Insights from numerical experiments". EPSL, 257, 372-390, doi:10.1016/j.epsl.2007.02.039
+	Garcia-Castellanos, D., 2007. "The role of climate in high plateau 
+		formation. Insights from numerical experiments". EPSL, 257, 372-390, 
+		doi:10.1016/j.epsl.2007.02.039
 
  	Please, check also the disclaimers section.
 
@@ -663,7 +676,10 @@
 	J.M. Gaspar-Escribano, Brian Shiro, Erica Emri.
 
 16.- DISCLAIMER 
-	tAo is a tool developed for my own research with no professional programmers involved, the code is thus not so user-friendly, and I cannot always guarantee my assistance in case of  trouble. See other warnings in the license file tao/doc/LICENSE.txt.
+	tAo is a tool developed for my own research with no professional 
+	programmers involved, the code is thus not so user-friendly, and I 
+	cannot always guarantee my assistance in case of  trouble. See other 
+	warnings in the license file tao/doc/LICENSE.txt.
 
 17.- REFERENCES
   Works and people referred in this document and the source code (incomplete):
@@ -671,8 +687,6 @@
   Airy, G.B., 1855. On the computation of the effect of the atraction of
 	  mountain masses as disturbing the apparent astronomical latitude of
 	  stations of geodetic surveys, Phil. Trans. R. Soc. 145, 101-104.
-  Ayala, C., M. Fernandez, M. Torne & J. Pous, 1996. 2D geoid modeling: some
-	  remarks on Chapman's algorithm.
   Beaumont, C., 1981. Foreland Basins. Geophys. J. R. Astr. Soc., 65, 291-329.
   Bodine, J.H., M.S. Steckler, & A.B. Watts, 1981. Observations of flexure and
 	  the rheology of the oceanic lithosphere. J. Geoph. Res., 86,
@@ -692,7 +706,7 @@
   (*)Garcia-Castellanos et al., 2000. Slab pull effects from a flexural
   	  analysis of the Tonga and Kermadec trenches (Pacific Plate).
   	  Geophys. J. Intern., 141, 479-484.
-  (*)Garcia-Castellanos et al., 2002. Tectonics. (Guadalquivir Basin).
+  (*)Garcia-Castellanos et al., 2002. Tectonics. "(...) Guadalquivir Basin".
   (*)Garcia-Castellanos, D., 2007. "The role of climate in high plateau
   	  formation. Insights from numerical experiments". EPSL, 257,
   	  372-390, doi:10.1016/j.epsl.2007.02.039

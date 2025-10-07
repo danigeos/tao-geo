@@ -53,7 +53,7 @@ l_fluv_sedim	2.5e+04
   deform_sed	1
 eros_bound_cond	1
   water_load	1
-   grav_anom	0
+   grav_anom	1
 verbose_level	2
 switch_files	1
    switch_ps	1

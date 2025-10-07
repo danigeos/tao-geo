@@ -481,7 +481,7 @@ int LES_matrix (double **A,	/* Matrix of the lineal equation system. */
 
 	sprintf(filename, "%s.mtrx", projectname); 
 	remove(filename);
-	if (verbose_level>=4 && switch_write_file && Nx<=1001) { 
+	if (verbose_level>=4 && switch_write_file && Nx<=201) { 
 		WriteAlmostDiagonalMatrix(A, b, Nx, filename, NDs, NDi);
 	}
 	return(1);
@@ -500,7 +500,7 @@ float moment_calculator (float 	d2wdx2,
 			int 	Nz, 
 			float 	dz, 
 			float 	*refstressdir, 
-			int 	*ncapas) 		/*Number of decoupled layers*/
+			int 	*ncapas) 			/*Number of decoupled layers*/
 {
 	/* RETURNS THE CALCULATED MOMENT IN THE PLATE WHITH THE YIELD STRESS 
 	ENVELOPE TAKING INTO ACCOUNT DECOUPLING IN SUBLAYERS */
@@ -508,8 +508,6 @@ float moment_calculator (float 	d2wdx2,
 	int	i, iter, j, itop, ifloor, layer=0, numlayers, numiter=50, k;
 	float	stress_distrib_slope,			/*Slope of the linear part.*/
 			total_moment=0, momentlayer, 	/*Total and layer moments.*/
-			decoupl_stress_limit=50e6, 		/*Default decoupling yield stress.*/
-			yield_stress_minim=10e6, 		/*Minimum yield stress. This defines mechanical thickness. Ranalli, 1994.*/
 			z, 	/*Depth.*/
 			ztoplayer[10], zfloorlayer[10], /*Top & base of each layer.*/
 			linearstress, z_null_strs, 
@@ -546,22 +544,25 @@ float moment_calculator (float 	d2wdx2,
 
 	/*Define decoupled layers.*/
 	for (i=0; i<Nz; i++) {
+		float 	decoupl_stress_limit=50e6,	/*Default decoupling yield stress.*/
+				yield_stress_minim=10e6; 	/*Minimum yield stress. This defines mechanical thickness. Ranalli, 1994.*/
 		z = i*dz ;
-		if (yieldextens[i]-yieldcompres[i] > 2*yield_stress_minim /*decoupl_stress_limit*/) {
+		if (yieldextens[i]-yieldcompres[i] > 2*yield_stress_minim) {
 			ztoplayer[layer] = z;
 			for (; i<Nz; i++) {
 				z = i*dz;
 				Dsigma = yieldextens[i]-yieldcompres[i];
-				if (
-					(Dsigma < decoupl_stress_limit && isost_model == 6)
-					|| (decoupl_depth>i*dz && decoupl_depth<=(i+1)*dz && isost_model == 4)
-					|| i==Nz-1
-				   ) {
+				if  (
+						(Dsigma < decoupl_stress_limit && isost_model == 6)
+						|| (decoupl_depth>i*dz && decoupl_depth<=(i+1)*dz && isost_model == 4)
+						|| i==Nz-1
+					) {
 					int iz;
 					/*Base of layer is controlled by yield_stress_minim*/
-					for (	iz=i; 
+					for (
+						iz=i; 
 						iz>=0 && (fabs(yieldextens[iz])<yield_stress_minim 
-						|| fabs(yieldcompres[iz])<yield_stress_minim); 
+							|| fabs(yieldcompres[iz])<yield_stress_minim); 
 						iz--
 					) ;
 					zfloorlayer[layer] = iz*dz ;
@@ -573,15 +574,12 @@ float moment_calculator (float 	d2wdx2,
 		}
 	}
 	numlayers=layer;
-	/*printf("\nd2wdx2=%.2e, horz_force=%.2e, refstrs=%.2e, Nz=%d, dz=%.2e, numlayers=%d",
-		d2wdx2,horz_force,refstress,Nz,dz, numlayers);*/
 
-
-	for (i=0 ; i<Nz; i++) stress[i]=0 ;
-	pressure = 0 ;
 
 
 	/*Distribute bending stresses along each decoupled layer.*/
+	for (i=0 ; i<Nz; i++) stress[i]=0 ;
+	pressure = 0 ;
 	for (layer=0; layer<numlayers ; layer++) {
 		/*We need to find the depth where flexural bending stress is zero, crossing from positive to negative. This depth must accomplish that the integrated force equals horz_force*/
 		z_null_strs = (zfloorlayer[layer]+ztoplayer[layer])/2 ;
@@ -651,8 +649,6 @@ float moment_calculator_hist (
 	float	stress_distrib_slope,		/*Slope of the linear part.*/
 		cumulmoment=0, cumulmomentlayer,/*Total and layer cumulative moments.*/
 		incremoment=0, incremomentlayer,/*Total and layer increment moments.*/
-		decoupl_stress_limit=50e6, 	/*Default decoupling yield stress.*/
-		yield_stress_minim=10e6, 	/*Minimum yield stress. This defines mechanical thickness. Ranalli, 1994.*/
 		z, 				/*Depth.*/
 		ztoplayer[10], zbotlayer[10],	/*Top & base of each layer.*/
 		layerforceincre, 
@@ -665,8 +661,10 @@ float moment_calculator_hist (
 
 	/*Define the n decoupled layers (top and bottom).*/
 	for (i=0; i<Nz; i++) {
+		float 	decoupl_stress_limit=50e6,	/*Default decoupling yield stress.*/
+				yield_stress_minim=10e6; 	/*Minimum yield stress. This defines mechanical thickness. Ranalli, 1994.*/
 		z = i*dz ;
-		if (yieldextens[i]-yieldcompres[i] > 2*yield_stress_minim /*decoupl_stress_limit*/) {
+		if (yieldextens[i]-yieldcompres[i] > 2*yield_stress_minim) {
 			ztoplayer[layer] = z;
 			/*fprintf(stdout, "\n\tTop of layer: %.2f", ztoplayer[layer]);*/
 			for (; i<Nz; i++) {

@@ -1,13 +1,6 @@
 /*
 LIBRARY  FOR  SURFACE PROCESSES of tao.c
 
-Three surface processes modify the topography in this model:
-1.- Constant rate approach.
-2.- Diffusive (flux proportional to slope) for short range scale.
-3.- Fluvial (sediment carrying capacity proportional to slope and water
-discharge) for large scale erosion in channels. Sea&lake sedimentation
-are included.
-
 Daniel Garcia-Castellanos, 1994-2003
 */
 
@@ -105,6 +98,8 @@ int 	New_Lake ();
 int 	Sediment (double d_mass, int row);
 int 	Unify_Lakes (int i_lake, int i_lake_to_delete);
 int 	Landslide_Transport (float critical_slope, float dt, float dt_eros);
+float ReSort_Array (float *array, int *orden, int Nx);
+float calculate_topo(float *topo_new);
 
 
 
