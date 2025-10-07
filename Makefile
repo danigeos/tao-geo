@@ -55,5 +55,5 @@ upload:
 	#git add .; 
 	git config http.postBuffer 524288000; git config http.maxRequestBuffer 100M; git config core.compression 0; 
 	git commit -a -mnewVersion; 
-	git push -u -f tao main
+	git push -u -f tao master
 
