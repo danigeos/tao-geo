@@ -2,7 +2,7 @@
 ***********						tAo main source file					********
 ********************************************************************************
 	For compilation and installation check the file ../tao/README.
-	Main author since 1995 Daniel Garcia-Castellanos, danielgc@ictja.csic.es. 
+	Main author: Daniel Garcia-Castellanos, danielgc@ictja.csic.es. 
 	Copyright details and other information in ../tao/doc/ 
 ********************************************************************************
 
@@ -10,6 +10,8 @@ Memory debugging with:
 valgrind --dsymutil=yes --track-origins=yes --tool=memcheck --leak-check=full `which tisc` linear_range -tf0
 
 	COMMENTS (programmer's agenda)
+	-[Edit here]
+	-Gravity and geoid stopped working (2023-04).
 	-Track rock particles in thrusts and sediments. 
 	-Implement grain size in transport. This to calculate grain size distribution in sediment blocks, and as a first step for the next point once transitory flow is implemented. 
 	-Implement sediment load effect on erosion (Sklar). Interesting for acceleration of erosion during lake overtopping.
@@ -32,7 +34,7 @@ int main(int argc, char **argv)
 
 	fprintf(stdout, "\nT= %.4f My", Time/Matosec);
 
-	if (switch_dt_output) {calculate_topo(topo); Write_Ouput();}
+	if (switch_ps==2) {calculate_topo(topo); Write_Ouput();}
 
 	/*MAIN LOOP: In this loop time increases from Timeini to Timefinal*/
 	do { 
@@ -57,7 +59,7 @@ int main(int argc, char **argv)
 		Time += dt;
 		fprintf(stdout, "\nT= %.4f My", Time/Matosec);
 
-		if (switch_dt_output) Write_Ouput();
+		if (switch_ps==2) Write_Ouput();
 	} while (Time < Timefinal-dt/10);
 
 	The_End();
@@ -186,7 +188,7 @@ int inputs(int argc, char **argv)
 			read_file_resume(resume_filename);
 			interpr_command_line_opts(argc, argv);
 			if (verbose_level>=1) fprintf(stdout, "\nResuming project '%s'. Timefinal=%.1f My", projectname, Timefinal/Matosec);
-			if (switch_dt_output) n_image--; /*Don't produce 2 jpg's of the same stage of restart*/
+			if (switch_ps==2) n_image--; /*Don't produce 2 jpg's of the same stage of restart*/
 			return(1);
 		case 10:
 			if (!read_file_parameters(verbose_level>=1, 0)) {
@@ -355,10 +357,10 @@ int interpr_command_line_opts(int argc, char **argv)
 					switch_file_out=YES;
 					break;
 				case 'P':
-					switch_ps=YES;
+					switch_ps=(strlen(prm)>0)?value:1; /*default is 1 to keep old command line syntax with -Pc*/
 					switch_write_file_Blocks=YES;
 					if (argv[iarg][2] == 'c') {
-						switch_dt_output=YES;
+						switch_ps=2;
 						strcpy(gif_geom, "");
 						if (strlen(prm2)>0) strcpy(gif_geom, prm2);
 					}
@@ -791,6 +793,7 @@ int gravity_anomaly()
 		for (ix=ix_min; ix<ix_max; ix++) {
 			gravanom[ix]  += gravanompolyg (Block_aux_x, Block_aux_z, np_aux_Block, x0+ix*dx, -alt_measurement[ix], Blocks[i_Block].density);
 			geoidanom[ix] += geoidanompolyg(Block_aux_x, Block_aux_z, np_aux_Block, x0+ix*dx, -10e3, Blocks[i_Block].density);
+//PRINT_ERROR("\ngrav %.2e    geoid %.2e   iblock=%d", gravanom[ix], geoidanom[ix], i_Block);
 		}
 	}
 
@@ -1378,7 +1381,7 @@ int The_End()
 	fprintf(stdout, "\n -:\t%.0f\t%.1f\t-\t0\t-\t-\t-\t-\tbasement\n", denscrust, Timeini/Matosec);
 
 	write_file_resume();
-	if (!switch_dt_output) Write_Ouput();
+	if (switch_ps!=2) Write_Ouput();
 
 	sprintf(command, "rm -f %s*.tao.tmp", projectname);
 	system(command);
@@ -1480,7 +1483,7 @@ int Write_Ouput()
 		if (verbose_level>=3) 
 			fprintf(stdout, "\n%s\n", command) ;
 		system(command);
-		if (switch_dt_output) {
+		if (switch_ps==2) {
 			/*crop by default to the border*/
 			if (strlen(gif_geom)<2) sprintf(gif_geom, "-trim -background Khaki -label 'tAo software: %s' -gravity South -append", projectname);
 			sprintf(command, "convert -density 200 %s.ps %s -interlace NONE  %s%03d.jpg", /*-fill \"#ffffff\" -draw \"rectangle 70,10 130,25\" -fill \"#000000\" -font helvetica -draw \"text 74,22 t_%+3.2f_My \" */

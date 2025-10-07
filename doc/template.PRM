@@ -206,7 +206,7 @@ water_load	0	To account for the effect of sea/lake in terms of load, gravity
 				anomaly and sedimentation. Leave this as 0 only if you want tAo
 				to impose an underwater environment in regards to flexure 
 				(e.g., if you define densenv=water density to model oceanic
-				lithospheric flexure). 
+				lithospheric flexure). Also needed for marine sedimentation.
 grav_anom	0	Gravity anomaly output type. 
 				#0: No gravity calculations;
 				#1: Bouguer anomaly;
@@ -220,7 +220,9 @@ verbose_level 1	Specify the level of runtime prints in stdout.
 				#3: Prints debugging information. 
 				#4: Additional, high-level debug prints.
 switch_files	1	For extra file output.
-switch_ps		1	For postscript output.
+switch_ps	2	0 for no putput; 1 for postscript graphic output (uses GMT4 
+				shell scripts as tisc.gmt.job); 2 for output every time 
+				step (dt).
 
 
 #(END OF PARAMETERS FILE)

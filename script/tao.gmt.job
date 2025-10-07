@@ -1,19 +1,13 @@
 #!/bin/csh -f
 ##############################################################################
-#	Script for tAo graphic output using GMT 4
+#	Shell script to produce tAo graphic output using GMT 4
 #	Daniel Garcia-Castellanos
 ##############################################################################
-#Syntax:  tao.gmt.job <prjname> 
-##############################################################################
-#Note that:
-# -This script uses the bc unix command as a calculator. 
-# -<xmin> <xmax> must be inside x range defined in the .PRM parameters file.
-##############################################################################
-
 
 if ($#argv < 1) then
 	echo "Sorry, but you entered too few parameters"
-	echo "Usage:" $0 "tAo_projectname [<x_YS> || <xmin> <xmax> <zmin> <zmax> [<switch_sea> [<switch_rheo>]]]"
+	echo "Syntax:" 
+	echo $0 "tAo_projectname [<x_YS> || <xmin> <xmax> <zmin> <zmax> [<switch_sea> [<switch_rheo>]]]"
 	exit
 endif
 

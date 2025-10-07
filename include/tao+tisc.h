@@ -85,7 +85,9 @@ float	Kerosdif, 		/*Diffusive erosion rate in m2/Ma, (e. g. D. Waltham & S. Hard
 	permeability, /*[m2]*/
 	rain, Krain, 		/*[m3/s/m2], [m3/s/m2/m] or m/s*/
 	relative_humidity, 	/*Relative humidity at the upwind boundary (incoming air rel. humidity) [no units]*/
-	CXrain, 		/*[m3/s/m2], [m3/s/m2/m], [m], [m]*/
+	CXrain, 		/*[m]*/
+	rain_per, 		/*My*/
+	rain_amp, 		/*-*/
 	total_bedrock_eros_mass,
 	total_sed_mass; 
 
@@ -98,9 +100,10 @@ float	zini, 				/*altitude of the initial plate position over the sea level [m]*
 	random_topo=0, 			/*Maximum random variation of initial topo*/
 	**var_sea_level, 		/*Array nx2 with sea level along time*/
 	**var_eros_level, 		/*Variations of the erosion level (height dividing erosion and sedimentation, measured from sea_level)*/
+	**var_insolation, 
 	*horiz_record_time;		/*Array with times in wich to record horizons*/
 	
-BOOL	switch_dt_output=NO, 
+BOOL
 	switch_file_out=NO, 
 	switch_gradual, 		/*YES to distribute the load between the Time of reading file and the Time of the following one*/
 	switch_topoest, 		/*YES if load files give topographic loads which must stay at zero level while the deflection room is filled up with 'densinfill' density material*/

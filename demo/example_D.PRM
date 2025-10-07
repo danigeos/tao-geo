@@ -19,13 +19,13 @@ Nx		801 	Number of x points (distance axis).
 
 Limits of x domain:
 x0		000e3	Left
-xf		800e3	Right
+xf		400e3	Right
 
 Limits of the output window:
-xmin		130e3	Left
-xmax		350e3	Right
-zmin		-8000	Bottom
-zmax		3000	Top
+xmin		0e3	Left
+xmax		400e3	Right
+zmin		-11000	Bottom
+zmax		3500	Top
 
 
 Lithospheric plate geometry:
@@ -93,7 +93,7 @@ switch_topoest	0	To keep loads at its initial position, filling the deflection w
 i/o switches:
 switch_files	1	For extra file output.
 switch_ps	1	For postscript output.
-verbose_level	0	For more runtime information.
+verbose_level	2	For more runtime information.
 
 
 

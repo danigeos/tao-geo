@@ -106,7 +106,7 @@ set ymin = $zmin
 set ymax = $zmax
 
 set ticklabels 	= `awk -v L=$Lx 'BEGIN{if (L>=990) print "a500f100"; else if (L>=390) print "a200f50"; else if (L>=90) print "a50f10"; else print "a10f1";}'`
-set zticklabels	= `awk -v zmin=$zminkm -v zmax=$zmaxkm 'BEGIN{if (zmax-zmin>=30) print "a10f5g10"; else if (zmax-zmin>=10) print "a4f1g4"; else if (zmax-zmin>=3) print "a1f.5g1"; else print "a.5f.1g.1";}'`
+set zticklabels	= `awk -v zmin=$zminkm -v zmax=$zmaxkm 'BEGIN{if (zmax-zmin>=30) print "a10f5g5"; else if (zmax-zmin>=10) print "a4f1g4"; else if (zmax-zmin>=3) print "a1f.5g1"; else print "a.5f.1g.1";}'`
 
 
 if (-r $prj.strs) then
