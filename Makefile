@@ -6,7 +6,7 @@
 #
 #tAo has been succesfully compiled with this Makefile in: 
 #  macOS 11, macOS 16, linux, 
-#Earlier versions were functional in:
+#Earlier versions were functional for:
 #  IBM AIX Version 3.2 for IBM RISC 6000 workstations, Hewlett Packard Envizex. Sun Solaris OS5
 #------------------------------------------------------------------------
 
@@ -50,7 +50,7 @@ upload:
 	#git init; 
 	#git remote add tao https://github.com/danigeos/tao-geo; 
 	#git add .; 
-	git commit -a -m$(VERSION); 
+	git commit -a -m$(VERSION)
 	git config http.postBuffer 524288000; git config http.maxRequestBuffer 100M; git config core.compression 0; 
 	#add --force to pass by the remote version 
 	git push -u -f tao master
