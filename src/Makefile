@@ -38,7 +38,7 @@ tao.o : tao.c taolib.c taosp.c taoio.c
 	@echo; echo tao HOME DIRECTORY: $(tao_DIR);  echo ARCH=$(ARCH);  
 	@echo OP. SYSTEM=$(OS);  echo User home: $(HOME_DIR); 
 	@echo You are currently $(shell whoami)	using the shell $(SHELL) ; echo
-	$(CC) $(OPTS) -c -o $(OBJ)/tao.o -DVERSION=$(VERSION) -DTAODIR=$(tao_DIR) -I$(INCL) tao.c
+	$(CC) $(OPTS) -c -o $(OBJ)/tao.o -DVERSION=\"$(VERSION)\"" -DTAODIR=$(tao_DIR) -I$(INCL) tao.c
 	if [ -f /usr/bin/ctags ]; then \
 		ctags *.c ../lib/libreria.c ../include/*.h;\
 		mv -f tags tao.tags; echo tags file produced.;\
