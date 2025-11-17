@@ -26,7 +26,7 @@ backup:
 	cp -f	tao*	$(BACKUPS)
 
 clean:
-	rm -f $(BIN)/tao $(BIN)/invertfile $(BIN)/taofit $(OBJ)/*.o $(LIB)/libreria.o $(LIB)/libreria.a
+	rm -f $(OBJ)/*.o $(LIB)/*.o $(LIB)/*.a
 	
 
 tao :	tao.o libreria.o taosp.o notify
