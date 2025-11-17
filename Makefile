@@ -24,7 +24,7 @@ all:
 clean_for_tar:
 	(cd src; make clean)
 	#rm -f src/*.o lib/libreria.o lib/libreria.a 
-	(cd demo; rm -f `find . -name '*[0-9][0-9][2-9].jpg' -print`)
+	(cd demo; rm -f `find . -name '*[0-9][0-9][2-9].jpg' -print` `find . -name '*[0-9][0-9][2-9].png' -print`)
 
 
 vers: 	clean_for_tar
@@ -35,9 +35,9 @@ vers: 	clean_for_tar
 	rm -f tmp/doc/.first_compilation.txt #tmp/lib/sistbanda* version_tmp/lib/surf_proc* version_tmp/lib/thin_sheet* 
 	rm -r -f tmp/demo/Andes
 	echo "PACKING"
-	tar -chf tao.tar tmp
-	chmod og-r tao.tar
-	gzip -f tao.tar
+	tar -chf $(VERSION).tar tmp
+	chmod og-r $(VERSION).tar
+	gzip -f $(VERSION).tar
 	touch tmp/bin/touch_something #needed by git add
 	mv tmp tao_copy_for_upload
 	make upload
