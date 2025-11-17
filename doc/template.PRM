@@ -106,10 +106,7 @@ hydro_model	0	Defines the hydrological (climate&drainage) model.
 			#2: orographic precipitation following Roer et al. (2003, JGR).
 			#3: orographic precipitation following Garcia-Castellanos (2007,
 				EPSL), water-conservative.
-rain	500	Precipitation per unit length along the model profile.
-			To find this multiply the precipitaion rate in your region by the
-			width of the basin perpendicular to the model profile. 
-			[l/m2/yr]=[mm/yr].
+rain	500	Precipitation per unit area [l/m2/yr]=[mm/yr].
 			If hydro_model=1: Background precipitation (or runoff, water going
 				to the drainage system) if no *.RAIN file is given or if the
 				file value is negative. 
@@ -156,10 +153,10 @@ Keroseol	.0	Continental erosion rate: meters of	erosion by meters elevation
 Ksedim 	0e2	Sedimentation rate below sea level [m/My].
 
 Kerosdif 	.00	Diffusive transport coefficient [m2/yr] (e.g., Ks in 
-				Kooi&Beaumont,1994,p12193). Tucker&Bras(1998, WaterRes.);
-				Tucker&Slingerland(1997,WaterRes) use 10e-2.
+				Kooi&Beaumont,1994,p12193). Hillsope rock flow. Tucker&Bras(1998,
+				WaterRes.) Tucker&Slingerland(1997,WaterRes) use 10e-2.
 				Kooi&Beaumont(1994): 0.5-5.0. Flemings&Jordan (1989) list
-				observations of 10e-4 - 10e-2 m2/yr. Braun&Sambridge(1997,
+				observations of 1e-4 - 1e-2 m2/yr. Braun&Sambridge(1997,
 				BasinRes.) use .3 m2/yr. If diffusion is used to represent also
 				fluvial transport, then Flemings&Jordan (1989) document up to
 				10e5 in delta progradations). Avouac&Burov(1996) compile

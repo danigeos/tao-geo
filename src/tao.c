@@ -34,7 +34,7 @@ int main(int argc, char **argv)
 
 	fprintf(stdout, "\nT= %.4f My", Time/Matosec);
 
-	if (switch_ps==2) {calculate_topo(topo); Write_Ouput();}
+	if (switch_ps>=2) {calculate_topo(topo); Write_Ouput();}
 
 	/*MAIN LOOP: In this loop time increases from Timeini to Timefinal*/
 	do { 
@@ -59,7 +59,7 @@ int main(int argc, char **argv)
 		Time += dt;
 		fprintf(stdout, "\nT= %.4f My", Time/Matosec);
 
-		if (switch_ps==2) Write_Ouput();
+		if (switch_ps>=2) Write_Ouput();
 	} while (Time < Timefinal-dt/10);
 
 	The_End();
@@ -92,7 +92,7 @@ int inputs(int argc, char **argv)
 	
 	/*Version of tAo will be matched against the parameters file *.PRM*/
 	/*¡¡ UPDATE template.PRM !!*/
-	strcpy(version, "tAo_2019-12-06");
+	strcpy(version, VERSION);
 
 	/*Default parameter values are read from ./tao/doc/template.PRM*/
 	sprintf(projectname, "%s/doc/template", TAODIR);
@@ -188,7 +188,7 @@ int inputs(int argc, char **argv)
 			read_file_resume(resume_filename);
 			interpr_command_line_opts(argc, argv);
 			if (verbose_level>=1) fprintf(stdout, "\nResuming project '%s'. Timefinal=%.1f My", projectname, Timefinal/Matosec);
-			if (switch_ps==2) n_image--; /*Don't produce 2 jpg's of the same stage of restart*/
+			if (switch_ps>=2) n_image--; /*Don't produce 2 jpg's of the same stage of restart*/
 			return(1);
 		case 10:
 			if (!read_file_parameters(verbose_level>=1, 0)) {
@@ -361,6 +361,11 @@ int interpr_command_line_opts(int argc, char **argv)
 					switch_write_file_Blocks=YES;
 					if (argv[iarg][2] == 'c') {
 						switch_ps=2;
+						strcpy(gif_geom, "");
+						if (strlen(prm2)>0) strcpy(gif_geom, prm2);
+					}
+					if (argv[iarg][2] == 'p') {
+						switch_ps=3;
 						strcpy(gif_geom, "");
 						if (strlen(prm2)>0) strcpy(gif_geom, prm2);
 					}
@@ -1381,7 +1386,7 @@ int The_End()
 	fprintf(stdout, "\n -:\t%.0f\t%.1f\t-\t0\t-\t-\t-\t-\tbasement\n", denscrust, Timeini/Matosec);
 
 	write_file_resume();
-	if (switch_ps!=2) Write_Ouput();
+	if (switch_ps<2) Write_Ouput();
 
 	sprintf(command, "rm -f %s*.tao.tmp", projectname);
 	system(command);
@@ -1475,18 +1480,25 @@ int Write_Ouput()
 
 	/*Make GMT Postscript*/
 	if (switch_ps) {
-		char 	command[200];
-		sprintf(command, "tao.gmt.job %s %.2f %.2f %.2f %.2f %d %d", 
-			projectname, xmin/1000, xmax/1000, zmin, zmax, water_load, (isost_model<3)? 0:1);
-		if (verbose_level>=3) 
-			fprintf(stdout, "\nPostscript file '%s.ps' is going to be produced with command:", projectname) ;
-		if (verbose_level>=3) 
-			fprintf(stdout, "\n%s\n", command) ;
-		system(command);
+		char 	command[300];
+		if (switch_ps<=2) {
+			sprintf(command, "tao.gmt.job %s %.2f %.2f %.2f %.2f %d %d", 
+				projectname, xmin/1000, xmax/1000, zmin, zmax, water_load, (isost_model<3)? 0:1);
+			if (verbose_level>=3) 
+				fprintf(stdout, "\nPostscript file '%s.ps' is going to be produced with command:\n%s\n", projectname, command);
+			system(command);
+		}
+		else {
+			sprintf(command, "tao.plot.py %s; mv -f %s.png %s%03d.png", projectname, projectname, projectname, n_image);
+			if (verbose_level>=3) 
+				fprintf(stdout, "\nPlot files '%s.xvg' and %s%03d.png to be produced with command:\n%s\n", projectname, projectname, n_image, command) ;
+			system(command);
+			n_image++;
+		}
 		if (switch_ps==2) {
 			/*crop by default to the border*/
 			if (strlen(gif_geom)<2) sprintf(gif_geom, "-trim -background Khaki -label 'tAo software: %s' -gravity South -append", projectname);
-			sprintf(command, "convert -density 200 %s.ps %s -interlace NONE  %s%03d.jpg", /*-fill \"#ffffff\" -draw \"rectangle 70,10 130,25\" -fill \"#000000\" -font helvetica -draw \"text 74,22 t_%+3.2f_My \" */
+			sprintf(command, "magick convert -density 200 %s.ps %s -interlace NONE  %s%03d.jpg", /*-fill \"#ffffff\" -draw \"rectangle 70,10 130,25\" -fill \"#000000\" -font helvetica -draw \"text 74,22 t_%+3.2f_My \" */
 				projectname, gif_geom, projectname, n_image);
 			if (verbose_level>=3)
 				fprintf(stdout, "\n%s\n", command) ;

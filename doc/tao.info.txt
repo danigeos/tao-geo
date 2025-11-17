@@ -518,12 +518,14 @@
     Erosion boundary conditions 0 and 1 are swapped.
     -v command line option to change velocity of Blocks based on density.
     Changed UNIT1D and Units structure to BLOCK1D and Blocks, to avoid confusion 
-	with input files (UNITS). 
+		with input files (UNITS). 
   tAo_2019-12-06
-	Gradual sediment compaction now implemented (see new parameter compact_depth).
-	For isost_model>=3: yield stress is now written in *.strs output file. Main 
-	graphic script tao.gmt.job is now accepting a number as 2nd argument, to 
-	predefine the x coordinate for the stress distribution and envelope.  
+		Gradual sediment compaction now implemented (see new parameter compact_depth).
+		For isost_model>=3: yield stress is now written in *.strs output file. Main 
+		graphic script tao.gmt.job is now accepting a number as 2nd argument, to 
+		predefine the x coordinate for the stress distribution and envelope.  
+  tAo_2025-11-17
+  	Python graphic output available through script/tisc.plot.py 
   
 
 11.- MODEL LIMITATIONS

@@ -14,8 +14,10 @@
 
 include config.mk
 
+VERSION = tAo_2025-11-17
+
 all:
-	(cd src; make)
+	(cd src; make all)
 	@echo; echo; echo Compilation succeeded!
 	@(echo "ADD TO YOUR PATH: `pwd`/bin/  AND  `pwd`/script/")
 	@(echo "ADD IN .cshrc:    setenv tao_dir `pwd` ")
@@ -23,37 +25,35 @@ all:
 
 clean_for_tar:
 	(cd src; make clean)
-	rm -f src/*.o lib/libreria.o lib/libreria.a 
-
-tao: 
-	(cd src; make tao)
+	#rm -f src/*.o lib/libreria.o lib/libreria.a 
+	(cd demo; rm -f `find . -name '*[0-9][0-9][2-9].jpg' -print`)
 
 
 vers: 	clean_for_tar
-	rm -R -f tao tao_copy_for_upload
-	mkdir tao tao/bin
-	cp -R -L Makefile config.mk README demo doc include lib script src   tao
-	rm -f tao/doc/.first_compilation.txt #tao/lib/sistbanda* version_tmp/lib/surf_proc* version_tmp/lib/thin_sheet* 
-	rm -r -f tao/demo/Andes
+	echo "CLEANING for packing"
+	rm -R -f tmp tao_copy_for_upload
+	mkdir tmp tmp/bin
+	cp -R -L Makefile config.mk README demo doc include lib script src   tmp
+	rm -f tmp/doc/.first_compilation.txt #tmp/lib/sistbanda* version_tmp/lib/surf_proc* version_tmp/lib/thin_sheet* 
+	rm -r -f tmp/demo/Andes
+	echo "PACKING"
 	tar -chf tao.tar tao
+	chmod og-r tao.tar
 	gzip -f tao.tar
-	echo "UPLOADING to github."
 	touch tao/bin/touch_something #needed by git add
-	mv tao tao_copy_for_upload
+	mv tmp tao_copy_for_upload
 	make upload
 
 
-upload_version_starting_from_scratch:
-	#(git init; git remote add tao https://github.com/danigeos/tao-geo; git add Makefile README bin config.mk demo doc include lib script src; git commit -a -mnewVersion; git push -u -f tao master)
-
-
 upload:
+	echo "UPLOADING to github."
 	cd tao_copy_for_upload; 
 	#For initialization:  
 	#git init; 
 	#git remote add tao https://github.com/danigeos/tao-geo; 
 	#git add .; 
+	git commit -a -m$(VERSION); 
 	git config http.postBuffer 524288000; git config http.maxRequestBuffer 100M; git config core.compression 0; 
-	git commit -a -mtAo_newVersion; 
+	#add --force to pass by the remote version 
 	git push -u -f tao master
 
