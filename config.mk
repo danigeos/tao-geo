@@ -1,4 +1,5 @@
 #------------------------------------------------------------------------
+VERSION = \"tAo_2025-11-17\"
 #You may need to modify these variables
 CC	= gcc #gcc cc
 LIBS	= -L$(LIB) -lm -lc

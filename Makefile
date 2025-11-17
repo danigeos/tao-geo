@@ -1,22 +1,20 @@
 #----------------------------- tao makefile -----------------------------
 #
-#Modify options in ./config.mk
+#First read and modify options in ./config.mk
 #
 #Type  'make'  in this directory to compile tao 
 #
-#tao has been succesfully compiled with this Makefile in: 
-# ·iOS 11
-# ·IBM AIX Version 3.2 for IBM RISC 6000 workstations.
-# ·Linux for pentium processor. 
-# ·Hewlett Packard Envizex.
-# ·Sun Solaris OS5
+#tAo has been succesfully compiled with this Makefile in: 
+#  macOS 11, macOS 16, linux, 
+#Earlier versions were functional in:
+#  IBM AIX Version 3.2 for IBM RISC 6000 workstations, Hewlett Packard Envizex. Sun Solaris OS5
 #------------------------------------------------------------------------
 
 include config.mk
 
-VERSION = tAo_2025-11-17
 
 all:
+	@echo; echo; echo Compiling version $(VERSION)
 	(cd src; make all)
 	@echo; echo; echo Compilation succeeded!
 	@(echo "ADD TO YOUR PATH: `pwd`/bin/  AND  `pwd`/script/")
@@ -37,10 +35,10 @@ vers: 	clean_for_tar
 	rm -f tmp/doc/.first_compilation.txt #tmp/lib/sistbanda* version_tmp/lib/surf_proc* version_tmp/lib/thin_sheet* 
 	rm -r -f tmp/demo/Andes
 	echo "PACKING"
-	tar -chf tao.tar tao
+	tar -chf tao.tar tmp
 	chmod og-r tao.tar
 	gzip -f tao.tar
-	touch tao/bin/touch_something #needed by git add
+	touch tmp/bin/touch_something #needed by git add
 	mv tmp tao_copy_for_upload
 	make upload
 
