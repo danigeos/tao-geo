@@ -26,7 +26,7 @@ backup:
 	cp -f	tao*	$(BACKUPS)
 
 clean:
-	rm -f $(OBJ)/*.o $(LIB)/*.o $(LIB)/*.a
+	rm -f $(OBJ)/*.o $(LIB)/*.o $(LIB)/*.a $(BIN)/.dSYM 
 	
 TAO_OBJS = tao.o taosp.o globals.o
 
