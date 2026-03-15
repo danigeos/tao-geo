@@ -1,0 +1,117 @@
+	   ***  tao v3.3 PARAMETERS FILE  ***
+	       (default unities : I.S.)
+
+
+Comments on this project: 
+This is to parametrize the influence of
+taking the model end (with broken
+bc's) closer or more distant to the load
+front.
+
+
+PARAMETER  CORRESPONDING 		
+ VALUES     VARIABLES			USE
+-------	----------------------	--------------------------------------------
+
+Gridding:
+4001 	Nx			Number of x points (distance).
+201	Nz			Number of z points (depth for rheological calculations).
+
+Limits of x domain:
+-500e3	x0			Left
+300e3	xf			Right
+
+Limits of the output window:
+-50e3	xmin			Left
+200e3	xmax			Right
+-1000	ymin			Bottom
+1000	ymax			Top
+
+
+Lithosph. geometry:
+5000	Te_default		Default ET (if no .EET file).
+32000	crust_thick_default 	Default crustal geometry for gravity anomaly and rheological calculations when no .CRUST and .UCRUST
+15000	upper_crust_thick_default 	Id. for upper crust.
+0	alt0 			Altitude of the initial plate position from sea level.
+
+
+Densities:
+3300	densmantle		Mantle density.
+2900	denscrust		Crust (just for anomaly calculation).
+2800	densinfill		Infilling material (only when switch_topoest=1).
+2300	denssedim		Sediments.
+0	densamb			Air (or water for oceanic flexure).
+
+
+Erosion model parameters (used only if switch_erosed=1):
+0e6	Kerosdif 		Diffusive erosion constant [m2/Ma].
+.0	Keroseol 		Continental background erosion rate constant meters of sediment by meters of height and My [m/(m·Ma)].
+.0	Ksedim			Water sedimentation rate [m/Ma].
+
+
+
+Time variables [Ma]:
+0	Timeini			Initial time.
+0	Timefinal		Final time.
+5	tau			Relaxation time (used only if switch_viscoelast=1).
+2	dt			Increment time.
+10	dtmemounit		Time elapsed between units recording. 
+				  if = 0 only file-defined load units will be recorded. 
+
+
+Boundary Conditions Type:
+1	boundary_conds		#0: Continuous simetric half-plate.
+				#1: Broken plate (left).
+				#2: Continuous plate.
+				#3: Free ends.
+				#4: Hunging plate.
+				#5: Broken plate (right).
+
+External forces:
+0e12	tecforce		Horizontal tectonic force (compressive if >0).
+-0e12	appshearforce		Applied force as bound. cond. in cases 1 and 5. (downwards if <0).
+-0e16	appmoment 		Torque as bound. cond. cases 1 and 5. (clockwise if >0).
+
+
+1	lith_type		To switch on depth-dependent plasticity:
+				#0: no rheol. calc.: Pure elastic or viscoelastic model
+				#1: oceanic lithosphere.
+				#2: continental auto. decoupling.
+				#3: continental always decoupled.
+				#4: continental never decoupled.
+
+
+These are switches to turn on options of the model.
+Their possible values are 1 (yes) or 0 (no):
+0	switch_sea		For existence of sea.
+0	switch_erosed		For erosional-deositional model.
+0	grav_anom_type		Gravity anomaly output type. #0: No gravity calculations; #1: Bouguer anomaly;  #2:Free-Air
+
+i/o switches:
+1	switch_write_file	For text file output.
+0	switch_ps		For postscript output.
+0	switch_output		For graphic output (PV-WAVE).
+0	switch_verbose		For more runtime information.
+0	switch_debug		For more runtime debugging prints.
+
+v3.2	version			Release
+
+
+(END OF PARAMETERS FILE)
+
+Comments:
+    This is a tao 3.2 parameter file. 
+	--You can modify the format of this parameter files, either by adding 
+  more comment lines or changing comments in the existing lines after the 
+  values. Comment lines cannot start with a number, this would be read as a 
+  parameter.
+	--You can run the simplest model (without any load file *.CRG) just 
+  varying the b.c. parameters 'appshearforce' & 'appmoment' and the 'tecforce'
+  external horizontal force. 
+	--Default unities: I.S.  (except indication).
+	--If  (switch_topoestable != 0) then the load will rest at zero level 
+  and plate subsidence will be filled with 'densinfill' material. Do not use 
+  with erosion model.
+	--You can get more information about the meaning of each parameter in 
+  the tao.h file and tao.info file.
+

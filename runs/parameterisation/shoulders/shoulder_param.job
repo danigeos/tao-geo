@@ -1,0 +1,42 @@
+#!/bin/csh
+
+set ps  	= shoulder_param.ps
+
+
+echo 0	0 0 0    71 255 255 255 > tmp.cpt
+
+
+
+awk '{if ($1==">" && $2==10) print $1; if ($1!=">" && $2==10) print $4, $5}' shoulder_param.step4.results > tmp
+psxy tmp -JX6/8 -R0/70/0/10000 -H1 -P -X1.5 -M -K -W5 \
+	-B:.Flexural\ Shoulder\ \(step=4\ km\):a10f5:Te:/1000f500:Shoulder\ Height:nSeW > $ps
+
+awk '{if ($1==">" && $2==30) print $1; if ($1!=">" && $2==30) print $4, $5}' shoulder_param.step4.results > tmp
+psxy tmp -JX -R -H1 -M -K -O -W6ta >> $ps
+
+awk '{if ($1==">" && $2==50) print $1; if ($1!=">" && $2==50) print $4, $5}' shoulder_param.step4.results > tmp
+psxy tmp -JX -R -H1 -M -K -O -W7to >> $ps
+
+
+awk '{if ($1==">") print $1; else if ($2==10 || $2==30 || $2==50) print $4, $5, $2}' shoulder_param.step4.results > tmp
+psxy tmp -JX -R -H1 -M -O -St.07 -Ctmp.cpt >> $ps
+
+
+
+
+awk '{if ($1==">" && $2==10) print $1; if ($1!=">" && $2==10) print $4, $5}' shoulder_param.step64.results > tmp
+psxy tmp -JX -R -H1 -P -X1.5 -M -K -W5 \
+	-B:.Flexural\ Shoulder\ \(step=64\ km\):a10f5:Te:/1000f500:Shoulder\ Height:nSeW >> $ps
+
+awk '{if ($1==">" && $2==30) print $1; if ($1!=">" && $2==30) print $4, $5}' shoulder_param.step64.results > tmp
+psxy tmp -JX -R -H1 -M -K -O -W6ta >> $ps
+
+awk '{if ($1==">" && $2==50) print $1; if ($1!=">" && $2==50) print $4, $5}' shoulder_param.step64.results > tmp
+psxy tmp -JX -R -H1 -M -K -O -W7to >> $ps
+
+
+awk '{if ($1==">") print $1; else if ($2==10 || $2==30 || $2==50) print $4, $5, $2}' shoulder_param.step64.results > tmp
+psxy tmp -JX -R -H1 -M -O -St.07 -Ctmp.cpt >> $ps
+
+
+rm -f tmp*

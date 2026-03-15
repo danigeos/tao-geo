@@ -1,0 +1,28 @@
+	version		tao v4.0
+	x0		-500e3	Left
+	xf		+500e3	Right
+	xmin		-300e3	Left
+	xmax		+300e3	Right
+	zmin		-2000	Bottom
+	zmax		2000	Top
+	Nx		501 	Number of x cells (distance axis).
+	Nz		201	Number of z cells (depth axis for elastic-plastic model).
+
+	densasthen	3100	Density beneath the lithospheric plate, at the compensation level in the asthenosphere.
+	Timeini		0	Initial time.
+	Timefinal	.2	Final time.
+	dt		.0005	Increment time.
+	dt_record	.002	Time elapsed between sediment horizons recording. If =0, will be recorded only at the times of load files.
+	isost_model	2	To switch the thinplate model of lithosphere:
+	Te		10000 1e3	Default Elastic Thickness (if no .EET file). Te=0 => local isostasy.
+	tau		.001	Relaxation time (used only for the viscoelastic plate model; isost_model=2).
+	boundary_conds	3	Boundary conditions for flexure	#3: Free edges (0 moment and 0 vertical shear stress).
+	horz_force	0e12	Horizontal tectonic force (compressive if >0).
+	vert_force	-0e12	Applied force as bound. cond. in cases 1 and 5. (downwards if <0).
+	moment		-0e16	Torque as bound. cond. cases 1 and 5. (clockwise if >0).
+	hydro_model	0	Defines the hydrological (drainage) model. 
+	erosed_model	0	Defines the erosion/sedimentation model:
+	switch_sea	0	To account for the effect of sea in terms of load, gravity anomaly and sedimentation.
+	switch_files	1	For extra file output.
+	switch_ps	0	For postscript output.
+	switch_verbose	0	For more runtime information.

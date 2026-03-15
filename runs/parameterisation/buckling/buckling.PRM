@@ -1,0 +1,95 @@
+	   ***  tao v3.3 PARAMETERS FILE  ***
+	        (default unities : I.S.)
+
+
+Comments on this project: --
+
+
+PARAMETER  CORRESPONDING 		
+ VALUES     VARIABLES			USE
+-------	----------------------	--------------------------------------------
+
+Gridding:
+601 	Nx			Number of x points (distance axis).
+201	Nz			Number of z points (depth axis for elastic-plastic model).
+
+Limits of x domain:
+000e3	x0			Left
+600e3	xf			Right
+
+Limits of the output window:
+000e3	xmin			Left
+600e3	xmax			Right
+-2000	ymin			Bottom
++2000	ymax			Top
+
+
+Lithosph. geometry:
+20000	Te_default		Default Elastic Thickness (if no .EET file). Te=0 => local isostasy.
+32000	crust_thick_default 	Default crustal geometry for gravity anomaly and rheological calculations when no .CRUST and .UCRUST
+11000	upper_crust_thick_default 	Id. for upper crust.
+0	alt0 			Altitude of the initial plate position from sea level.
+
+
+Densities:
+3250	densmantle		Mantle density.
+2850	denscrust		Crust (just for anomaly calculation).
+2800	densinfill		Infilling material (only when switch_topoest=1).
+2300	denssedim		Sediments.
+0	densenv			Air (or water for oceanic flexure).
+
+
+Erosion model parameters (used only if switch_erosed=1):
+10e6	Kerosdif 		Diffusive erosion constant [m2/Ma].
+.0	Keroseol 		Continental background erosion rate constant meters of sediment by meters of height and My [m/(m·Ma)].
+0e2	Ksedim			Water sedimentation rate [m/Ma].
+
+
+
+Time variables [Ma] (time goes from negative to positive, Timeini<Timefinal):
+0	Timeini			Initial time.
+2	Timefinal		Final time.
+1	tau			Relaxation time (used only for the viscoelastic plate model).
+.25	dt			Increment time.
+10	dtmemounit		Time elapsed between units recording. 
+				  if = 0 only file-defined load units will be recorded. 
+
+
+Boundary Conditions Type:
+1	boundary_conds		#0: Left edge is the center of a simmetric model and the plate is not broken there. Right edge is free.
+				#1: Broken plate with external force 'appshearforce' and moment 'appmoment' at the left edge. Right edge is free.
+				#2: 0 dip and 0 deflection at left and right edges.
+				#3: Free edges (0 moment and 0 vertical shear stress).
+				#4: Hunging plate with fixed edges and 0 moment.
+				#5: Broken plate with external force 'appshearforce' and moment 'appmoment' at the left edge. Right edge is free (zero values).
+
+
+External forces:
+5e12	tecforce		Horizontal tectonic force (compressive if >0).
+0e12	appshearforce		Applied force as bound. cond. in cases 1 and 5. (downwards if <0).
+-0e16	appmoment 		Torque as bound. cond. cases 1 and 5. (clockwise if >0).
+
+
+1	lith_type		To switch the thinplate model of lithosphere:
+				#-1: No flexure performance.
+				#0: Pure elastic plate model.
+				#1: Visco-elastic plate model.
+				#2: Elastic-plastic oceanic lithosphere.
+				#3: Elastic-plastic continental always decoupled.
+				#4: Elastic-plastic continental never decoupled.
+				#5: Elastic-plastic continental auto. decoupling.
+
+
+These are switches to turn on options of the model.
+Their possible values are 1 (yes) or 0 (no):
+0	switch_sea		For existence of sea.
+0	switch_erosed		For erosional-deositional model.
+0	grav_anom_type		Gravity anomaly output type. #0: No gravity calculations; #1: Bouguer anomaly;  #2:Free-Air
+
+i/o switches:
+0	switch_write_file	For text file output.
+1	switch_ps		For postscript output.
+0	switch_output		For graphic output.
+0	switch_verbose		For more runtime information.
+0	switch_debug		For more runtime debugging prints.
+

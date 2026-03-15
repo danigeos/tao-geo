@@ -1,0 +1,8 @@
+#Te=20000
+
+psxy triang.results.noP -JX5/1.8 -R300/700/-4000/3000 \
+	-Ba100f50:Distancia\ \(km\):/a1000f250:Altitud\ \(m\):nSeW \
+	-K -W5ta -M -V -P > triang.ps
+
+psxy triang.results.elast 	-JX	-R	-M -O -W3to -K -V >> triang.ps
+psxy triang.results.P 		-JX	-R	-M -O -W8 -V >> triang.ps

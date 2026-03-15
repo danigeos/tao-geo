@@ -1,0 +1,26 @@
+	version	tao v4.0
+	Nx		1001 		Number of x points (distance axis).
+	x0		-500e3		Left
+	xf		+500e3		Right
+	xmin		-300e3		Left
+	xmax		+300e3		Right
+	ymin		-2000		Bottom
+	ymax		2000		Top
+		
+	densasthen	3200
+	denscrust	2750
+	
+	isost_model	2		To switch the thinplate model of lithosphere:
+	Te		10e3		Default Elastic Thickness (if no .EET file). Te=0 => local isostasy.
+	boundary_conds	3		#0: Left edge is the center of a simmetric model and the plate is not broken there. Right edge is free.
+	horz_force	0
+	hydro_model	0
+	erosed_model	0
+	
+	Timeini		0		Initial time.
+	tau		1		Relaxation time (used only for the viscoelastic plate model).
+	dt		1		Increment time.
+		
+	switch_sea	0		For existence of sea.
+	switch_files	0		For extra file output.
+	switch_ps	0		For postscript output.

@@ -1,0 +1,41 @@
+#!/bin/csh
+
+set vertforce = -4e12 #-5e12
+set moment = -0e16 #-8.5e16
+set ps = rheo.ps
+set xmin = 0
+set xmax = 600e3
+set Nx = 301
+
+psbasemap -JX13/-6.25 -R0/300/-1/6 -Ba100f50:"distancia (km)":/a2f1g10:"deflexi\360n (km)":nSeW -K -X3 -Y3 -P > $ps
+
+tao -Q -M0 -T26e3 -B3 -ra1000 -L$xmin -R$xmax -N$Nx -s$vertforce -m$moment | awk '{print $1,$2/1000}' | psxy -JX -R -W6ta -O -K >> $ps
+tao -Q -M0 -T63e3 -B3 -ra1000 -L$xmin -R$xmax -N$Nx -s$vertforce -m$moment | awk '{print $1,$2/1000}' | psxy -JX -R -W6to -O -K >> $ps
+
+tao rheo -M2 -B3 -ra1000 -L$xmin -R$xmax -N$Nx -s$vertforce -m$moment -S 
+awk '{print $1,-$2/1000}' rheo.pfl | psxy -JX -R -O -W6 -K >> $ps
+awk '{print $1*1000,$2}' rheo.eet > rheo.EET
+tao rheo -M0 -B3 -ra1000 -L$xmin -R$xmax -N$Nx -s$vertforce -m$moment -S 
+awk '{print $1,-$2/1000}' rheo.pfl | psxy -JX -R -O -W6to -K >> $ps
+
+pstext -JX -R -O -K <<END>> $ps
+	205 2.9 	11 0 0 4	elastopl\337stico H=63 km
+	205 3.35	11 0 0 4	el\337stico Te=26 km
+	205 3.8	11 0 0 4	el\337stico Te=63 km
+END
+psxy -JX -R -O -W6 -K <<END>> $ps
+	150 3
+	200 3
+END
+psxy -JX -R -O -W6ta -K <<END>> $ps
+	150 3.4
+	200 3.4
+END
+psxy -JX -R -O -W6to <<END>> $ps
+	150 3.8
+	200 3.8
+END
+
+
+rm -f rheo.EET 
+rm -f *.tmp

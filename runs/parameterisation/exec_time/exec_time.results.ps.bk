@@ -1,0 +1,806 @@
+%!PS-Adobe-3.0
+%%BoundingBox: 0 0 595 842
+%%Title: GMT v3.3.1 Document from psbasemap
+%%Creator: GMT
+%%For: gard
+%%DocumentNeededResources: font Helvetica-Bold
+%%CreationDate: Tue Sep 21 14:51:40 1999
+%%LanguageLevel: 1
+%%DocumentData: Clean7Bit
+%%Orientation: Landscape
+%%Pages: 1
+%%EndComments
+
+%%BeginProlog
+
+% Begin pslib header
+
+250 dict begin
+
+/A /setgray load def
+/B /setdash load def
+/C /setrgbcolor load def
+/D /rlineto load def
+/E {dup stringwidth pop} bind def
+/F /fill load def
+/G /rmoveto load def
+/L /lineto load def
+/M {stroke moveto} bind def
+/m {moveto} bind def
+/N /newpath load def
+/O {M {D} repeat P V C F U S} def
+/o {M {D} repeat P V A F U S} def
+/P /closepath load def
+/Q {M {D} repeat P V C F U N} def
+/q {M {D} repeat P V A F U N} def
+/t {M {D} repeat P S} def
+/R /rotate load def
+/S /stroke load def
+/T /translate load def
+/U /grestore load def
+/V /gsave load def
+/W /setlinewidth load def
+/X {M dup 0 D dup -0.5 mul dup G 0 exch D S} bind def
+/Y {findfont exch scalefont setfont} bind def
+/Z /show load def
+/A0 {0 exch M 0 D D D D D 0 D P V A F U N} bind def
+/A1 {0 exch M 0 D D D D D 0 D P V A F U S} bind def
+/A2 {0 exch M 0 D D D D D 0 D P V C F U N} bind def
+/A3 {0 exch M 0 D D D D D 0 D P V C F U S} bind def
+/A4 {0 exch M 0 D D D D D 0 D P S} bind def
+/C0 {0 360 arc V A F U N} bind def
+/C1 {0 360 arc V A F U S} bind def
+/C2 {0 360 arc V C F U N} bind def
+/C3 {0 360 arc V C F U S} bind def
+/C4 {0 360 arc S} bind def
+/D0 {M 5 {dup} repeat D neg exch D neg exch neg D P V A F U N} bind def
+/D1 {M 5 {dup} repeat D neg exch D neg exch neg D P V A F U S} bind def
+/D2 {M 5 {dup} repeat D neg exch D neg exch neg D P V C F U N} bind def
+/D3 {M 5 {dup} repeat D neg exch D neg exch neg D P V C F U S} bind def
+/D4 {M 5 {dup} repeat D neg exch D neg exch neg D P S} bind def
+/R0 {M dup 0 D exch 0 exch D neg 0 D P V A F U N} bind def
+/R1 {M dup 0 D exch 0 exch D neg 0 D P V A F U S} bind def
+/R2 {M dup 0 D exch 0 exch D neg 0 D P V C F U N} bind def
+/R3 {M dup 0 D exch 0 exch D neg 0 D P V C F U S} bind def
+/R4 {M dup 0 D exch 0 exch D neg 0 D P S} bind def
+/S0 {M dup dup 0 D 0 exch D neg 0 D P V A F U N} bind def
+/S1 {M dup dup 0 D 0 exch D neg 0 D P V A F U S} bind def
+/S2 {M dup dup 0 D 0 exch D neg 0 D P V C F U N} bind def
+/S3 {M dup dup 0 D 0 exch D neg 0 D P V C F U S} bind def
+/S4 {M dup dup 0 D 0 exch D neg 0 D P S} bind def
+/T0 {M dup 0 D dup -0.5 mul exch 0.866025 mul D P V A F U N} bind def
+/T1 {M dup 0 D dup -0.5 mul exch 0.866025 mul D P V A F U S} bind def
+/T2 {M dup 0 D dup -0.5 mul exch 0.866025 mul D P V C F U N} bind def
+/T3 {M dup 0 D dup -0.5 mul exch 0.866025 mul D P V C F U S} bind def
+/T4 {M dup 0 D dup -0.5 mul exch 0.866025 mul D P S} bind def
+/I0 {M dup 0 D dup -0.5 mul exch -0.866025 mul D P V A F U N} bind def
+/I1 {M dup 0 D dup -0.5 mul exch -0.866025 mul D P V A F U S} bind def
+/I2 {M dup 0 D dup -0.5 mul exch -0.866025 mul D P V C F U N} bind def
+/I3 {M dup 0 D dup -0.5 mul exch -0.866025 mul D P V C F U S} bind def
+/I4 {M dup 0 D dup -0.5 mul exch -0.866025 mul D P S} bind def
+/E0 {V T dup 0 exch M 0.726542528 mul -72 R dup 0 D 4 {72 R dup 0 D -144 R dup 0 D} repeat pop P V A F U N U} bind def
+/E1 {V T dup 0 exch M 0.726542528 mul -72 R dup 0 D 4 {72 R dup 0 D -144 R dup 0 D} repeat pop P V A F U S U} bind def
+/E2 {V T dup 0 exch M 0.726542528 mul -72 R dup 0 D 4 {72 R dup 0 D -144 R dup 0 D} repeat pop P V C F U N U} bind def
+/E3 {V T dup 0 exch M 0.726542528 mul -72 R dup 0 D 4 {72 R dup 0 D -144 R dup 0 D} repeat pop P V C F U S U} bind def
+/E4 {V T dup 0 exch M 0.726542528 mul -72 R dup 0 D 4 {72 R dup 0 D -144 R dup 0 D} repeat pop P S U} bind def
+/H0 {V T dup dup 0.5 mul exch 0.866025404 mul M 5 {-60 R dup 0 D} repeat pop P V A F U N U} bind def
+/H1 {V T dup dup 0.5 mul exch 0.866025404 mul M 5 {-60 R dup 0 D} repeat pop P V A F U S U} bind def
+/H2 {V T dup dup 0.5 mul exch 0.866025404 mul M 5 {-60 R dup 0 D} repeat pop P V C F U N U} bind def
+/H3 {V T dup dup 0.5 mul exch 0.866025404 mul M 5 {-60 R dup 0 D} repeat pop P V C F U S U} bind def
+/H4 {V T dup dup 0.5 mul exch 0.866025404 mul M 5 {-60 R dup 0 D} repeat pop P S U} bind def
+/P0 {arc P V A F U N} bind def
+/P1 {arc P V A F U S} bind def
+/P2 {arc P V C F U N} bind def
+/P3 {arc P V C F U S} bind def
+/P4 {arc P S} bind def
+/a {P V A F U N} def
+/b {P V A F U S} def
+/c {P V C F U N} def
+/d {P V C F U S} def
+/p {P S} def
+/F0 {/Helvetica Y} bind def
+/F1 {/Helvetica-Bold Y} bind def
+/F2 {/Helvetica-Oblique Y} bind def
+/F3 {/Helvetica-BoldOblique Y} bind def
+/F4 {/Times-Roman Y} bind def
+/F5 {/Times-Bold Y} bind def
+/F6 {/Times-Italic Y} bind def
+/F7 {/Times-BoldItalic Y} bind def
+/F8 {/Courier Y} bind def
+/F9 {/Courier-Bold Y} bind def
+/F10 {/Courier-Oblique Y} bind def
+/F11 {/Courier-BoldOblique Y} bind def
+/F12 {/Symbol Y} bind def
+/F13 {/AvantGarde-Book Y} bind def
+/F14 {/AvantGarde-BookOblique Y} bind def
+/F15 {/AvantGarde-Demi Y} bind def
+/F16 {/AvantGarde-DemiOblique Y} bind def
+/F17 {/Bookman-Demi Y} bind def
+/F18 {/Bookman-DemiItalic Y} bind def
+/F19 {/Bookman-Light Y} bind def
+/F20 {/Bookman-LightItalic Y} bind def
+/F21 {/Helvetica-Narrow Y} bind def
+/F22 {/Helvetica-Narrow-Bold Y} bind def
+/F23 {/Helvetica-Narrow-Oblique Y} bind def
+/F24 {/Helvetica-Narrow-BoldOblique Y} bind def
+/F25 {/NewCenturySchlbk-Roman Y} bind def
+/F26 {/NewCenturySchlbk-Italic Y} bind def
+/F27 {/NewCenturySchlbk-Bold Y} bind def
+/F28 {/NewCenturySchlbk-BoldItalic Y} bind def
+/F29 {/Palatino-Roman Y} bind def
+/F30 {/Palatino-Italic Y} bind def
+/F31 {/Palatino-Bold Y} bind def
+/F32 {/Palatino-BoldItalic Y} bind def
+/F33 {/ZapfChancery-MediumItalic Y} bind def
+/F34 {/ZapfDingbats Y} bind def
+% START OF EUROPEAN FONT DEFINITION
+% Reencode standard font map to European font map
+%
+/reencsmalldict 12 dict def
+/ReEncodeSmall
+{ reencsmalldict begin
+        /newcodesandnames exch def
+        /newfontname exch def
+        /basefontname exch def
+        /basefontdict basefontname findfont def
+        /newfont basefontdict maxlength dict def
+        basefontdict
+        { exch dup /FID ne 
+            { dup /Encoding eq
+                { exch dup length array copy
+                    newfont 3 1 roll put }
+                { exch newfont 3 1 roll put }
+                ifelse
+                }
+                { pop pop }
+                ifelse
+        } forall
+        newfont /FontName newfontname put
+        newcodesandnames aload pop
+        newcodesandnames length 2 idiv
+        { newfont /Encoding get 3 1 roll put }
+        repeat
+        newfontname newfont definefont pop
+        end
+} def
+
+/eurovec[
+8#260 /Aacute
+8#265 /Acircumflex
+8#276 /Adieresis
+8#300 /Agrave
+8#311 /Eacute
+8#314 /Ecircumflex
+8#321 /Edieresis
+8#322 /Egrave
+8#323 /Iacute
+8#324 /Icircumflex
+8#325 /Idieresis
+8#326 /Igrave
+8#327 /Oacute
+8#330 /Ocircumflex
+8#331 /Odieresis
+8#332 /Ograve
+8#333 /Uacute
+8#334 /Ucircumflex
+8#335 /Udieresis
+8#336 /Ugrave
+8#337 /aacute
+8#340 /acircumflex
+8#342 /adieresis
+8#344 /agrave
+8#345 /eacute
+8#346 /ecircumflex
+8#347 /edieresis
+8#350 /egrave
+8#354 /iacute
+8#355 /icircumflex
+8#356 /idieresis
+8#357 /igrave
+8#360 /oacute
+8#362 /ocircumflex
+8#363 /odieresis
+8#364 /ograve
+8#366 /uacute
+8#367 /ucircumflex
+8#370 /udieresis
+8#374 /ugrave
+8#375 /Aring
+8#376 /aring
+] def
+/PSL_Euro_encode 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 35 array astore def	% Initially zero
+PSL_Euro_encode 1 get 0 ge { % Set this font
+  /Helvetica-Bold /Helvetica-Bold eurovec ReEncodeSmall
+  /PSL_Euro_encode 1 1 put
+}
+
+% END OF EUROPEAN FONT DEFINITION
+/#copies 1 def
+
+%%EndProlog
+
+%%BeginSetup
+
+<< /PageSize [595 842] /ImagingBBox null >> setpagedevice
+
+% Init coordinate system and scales
+% Scale is originally set to 0.12, which means that
+% 1 inch on the paper equals 600 Postscript units
+595 0 T 90 R
+0.12 0.12 scale
+% End of pslib header
+%%EndSetup
+
+%%Page: 1 1
+
+591 472 T
+% PostScript produced by:
+
+% psbasemap -JX22l/16l -R2/90000/.1/400 -K -X2.5 -Y2 -B:.tAo 2D & 3D Execution Time:a1000f100:Nx:/50f10:Time (s): 
+% 
+
+S 0 A
+% Start of basemap
+S [] 0 B
+2598 4153 M 133 F1 (tAo 2D & 3D Execution Time) E -2 div 0 G Z
+% Map boundaries
+% Start of left y-axis
+90 R
+S 5 W
+0 0 M
+3780 0 D
+S
+S 2 W
+0 0 M
+0 31 D
+S
+0 54 M V -90 R 0 -37 G 100 F1 (0.1 ) E -1 div 0 G Z U
+1049 0 M
+0 31 D
+S
+1049 54 M V -90 R 0 -37 G 100 F1 (1 ) E -1 div 0 G Z U
+1049 0 M
+0 31 D
+S
+1049 54 M V -90 R 0 -37 G 100 F1 (1 ) E -1 div 0 G Z U
+2099 0 M
+0 31 D
+S
+2099 54 M V -90 R 0 -37 G 100 F1 (10 ) E -1 div 0 G Z U
+3148 0 M
+0 31 D
+S
+3148 54 M V -90 R 0 -37 G 100 F1 (100 ) E -1 div 0 G Z U
+0 0 M
+0 15 D
+S
+1049 0 M
+0 15 D
+S
+1049 0 M
+0 15 D
+S
+2099 0 M
+0 15 D
+S
+3148 0 M
+0 15 D
+S
+1890 340 M 125 F1 (Time \(s\)) E -2 div 0 G Z
+-90 R
+% End of y-axis
+% Start of right y-axis
+5197 0 T 90 R
+S 5 W
+0 0 M
+3780 0 D
+S
+S 2 W
+0 0 M
+0 -31 D
+S
+0 -304 M V -90 R 0 -37 G 100 F1 (0.1 ) E -1 div 0 G Z U
+1049 0 M
+0 -31 D
+S
+1049 -304 M V -90 R 0 -37 G 100 F1 (1 ) E -1 div 0 G Z U
+1049 0 M
+0 -31 D
+S
+1049 -304 M V -90 R 0 -37 G 100 F1 (1 ) E -1 div 0 G Z U
+2099 0 M
+0 -31 D
+S
+2099 -304 M V -90 R 0 -37 G 100 F1 (10 ) E -1 div 0 G Z U
+3148 0 M
+0 -31 D
+S
+3148 -304 M V -90 R 0 -37 G 100 F1 (100 ) E -1 div 0 G Z U
+0 0 M
+0 -15 D
+S
+1049 0 M
+0 -15 D
+S
+1049 0 M
+0 -15 D
+S
+2099 0 M
+0 -15 D
+S
+3148 0 M
+0 -15 D
+S
+1890 -340 M 0 -92 G 125 F1 (Time \(s\)) E -2 div 0 G Z
+-90 R -5197 0 T
+% End of y-axis
+% Start of lower x-axis
+
+S 5 W
+0 0 M
+5197 0 D
+S
+S 2 W
+781 0 M
+0 -31 D
+S
+781 -54 M 0 -73 G 100 F1 (10 ) E -2 div 0 G Z
+781 0 M
+0 -31 D
+S
+781 -54 M 0 -73 G 100 F1 (10 ) E -2 div 0 G Z
+1897 0 M
+0 -31 D
+S
+1897 -54 M 0 -73 G 100 F1 (100 ) E -2 div 0 G Z
+3014 0 M
+0 -31 D
+S
+3014 -54 M 0 -73 G 100 F1 (1000 ) E -2 div 0 G Z
+4131 0 M
+0 -31 D
+S
+4131 -54 M 0 -73 G 100 F1 (10000 ) E -2 div 0 G Z
+781 0 M
+0 -15 D
+S
+781 0 M
+0 -15 D
+S
+1897 0 M
+0 -15 D
+S
+3014 0 M
+0 -15 D
+S
+4131 0 M
+0 -15 D
+S
+2598 -163 M 0 -92 G 125 F1 (Nx) E -2 div 0 G Z
+
+% End of x-axis
+% Start of upper x-axis
+0 3780 T
+S 5 W
+0 0 M
+5197 0 D
+S
+S 2 W
+781 0 M
+0 31 D
+S
+781 54 M 100 F1 (10 ) E -2 div 0 G Z
+781 0 M
+0 31 D
+S
+781 54 M 100 F1 (10 ) E -2 div 0 G Z
+1897 0 M
+0 31 D
+S
+1897 54 M 100 F1 (100 ) E -2 div 0 G Z
+3014 0 M
+0 31 D
+S
+3014 54 M 100 F1 (1000 ) E -2 div 0 G Z
+4131 0 M
+0 31 D
+S
+4131 54 M 100 F1 (10000 ) E -2 div 0 G Z
+781 0 M
+0 15 D
+S
+781 0 M
+0 15 D
+S
+1897 0 M
+0 15 D
+S
+3014 0 M
+0 15 D
+S
+4131 0 M
+0 15 D
+S
+2598 163 M 125 F1 (Nx) E -2 div 0 G Z
+0 -3780 T
+% End of x-axis
+S [] 0 B
+% End of basemap
+S [] 0 B
+S
+% PostScript produced by:
+
+% psxy -JX22l/16l -R2/90000/.1/400 -K -O -M -L -W15ta/100/100/100 -G235 
+% 
+
+S 15 W
+S [120 120 ] 60 B
+S 0.392 A
+1388 3583 M
+2743 0 D
+869 -984 D
+0 -816 D
+-869 -1050 D
+-914 -733 D
+-1829 0 D
+0 3583 D
+0.922 b
+S [] 0 B
+S
+% PostScript produced by:
+
+% psxy -JX22l/16l -R2/90000/.1/400 -K -O -B:.tAo 2D & 3D Execution Time:a1000f100:Nx:/50f10:Time (s): 
+% -M -L -W10ta -G210 
+% 
+
+S 10 W
+S [80 80 ] 40 B
+S 0 A
+1453 3527 M
+393 0 D
+0 -542 D
+-196 -988 D
+-197 -568 D
+0 2098 D
+0.824 b
+% Start of basemap
+S [] 0 B
+2598 4153 M 133 F1 (tAo 2D & 3D Execution Time) E -2 div 0 G Z
+% Map boundaries
+% Start of left y-axis
+90 R
+S 5 W
+0 0 M
+3780 0 D
+S
+S 2 W
+0 0 M
+0 31 D
+S
+0 54 M V -90 R 0 -37 G 100 F1 (0.1 ) E -1 div 0 G Z U
+1049 0 M
+0 31 D
+S
+1049 54 M V -90 R 0 -37 G 100 F1 (1 ) E -1 div 0 G Z U
+1049 0 M
+0 31 D
+S
+1049 54 M V -90 R 0 -37 G 100 F1 (1 ) E -1 div 0 G Z U
+2099 0 M
+0 31 D
+S
+2099 54 M V -90 R 0 -37 G 100 F1 (10 ) E -1 div 0 G Z U
+3148 0 M
+0 31 D
+S
+3148 54 M V -90 R 0 -37 G 100 F1 (100 ) E -1 div 0 G Z U
+0 0 M
+0 15 D
+S
+1049 0 M
+0 15 D
+S
+1049 0 M
+0 15 D
+S
+2099 0 M
+0 15 D
+S
+3148 0 M
+0 15 D
+S
+1890 340 M 125 F1 (Time \(s\)) E -2 div 0 G Z
+-90 R
+% End of y-axis
+% Start of right y-axis
+5197 0 T 90 R
+S 5 W
+0 0 M
+3780 0 D
+S
+S 2 W
+0 0 M
+0 -31 D
+S
+0 -304 M V -90 R 0 -37 G 100 F1 (0.1 ) E -1 div 0 G Z U
+1049 0 M
+0 -31 D
+S
+1049 -304 M V -90 R 0 -37 G 100 F1 (1 ) E -1 div 0 G Z U
+1049 0 M
+0 -31 D
+S
+1049 -304 M V -90 R 0 -37 G 100 F1 (1 ) E -1 div 0 G Z U
+2099 0 M
+0 -31 D
+S
+2099 -304 M V -90 R 0 -37 G 100 F1 (10 ) E -1 div 0 G Z U
+3148 0 M
+0 -31 D
+S
+3148 -304 M V -90 R 0 -37 G 100 F1 (100 ) E -1 div 0 G Z U
+0 0 M
+0 -15 D
+S
+1049 0 M
+0 -15 D
+S
+1049 0 M
+0 -15 D
+S
+2099 0 M
+0 -15 D
+S
+3148 0 M
+0 -15 D
+S
+1890 -340 M 0 -92 G 125 F1 (Time \(s\)) E -2 div 0 G Z
+-90 R -5197 0 T
+% End of y-axis
+% Start of lower x-axis
+
+S 5 W
+0 0 M
+5197 0 D
+S
+S 2 W
+781 0 M
+0 -31 D
+S
+781 -54 M 0 -73 G 100 F1 (10 ) E -2 div 0 G Z
+781 0 M
+0 -31 D
+S
+781 -54 M 0 -73 G 100 F1 (10 ) E -2 div 0 G Z
+1897 0 M
+0 -31 D
+S
+1897 -54 M 0 -73 G 100 F1 (100 ) E -2 div 0 G Z
+3014 0 M
+0 -31 D
+S
+3014 -54 M 0 -73 G 100 F1 (1000 ) E -2 div 0 G Z
+4131 0 M
+0 -31 D
+S
+4131 -54 M 0 -73 G 100 F1 (10000 ) E -2 div 0 G Z
+781 0 M
+0 -15 D
+S
+781 0 M
+0 -15 D
+S
+1897 0 M
+0 -15 D
+S
+3014 0 M
+0 -15 D
+S
+4131 0 M
+0 -15 D
+S
+2598 -163 M 0 -92 G 125 F1 (Nx) E -2 div 0 G Z
+
+% End of x-axis
+% Start of upper x-axis
+0 3780 T
+S 5 W
+0 0 M
+5197 0 D
+S
+S 2 W
+781 0 M
+0 31 D
+S
+781 54 M 100 F1 (10 ) E -2 div 0 G Z
+781 0 M
+0 31 D
+S
+781 54 M 100 F1 (10 ) E -2 div 0 G Z
+1897 0 M
+0 31 D
+S
+1897 54 M 100 F1 (100 ) E -2 div 0 G Z
+3014 0 M
+0 31 D
+S
+3014 54 M 100 F1 (1000 ) E -2 div 0 G Z
+4131 0 M
+0 31 D
+S
+4131 54 M 100 F1 (10000 ) E -2 div 0 G Z
+781 0 M
+0 15 D
+S
+781 0 M
+0 15 D
+S
+1897 0 M
+0 15 D
+S
+3014 0 M
+0 15 D
+S
+4131 0 M
+0 15 D
+S
+2598 163 M 125 F1 (Nx) E -2 div 0 G Z
+0 -3780 T
+% End of x-axis
+S [] 0 B
+% End of basemap
+S [] 0 B
+S
+% PostScript produced by:
+
+% psxy exec_time.results -JX22l/16l -R2/90000/.1/400 -M -W10 -O -K 
+% 
+
+S 10 W
+S 0 A
+3014 0 M
+533 453 D
+584 495 D
+533 602 D
+140 131 D
+108 835 D
+ S
+935 0 M
+962 632 D
+1117 918 D
+781 316 D
+336 352 D
+336 451 D
+ S
+849 0 M
+1048 733 D
+533 470 D
+584 478 D
+781 418 D
+336 338 D
+336 315 D
+ S
+781 316 M
+532 417 D
+584 316 D
+533 501 D
+584 549 D
+533 485 D
+248 210 D
+ S
+781 501 M
+1116 1049 D
+533 549 D
+584 570 D
+336 316 D
+445 431 D
+ S
+781 632 M
+336 316 D
+196 417 D
+140 501 D
+108 352 D
+89 333 D
+74 364 D
+ S
+S [] 0 B
+S
+% PostScript produced by:
+
+% psxy exec_time.results -JX22l/16l -R2/90000/.1/400 -Sd.06 -H6 -K -O -M -K 
+% 
+
+S 2 W
+S 0 A
+% Activate Map clip path
+
+%Start of clip path
+S V
+0 0 M
+5197 0 D
+0 3780 D
+-5197 0 D
+P
+eoclip N
+%End of clip path.  Clipping is currently ON
+7 3014 -7 D4
+7 3547 446 D4
+7 4131 940 D4
+7 4664 1543 D4
+7 4804 1674 D4
+7 4912 2509 D4
+7 1897 625 D4
+7 3014 1543 D4
+7 3795 1859 D4
+7 4131 2211 D4
+7 4467 2662 D4
+7 1897 726 D4
+7 2430 1196 D4
+7 3014 1674 D4
+7 3795 2091 D4
+7 4131 2430 D4
+7 4467 2745 D4
+7 781 309 D4
+7 1313 726 D4
+7 1897 1042 D4
+7 2430 1543 D4
+7 3014 2091 D4
+7 3547 2577 D4
+7 3795 2787 D4
+7 781 494 D4
+7 1897 1543 D4
+7 2430 2091 D4
+7 3014 2662 D4
+7 3350 2978 D4
+7 3795 3409 D4
+7 781 625 D4
+7 1117 940 D4
+7 1313 1358 D4
+7 1453 1859 D4
+7 1561 2211 D4
+7 1650 2544 D4
+7 1724 2908 D4
+% Deactivate Map clip path
+
+S U
+%Clipping is currently OFF
+S [] 0 B
+S
+% PostScript produced by:
+
+% pstext -JX22l/16l -R2/90000/.1/400 -O 
+% 
+
+S 2 W
+S 0 A
+% Activate Map clip path
+
+%Start of clip path
+S V
+0 0 M
+5197 0 D
+0 3780 D
+-5197 0 D
+P
+eoclip N
+%End of clip path.  Clipping is currently ON
+4839 2414 M 133 F1 (Ei) E -1 div 0 G Z
+4535 2669 M 133 F1 (Ee&s) Z
+4467 2774 M 133 F1 (Ve&s) E -1 div 0 G Z
+3795 2794 M 133 F1 (Pi) Z
+3795 3416 M 133 F1 (Pe&s) Z
+1689 2952 M 133 F1 (3D) E -1 div 0 G Z
+% Deactivate Map clip path
+
+S U
+%Clipping is currently OFF
+S [] 0 B
+%%PageTrailer
+% Reset translations and scale and call showpage
+S 0 0 T 8.33333 8.33333 scale
+showpage
+
+%%Trailer
+
+end
+%%EOF

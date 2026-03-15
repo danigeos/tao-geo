@@ -1,0 +1,1676 @@
+
+** 2D LITHOSPHERIC FLEXURE AND FORELAND BASIN MODELING **
+Version: tao v4.0 (52 parameters matched)
+Initial height at 'sp_param.H0'.
+  alt.Init.:  max =    3100.0 m     min =   -1000.0 m   
+T= 0.00 My
+  water depth max.=   1000.0 m  	at x = 200.0 km   u
+  rain  now: +7.94e-03 m2/s evap.wat.: +7.94e-03 m2/s outp.water: +0.00e+00 m2/s
+  lake 2/2:   22.75 km2   116.0 km  893 m 232 nds @   0 km  0 sds UndrBurd  0.0055 m2/s
+  noSed er.: +2.06e+10 N/m    sed.incr.: +2.05e+10 N    outp.seds:  +2.96e+07 N/m  
+  max. altit. sed.=   1790.8 m  	at x = -119.5 km
+  erosion max.    =     19.4 m  	at x = -37.5 km
+  sediment. max.  =     39.3 m  	at x = -200.0 km
+  total eros.     =      1.0 km2	total sed. =      1.0 km2
+  altitude   max. =   3099.8 m   	at x = -250.0 km
+  altitude   min. =   -999.9 m   	at x = 250.0 km   d
+T= 0.02 My
+  water depth max.=    999.9 m  	at x = 250.0 km
+  rain  now: +7.94e-03 m2/s evap.wat.: +7.94e-03 m2/s outp.water: +0.00e+00 m2/s
+  lake 2/2:   22.89 km2   116.0 km  897 m 232 nds @   0 km  0 sds UndrBurd  0.0055 m2/s
+  noSed er.: +3.74e+10 N/m    sed.incr.: +3.73e+10 N    outp.seds:  +5.86e+07 N/m  
+  max. altit. sed.=   1804.4 m  	at x = -120.5 km
+  erosion max.    =     34.3 m  	at x = -36.5 km
+  sediment. max.  =     56.5 m  	at x = -200.0 km
+  total eros.     =      1.8 km2	total sed. =      1.8 km2
+  altitude   max. =   3099.4 m   	at x = -250.0 km
+  altitude   min. =   -999.8 m   	at x = 250.0 km   d
+T= 0.04 My
+  water depth max.=    999.8 m  	at x = 250.0 km
+  rain  now: +7.94e-03 m2/s evap.wat.: +7.94e-03 m2/s outp.water: +0.00e+00 m2/s
+  lake 2/2:   23.05 km2   116.0 km  901 m 232 nds @   0 km  0 sds UndrBurd  0.0055 m2/s
+  noSed er.: +5.35e+10 N/m    sed.incr.: +5.34e+10 N    outp.seds:  +8.67e+07 N/m  
+  max. altit. sed.=   1920.9 m  	at x = -128.5 km
+  erosion max.    =     47.3 m  	at x = -35.5 km
+  sediment. max.  =     70.7 m  	at x = -200.0 km
+  total eros.     =      2.7 km2	total sed. =      2.7 km2
+  altitude   max. =   3098.9 m   	at x = -250.0 km
+  altitude   min. =   -999.8 m   	at x = 250.0 km   d
+T= 0.06 My
+  water depth max.=    999.8 m  	at x = 250.0 km
+  rain  now: +7.94e-03 m2/s evap.wat.: +7.94e-03 m2/s outp.water: +0.00e+00 m2/s
+  lake 2/2:   23.06 km2   116.0 km  904 m 232 nds @   0 km  0 sds UndrBurd  0.0055 m2/s
+  noSed er.: +6.91e+10 N/m    sed.incr.: +6.90e+10 N    outp.seds:  +1.14e+08 N/m  
+  max. altit. sed.=   1955.9 m  	at x = -131.0 km
+  erosion max.    =     58.5 m  	at x = -34.5 km
+  sediment. max.  =     83.3 m  	at x = -200.0 km
+  total eros.     =      3.5 km2	total sed. =      3.5 km2
+  altitude   max. =   3098.5 m   	at x = -250.0 km
+  altitude   min. =   -999.7 m   	at x = 250.0 km   d
+T= 0.08 My
+  water depth max.=    999.7 m  	at x = 250.0 km
+  rain  now: +7.94e-03 m2/s evap.wat.: +7.94e-03 m2/s outp.water: +0.00e+00 m2/s
+  lake 2/2:   23.24 km2   116.0 km  908 m 232 nds @   0 km  0 sds UndrBurd  0.0055 m2/s
+  noSed er.: +8.44e+10 N/m    sed.incr.: +8.42e+10 N    outp.seds:  +1.41e+08 N/m  
+  max. altit. sed.=   1825.8 m  	at x = -122.0 km
+  erosion max.    =     70.0 m  	at x = -34.0 km
+  sediment. max.  =     94.4 m  	at x = -200.0 km
+  total eros.     =      4.3 km2	total sed. =      4.3 km2
+  altitude   max. =   3098.0 m   	at x = -250.0 km
+  altitude   min. =   -999.6 m   	at x = 250.0 km   d
+T= 0.10 My
+  water depth max.=    999.6 m  	at x = 250.0 km
+  rain  now: +7.94e-03 m2/s evap.wat.: +7.94e-03 m2/s outp.water: +0.00e+00 m2/s
+  lake 2/2:   23.27 km2   116.0 km  911 m 232 nds @   0 km  0 sds UndrBurd  0.0055 m2/s
+  noSed er.: +9.94e+10 N/m    sed.incr.: +9.91e+10 N    outp.seds:  +1.69e+08 N/m  
+  max. altit. sed.=   1989.3 m  	at x = -133.5 km
+  erosion max.    =     81.3 m  	at x = -33.0 km
+  sediment. max.  =    105.0 m  	at x = -200.0 km
+  total eros.     =      5.1 km2	total sed. =      5.1 km2
+  altitude   max. =   3097.5 m   	at x = -250.0 km
+  altitude   min. =   -999.5 m   	at x = 250.0 km   d
+T= 0.12 My
+  water depth max.=    999.5 m  	at x = 250.0 km
+  rain  now: +7.94e-03 m2/s evap.wat.: +7.94e-03 m2/s outp.water: +0.00e+00 m2/s
+  lake 2/2:   23.15 km2   115.5 km  913 m 231 nds @   0 km  0 sds UndrBurd  0.0055 m2/s
+  noSed er.: +1.14e+11 N/m    sed.incr.: +1.14e+11 N    outp.seds:  +1.96e+08 N/m  
+  max. altit. sed.=   1854.0 m  	at x = -124.0 km
+  erosion max.    =     90.6 m  	at x = -32.0 km
+  sediment. max.  =    114.7 m  	at x = -200.0 km
+  total eros.     =      5.9 km2	total sed. =      5.9 km2
+  altitude   max. =   3097.1 m   	at x = -250.0 km
+  altitude   min. =   -999.5 m   	at x = 250.0 km   d
+T= 0.14 My
+  water depth max.=    999.5 m  	at x = 250.0 km
+  rain  now: +7.94e-03 m2/s evap.wat.: +7.94e-03 m2/s outp.water: +0.00e+00 m2/s
+  lake 2/2:   23.23 km2   115.5 km  916 m 231 nds @   0 km  0 sds UndrBurd  0.0055 m2/s
+  noSed er.: +1.28e+11 N/m    sed.incr.: +1.28e+11 N    outp.seds:  +2.24e+08 N/m  
+  max. altit. sed.=   1847.4 m  	at x = -123.5 km
+  erosion max.    =    102.6 m  	at x = -31.5 km
+  sediment. max.  =    124.0 m  	at x = -200.0 km
+  total eros.     =      6.7 km2	total sed. =      6.7 km2
+  altitude   max. =   3096.6 m   	at x = -250.0 km
+  altitude   min. =   -999.4 m   	at x = 250.0 km   d
+T= 0.16 My
+  water depth max.=    999.4 m  	at x = 250.0 km
+  rain  now: +7.94e-03 m2/s evap.wat.: +7.94e-03 m2/s outp.water: +0.00e+00 m2/s
+  lake 2/2:   23.23 km2   115.5 km  918 m 231 nds @   0 km  0 sds UndrBurd  0.0055 m2/s
+  noSed er.: +1.43e+11 N/m    sed.incr.: +1.42e+11 N    outp.seds:  +2.50e+08 N/m  
+  max. altit. sed.=   1943.2 m  	at x = -130.5 km
+  erosion max.    =    111.1 m  	at x = -31.0 km
+  sediment. max.  =    133.0 m  	at x = -200.0 km
+  total eros.     =      7.4 km2	total sed. =      7.4 km2
+  altitude   max. =   3096.1 m   	at x = -250.0 km
+  altitude   min. =   -999.3 m   	at x = 250.0 km   d
+T= 0.18 My
+  water depth max.=    999.3 m  	at x = 250.0 km
+  rain  now: +7.94e-03 m2/s evap.wat.: +7.94e-03 m2/s outp.water: +0.00e+00 m2/s
+  lake 2/2:   23.20 km2   115.5 km  920 m 231 nds @   0 km  0 sds UndrBurd  0.0055 m2/s
+  noSed er.: +1.57e+11 N/m    sed.incr.: +1.56e+11 N    outp.seds:  +2.77e+08 N/m  
+  max. altit. sed.=   2055.4 m  	at x = -138.5 km
+  erosion max.    =    119.2 m  	at x = -30.0 km
+  sediment. max.  =    141.7 m  	at x = -200.0 km
+  total eros.     =      8.2 km2	total sed. =      8.2 km2
+  altitude   max. =   3095.7 m   	at x = -250.0 km
+  altitude   min. =   -999.2 m   	at x = 250.0 km   d
+T= 0.20 My
+  water depth max.=    999.2 m  	at x = 250.0 km
+  rain  now: +7.94e-03 m2/s evap.wat.: +7.94e-03 m2/s outp.water: +0.00e+00 m2/s
+  lake 2/2:   23.28 km2   115.5 km  923 m 231 nds @   0 km  0 sds UndrBurd  0.0055 m2/s
+  noSed er.: +1.71e+11 N/m    sed.incr.: +1.70e+11 N    outp.seds:  +3.04e+08 N/m  
+  max. altit. sed.=   1894.2 m  	at x = -127.0 km
+  erosion max.    =    129.8 m  	at x = -29.5 km
+  sediment. max.  =    149.9 m  	at x = -200.0 km
+  total eros.     =      8.9 km2	total sed. =      8.9 km2
+  altitude   max. =   3095.2 m   	at x = -250.0 km
+  altitude   min. =   -999.2 m   	at x = 250.0 km   d
+T= 0.22 My
+  water depth max.=    999.2 m  	at x = 250.0 km
+  rain  now: +7.94e-03 m2/s evap.wat.: +7.94e-03 m2/s outp.water: +0.00e+00 m2/s
+  lake 2/2:   23.23 km2   115.5 km  925 m 231 nds @   0 km  0 sds UndrBurd  0.0055 m2/s
+  noSed er.: +1.85e+11 N/m    sed.incr.: +1.84e+11 N    outp.seds:  +3.33e+08 N/m  
+  max. altit. sed.=   2003.0 m  	at x = -135.0 km
+  erosion max.    =    136.4 m  	at x = -29.0 km
+  sediment. max.  =    158.2 m  	at x = -200.0 km
+  total eros.     =      9.7 km2	total sed. =      9.7 km2
+  altitude   max. =   3094.7 m   	at x = -250.0 km
+  altitude   min. =   -999.1 m   	at x = 250.0 km   d
+T= 0.24 My
+  water depth max.=    999.1 m  	at x = 250.0 km
+  rain  now: +7.94e-03 m2/s evap.wat.: +7.94e-03 m2/s outp.water: +0.00e+00 m2/s
+  lake 2/2:   23.18 km2   115.5 km  927 m 231 nds @   0 km  0 sds UndrBurd  0.0055 m2/s
+  noSed er.: +1.98e+11 N/m    sed.incr.: +1.97e+11 N    outp.seds:  +3.60e+08 N/m  
+  max. altit. sed.=   1867.3 m  	at x = -125.0 km
+  erosion max.    =    143.7 m  	at x = -28.5 km
+  sediment. max.  =    166.0 m  	at x = -200.0 km
+  total eros.     =     10.4 km2	total sed. =     10.4 km2
+  altitude   max. =   3094.2 m   	at x = -250.0 km
+  altitude   min. =   -999.0 m   	at x = 250.0 km   d
+T= 0.26 My
+  water depth max.=    999.0 m  	at x = 250.0 km
+  rain  now: +7.94e-03 m2/s evap.wat.: +7.94e-03 m2/s outp.water: +0.00e+00 m2/s
+  lake 2/2:   22.99 km2   115.0 km  928 m 230 nds @   0 km  0 sds UndrBurd  0.0055 m2/s
+  noSed er.: +2.11e+11 N/m    sed.incr.: +2.10e+11 N    outp.seds:  +3.87e+08 N/m  
+  max. altit. sed.=   1867.2 m  	at x = -125.0 km
+  erosion max.    =    152.5 m  	at x = -27.5 km
+  sediment. max.  =    173.8 m  	at x = -200.0 km
+  total eros.     =     11.1 km2	total sed. =     11.1 km2
+  altitude   max. =   3093.7 m   	at x = -250.0 km
+  altitude   min. =   -998.9 m   	at x = 250.0 km   d
+T= 0.28 My
+  water depth max.=    998.9 m  	at x = 250.0 km
+  rain  now: +7.94e-03 m2/s evap.wat.: +7.94e-03 m2/s outp.water: +0.00e+00 m2/s
+  lake 2/2:   23.05 km2   115.0 km  930 m 230 nds @   0 km  0 sds UndrBurd  0.0055 m2/s
+  noSed er.: +2.25e+11 N/m    sed.incr.: +2.24e+11 N    outp.seds:  +4.15e+08 N/m  
+  max. altit. sed.=   1979.8 m  	at x = -133.5 km
+  erosion max.    =    161.7 m  	at x = -27.0 km
+  sediment. max.  =    181.1 m  	at x = -200.0 km
+  total eros.     =     11.8 km2	total sed. =     11.8 km2
+  altitude   max. =   3093.2 m   	at x = -250.0 km
+  altitude   min. =   -998.9 m   	at x = 250.0 km   d
+T= 0.30 My
+  water depth max.=    998.9 m  	at x = 250.0 km
+  rain  now: +7.94e-03 m2/s evap.wat.: +7.94e-03 m2/s outp.water: +0.00e+00 m2/s
+  lake 2/2:   22.97 km2   115.0 km  932 m 230 nds @   0 km  0 sds UndrBurd  0.0055 m2/s
+  noSed er.: +2.38e+11 N/m    sed.incr.: +2.37e+11 N    outp.seds:  +4.44e+08 N/m  
+  max. altit. sed.=   1879.8 m  	at x = -126.0 km
+  erosion max.    =    168.7 m  	at x = -26.5 km
+  sediment. max.  =    188.6 m  	at x = -200.0 km
+  total eros.     =     12.5 km2	total sed. =     12.5 km2
+  altitude   max. =   3092.7 m   	at x = -250.0 km
+  altitude   min. =   -998.8 m   	at x = 250.0 km   d
+T= 0.32 My
+  water depth max.=    998.8 m  	at x = 250.0 km
+  rain  now: +7.94e-03 m2/s evap.wat.: +7.94e-03 m2/s outp.water: +0.00e+00 m2/s
+  lake 2/2:   22.89 km2   115.0 km  933 m 230 nds @   0 km  0 sds UndrBurd  0.0055 m2/s
+  noSed er.: +2.51e+11 N/m    sed.incr.: +2.50e+11 N    outp.seds:  +4.71e+08 N/m  
+  max. altit. sed.=   1846.7 m  	at x = -123.5 km
+  erosion max.    =    175.2 m  	at x = -26.0 km
+  sediment. max.  =    195.8 m  	at x = -200.0 km
+  total eros.     =     13.2 km2	total sed. =     13.2 km2
+  altitude   max. =   3092.2 m   	at x = -250.0 km
+  altitude   min. =   -998.7 m   	at x = 250.0 km   d
+T= 0.34 My
+  water depth max.=    998.7 m  	at x = 250.0 km
+  rain  now: +7.94e-03 m2/s evap.wat.: +7.94e-03 m2/s outp.water: +0.00e+00 m2/s
+  lake 2/2:   22.81 km2   115.0 km  935 m 230 nds @   0 km  0 sds UndrBurd  0.0055 m2/s
+  noSed er.: +2.64e+11 N/m    sed.incr.: +2.63e+11 N    outp.seds:  +5.01e+08 N/m  
+  max. altit. sed.=   1937.5 m  	at x = -130.5 km
+  erosion max.    =    181.8 m  	at x = -25.5 km
+  sediment. max.  =    202.9 m  	at x = -200.0 km
+  total eros.     =     13.9 km2	total sed. =     13.9 km2
+  altitude   max. =   3091.7 m   	at x = -250.0 km
+  altitude   min. =   -998.6 m   	at x = 250.0 km   d
+T= 0.36 My
+  water depth max.=    998.6 m  	at x = 250.0 km
+  rain  now: +7.94e-03 m2/s evap.wat.: +7.94e-03 m2/s outp.water: +0.00e+00 m2/s
+  lake 2/2:   22.75 km2   115.0 km  936 m 230 nds @   0 km  0 sds UndrBurd  0.0055 m2/s
+  noSed er.: +2.77e+11 N/m    sed.incr.: +2.75e+11 N    outp.seds:  +5.29e+08 N/m  
+  max. altit. sed.=   1866.3 m  	at x = -125.0 km
+  erosion max.    =    188.9 m  	at x = -25.0 km
+  sediment. max.  =    210.0 m  	at x = -200.0 km
+  total eros.     =     14.6 km2	total sed. =     14.6 km2
+  altitude   max. =   3091.2 m   	at x = -250.0 km
+  altitude   min. =   -998.5 m   	at x = 250.0 km   d
+T= 0.38 My
+  water depth max.=    998.5 m  	at x = 250.0 km
+  rain  now: +7.94e-03 m2/s evap.wat.: +7.94e-03 m2/s outp.water: +0.00e+00 m2/s
+  lake 2/2:   22.65 km2   115.0 km  938 m 230 nds @   0 km  0 sds UndrBurd  0.0055 m2/s
+  noSed er.: +2.90e+11 N/m    sed.incr.: +2.88e+11 N    outp.seds:  +5.58e+08 N/m  
+  max. altit. sed.=   1847.2 m  	at x = -123.5 km
+  erosion max.    =    194.9 m  	at x = -24.0 km
+  sediment. max.  =    216.8 m  	at x = -200.0 km
+  total eros.     =     15.3 km2	total sed. =     15.3 km2
+  altitude   max. =   3090.7 m   	at x = -250.0 km
+  altitude   min. =   -998.5 m   	at x = 250.0 km   d
+T= 0.40 My
+  water depth max.=    998.5 m  	at x = 250.0 km
+  rain  now: +7.94e-03 m2/s evap.wat.: +7.94e-03 m2/s outp.water: +0.00e+00 m2/s
+  lake 2/2:   22.43 km2   114.5 km  938 m 229 nds @   0 km  0 sds UndrBurd  0.0055 m2/s
+  noSed er.: +3.03e+11 N/m    sed.incr.: +3.00e+11 N    outp.seds:  +5.87e+08 N/m  
+  max. altit. sed.=   1840.0 m  	at x = -123.0 km
+  erosion max.    =    202.1 m  	at x = -23.5 km
+  sediment. max.  =    223.6 m  	at x = -200.0 km
+  total eros.     =     16.0 km2	total sed. =     16.0 km2
+  altitude   max. =   3090.1 m   	at x = -250.0 km
+  altitude   min. =   -998.4 m   	at x = 250.0 km   d
+T= 0.42 My
+  water depth max.=    998.4 m  	at x = 250.0 km
+  rain  now: +7.94e-03 m2/s evap.wat.: +7.94e-03 m2/s outp.water: +0.00e+00 m2/s
+  lake 2/2:   22.31 km2   114.5 km  939 m 229 nds @   0 km  0 sds UndrBurd  0.0055 m2/s
+  noSed er.: +3.15e+11 N/m    sed.incr.: +3.13e+11 N    outp.seds:  +6.16e+08 N/m  
+  max. altit. sed.=   1847.3 m  	at x = -123.5 km
+  erosion max.    =    209.1 m  	at x = -23.0 km
+  sediment. max.  =    230.2 m  	at x = -200.0 km
+  total eros.     =     16.6 km2	total sed. =     16.7 km2
+  altitude   max. =   3089.6 m   	at x = -250.0 km
+  altitude   min. =   -998.3 m   	at x = 250.0 km   d
+T= 0.44 My
+  water depth max.=    998.3 m  	at x = 250.0 km
+  rain  now: +7.94e-03 m2/s evap.wat.: +7.94e-03 m2/s outp.water: +0.00e+00 m2/s
+  lake 2/2:   22.27 km2   114.5 km  941 m 229 nds @   0 km  0 sds UndrBurd  0.0055 m2/s
+  noSed er.: +3.28e+11 N/m    sed.incr.: +3.25e+11 N    outp.seds:  +6.47e+08 N/m  
+  max. altit. sed.=   1840.8 m  	at x = -123.0 km
+  erosion max.    =    215.8 m  	at x = -22.5 km
+  sediment. max.  =    236.9 m  	at x = -200.0 km
+  total eros.     =     17.3 km2	total sed. =     17.3 km2
+  altitude   max. =   3089.1 m   	at x = -250.0 km
+  altitude   min. =   -998.2 m   	at x = 250.0 km   d
+T= 0.46 My
+  water depth max.=    998.2 m  	at x = 250.0 km
+  rain  now: +7.94e-03 m2/s evap.wat.: +7.94e-03 m2/s outp.water: +0.00e+00 m2/s
+  lake 2/2:   22.17 km2   114.5 km  942 m 229 nds @   0 km  0 sds UndrBurd  0.0055 m2/s
+  noSed er.: +3.40e+11 N/m    sed.incr.: +3.38e+11 N    outp.seds:  +6.76e+08 N/m  
+  max. altit. sed.=   1847.2 m  	at x = -123.5 km
+  erosion max.    =    223.6 m  	at x = -22.0 km
+  sediment. max.  =    243.3 m  	at x = -200.0 km
+  total eros.     =     18.0 km2	total sed. =     18.0 km2
+  altitude   max. =   3088.5 m   	at x = -250.0 km
+  altitude   min. =   -998.1 m   	at x = 250.0 km   d
+T= 0.48 My
+  water depth max.=    998.1 m  	at x = 250.0 km
+  rain  now: +7.94e-03 m2/s evap.wat.: +7.94e-03 m2/s outp.water: +0.00e+00 m2/s
+  lake 2/2:   21.93 km2   114.0 km  942 m 228 nds @   0 km  0 sds UndrBurd  0.0054 m2/s
+  noSed er.: +3.53e+11 N/m    sed.incr.: +3.50e+11 N    outp.seds:  +7.07e+08 N/m  
+  max. altit. sed.=   1840.2 m  	at x = -123.0 km
+  erosion max.    =    228.6 m  	at x = -21.5 km
+  sediment. max.  =    249.9 m  	at x = -200.0 km
+  total eros.     =     18.6 km2	total sed. =     18.7 km2
+  altitude   max. =   3088.0 m   	at x = -250.0 km
+  altitude   min. =   -998.0 m   	at x = 250.0 km   d
+T= 0.50 My
+  water depth max.=    998.0 m  	at x = 250.0 km
+  rain  now: +7.94e-03 m2/s evap.wat.: +7.94e-03 m2/s outp.water: +0.00e+00 m2/s
+  lake 2/2:   21.80 km2   114.0 km  943 m 228 nds @   0 km  1 sds @  93 km  0.0000 m2/s
+  noSed er.: +3.65e+11 N/m    sed.incr.: +3.62e+11 N    outp.seds:  +7.38e+08 N/m  
+  max. altit. sed.=   1864.6 m  	at x = -125.0 km
+  erosion max.    =    234.7 m  	at x = -21.0 km
+  sediment. max.  =    256.1 m  	at x = -200.0 km
+  total eros.     =     19.3 km2	total sed. =     19.3 km2
+  altitude   max. =   3087.4 m   	at x = -250.0 km
+  altitude   min. =   -998.0 m   	at x = 250.0 km   d
+T= 0.52 My
+  water depth max.=    998.0 m  	at x = 250.0 km
+  rain  now: +7.94e-03 m2/s evap.wat.: +7.94e-03 m2/s outp.water: +0.00e+00 m2/s
+  lake 2/2:   21.39 km2   113.0 km  942 m 226 nds @   0 km  1 sds @  92 km  0.0001 m2/s
+  noSed er.: +3.77e+11 N/m    sed.incr.: +3.74e+11 N    outp.seds:  +7.70e+08 N/m  
+  max. altit. sed.=   1840.2 m  	at x = -123.0 km
+  erosion max.    =    238.6 m  	at x = -20.5 km
+  sediment. max.  =    262.4 m  	at x = -200.0 km
+  total eros.     =     20.0 km2	total sed. =     20.0 km2
+  altitude   max. =   3086.9 m   	at x = -250.0 km
+  altitude   min. =   -997.9 m   	at x = 250.0 km   d
+T= 0.54 My
+  water depth max.=    997.9 m  	at x = 250.0 km
+  rain  now: +7.94e-03 m2/s evap.wat.: +7.94e-03 m2/s outp.water: +0.00e+00 m2/s
+  lake 2/2:   20.89 km2   111.0 km  939 m 222 nds @   0 km  1 sds @  91 km  0.0001 m2/s
+  noSed er.: +3.90e+11 N/m    sed.incr.: +3.87e+11 N    outp.seds:  +8.05e+08 N/m  
+  max. altit. sed.=   1919.1 m  	at x = -129.5 km
+  erosion max.    =    243.0 m  	at x = -19.5 km
+  sediment. max.  =    268.7 m  	at x = -200.0 km
+  total eros.     =     20.6 km2	total sed. =     20.7 km2
+  altitude   max. =   3086.3 m   	at x = -250.0 km
+  altitude   min. =   -997.8 m   	at x = 250.0 km   d
+T= 0.56 My
+  water depth max.=    997.8 m  	at x = 250.0 km
+  rain  now: +7.94e-03 m2/s evap.wat.: +7.94e-03 m2/s outp.water: +0.00e+00 m2/s
+  lake 2/2:   20.39 km2   109.0 km  937 m 218 nds @   0 km  1 sds @  90 km  0.0002 m2/s
+  noSed er.: +4.03e+11 N/m    sed.incr.: +3.99e+11 N    outp.seds:  +8.42e+08 N/m  
+  max. altit. sed.=   1840.8 m  	at x = -123.0 km
+  erosion max.    =    249.5 m  	at x = -19.0 km
+  sediment. max.  =    275.0 m  	at x = -200.0 km
+  total eros.     =     21.3 km2	total sed. =     21.4 km2
+  altitude   max. =   3085.7 m   	at x = -250.0 km
+  altitude   min. =   -997.7 m   	at x = 250.0 km   d
+T= 0.58 My
+  water depth max.=    997.7 m  	at x = 250.0 km
+  rain  now: +7.94e-03 m2/s evap.wat.: +7.94e-03 m2/s outp.water: +0.00e+00 m2/s
+  lake 2/2:   19.82 km2   107.0 km  934 m 214 nds @   1 km  1 sds @  88 km  0.0003 m2/s
+  noSed er.: +4.17e+11 N/m    sed.incr.: +4.13e+11 N    outp.seds:  +8.83e+08 N/m  
+  max. altit. sed.=   1894.1 m  	at x = -127.5 km
+  erosion max.    =    251.5 m  	at x = -18.5 km
+  sediment. max.  =    281.1 m  	at x = -200.0 km
+  total eros.     =     22.0 km2	total sed. =     22.1 km2
+  altitude   max. =   3085.2 m   	at x = -250.0 km
+  altitude   min. =   -997.6 m   	at x = 250.0 km   d
+T= 0.60 My
+  water depth max.=    997.6 m  	at x = 250.0 km
+  rain  now: +7.94e-03 m2/s evap.wat.: +7.94e-03 m2/s outp.water: +0.00e+00 m2/s
+  lake 2/2:   19.20 km2   104.5 km  931 m 209 nds @   2 km  1 sds @  87 km  0.0004 m2/s
+  noSed er.: +4.30e+11 N/m    sed.incr.: +4.26e+11 N    outp.seds:  +9.29e+08 N/m  
+  max. altit. sed.=   1875.6 m  	at x = -126.0 km
+  erosion max.    =    257.9 m  	at x = -17.5 km
+  sediment. max.  =    287.1 m  	at x = -200.0 km
+  total eros.     =     22.8 km2	total sed. =     22.8 km2
+  altitude   max. =   3084.6 m   	at x = -250.0 km
+  altitude   min. =   -997.4 m   	at x = 250.0 km   d
+T= 0.62 My
+  water depth max.=    997.4 m  	at x = 250.0 km
+  rain  now: +7.94e-03 m2/s evap.wat.: +7.94e-03 m2/s outp.water: +0.00e+00 m2/s
+  lake 2/2:   18.56 km2   102.5 km  928 m 205 nds @   2 km  1 sds @  86 km  0.0005 m2/s
+  noSed er.: +4.45e+11 N/m    sed.incr.: +4.41e+11 N    outp.seds:  +9.77e+08 N/m  
+  max. altit. sed.=   1863.6 m  	at x = -125.0 km
+  erosion max.    =    259.8 m  	at x = -17.0 km
+  sediment. max.  =    292.9 m  	at x = -200.0 km
+  total eros.     =     23.5 km2	total sed. =     23.6 km2
+  altitude   max. =   3084.0 m   	at x = -250.0 km
+  altitude   min. =   -997.3 m   	at x = 250.0 km   d
+T= 0.64 My
+  water depth max.=    997.3 m  	at x = 250.0 km
+  rain  now: +7.94e-03 m2/s evap.wat.: +7.94e-03 m2/s outp.water: +0.00e+00 m2/s
+  lake 2/2:   17.91 km2   100.5 km  924 m 201 nds @   4 km  1 sds @  84 km  0.0005 m2/s
+  noSed er.: +4.60e+11 N/m    sed.incr.: +4.55e+11 N    outp.seds:  +1.03e+09 N/m  
+  max. altit. sed.=   1839.7 m  	at x = -123.0 km
+  erosion max.    =    266.0 m  	at x = -16.0 km
+  sediment. max.  =    298.8 m  	at x = -200.0 km
+  total eros.     =     24.3 km2	total sed. =     24.4 km2
+  altitude   max. =   3083.4 m   	at x = -250.0 km
+  altitude   min. =   -997.2 m   	at x = 250.0 km   d
+T= 0.66 My
+  water depth max.=    997.2 m  	at x = 250.0 km
+  rain  now: +7.94e-03 m2/s evap.wat.: +7.94e-03 m2/s outp.water: +0.00e+00 m2/s
+  lake 2/2:   17.28 km2    98.0 km  920 m 196 nds @   4 km  1 sds @  82 km  0.0006 m2/s
+  noSed er.: +4.75e+11 N/m    sed.incr.: +4.70e+11 N    outp.seds:  +1.09e+09 N/m  
+  max. altit. sed.=   1833.7 m  	at x = -122.5 km
+  erosion max.    =    267.7 m  	at x = -15.0 km
+  sediment. max.  =    304.8 m  	at x = -200.0 km
+  total eros.     =     25.1 km2	total sed. =     25.1 km2
+  altitude   max. =   3082.8 m   	at x = -250.0 km
+  altitude   min. =   -997.0 m   	at x = 250.0 km   d
+T= 0.68 My
+  water depth max.=    997.0 m  	at x = 250.0 km
+  rain  now: +7.94e-03 m2/s evap.wat.: +7.94e-03 m2/s outp.water: +0.00e+00 m2/s
+  lake 2/2:   16.63 km2    96.0 km  917 m 192 nds @   6 km  1 sds @  82 km  0.0007 m2/s
+  noSed er.: +4.90e+11 N/m    sed.incr.: +4.85e+11 N    outp.seds:  +1.15e+09 N/m  
+  max. altit. sed.=   1851.7 m  	at x = -124.0 km
+  erosion max.    =    273.3 m  	at x = -14.5 km
+  sediment. max.  =    310.5 m  	at x = -200.0 km
+  total eros.     =     25.9 km2	total sed. =     25.9 km2
+  altitude   max. =   3082.1 m   	at x = -250.0 km
+  altitude   min. =   -996.8 m   	at x = 250.0 km   d
+T= 0.70 My
+  water depth max.=    996.8 m  	at x = 250.0 km
+  rain  now: +7.94e-03 m2/s evap.wat.: +7.94e-03 m2/s outp.water: +0.00e+00 m2/s
+  lake 2/2:   15.94 km2    94.0 km  912 m 188 nds @   7 km  1 sds @  80 km  0.0008 m2/s
+  noSed er.: +5.06e+11 N/m    sed.incr.: +5.01e+11 N    outp.seds:  +1.21e+09 N/m  
+  max. altit. sed.=   1840.0 m  	at x = -123.0 km
+  erosion max.    =    276.7 m  	at x = -13.5 km
+  sediment. max.  =    319.5 m  	at x = 100.0 km
+  total eros.     =     26.7 km2	total sed. =     26.8 km2
+  altitude   max. =   3081.5 m   	at x = -250.0 km
+  altitude   min. =   -996.7 m   	at x = 250.0 km   d
+T= 0.72 My
+  water depth max.=    996.7 m  	at x = 250.0 km
+  rain  now: +7.94e-03 m2/s evap.wat.: +7.94e-03 m2/s outp.water: +0.00e+00 m2/s
+  lake 2/2:   15.24 km2    91.5 km  908 m 183 nds @   8 km  1 sds @  78 km  0.0009 m2/s
+  noSed er.: +5.22e+11 N/m    sed.incr.: +5.17e+11 N    outp.seds:  +1.28e+09 N/m  
+  max. altit. sed.=   1833.3 m  	at x = -122.5 km
+  erosion max.    =    280.3 m  	at x = -13.0 km
+  sediment. max.  =    334.3 m  	at x = 100.0 km
+  total eros.     =     27.5 km2	total sed. =     27.6 km2
+  altitude   max. =   3080.9 m   	at x = -250.0 km
+  altitude   min. =   -996.5 m   	at x = 250.0 km   d
+T= 0.74 My
+  water depth max.=    996.5 m  	at x = 250.0 km
+  rain  now: +7.94e-03 m2/s evap.wat.: +7.94e-03 m2/s outp.water: +0.00e+00 m2/s
+  lake 2/2:   14.49 km2    89.5 km  903 m 179 nds @   9 km  1 sds @  78 km  0.0009 m2/s
+  noSed er.: +5.38e+11 N/m    sed.incr.: +5.33e+11 N    outp.seds:  +1.35e+09 N/m  
+  max. altit. sed.=   1997.2 m  	at x = -136.5 km
+  erosion max.    =    284.7 m  	at x = -12.0 km
+  sediment. max.  =    348.7 m  	at x = 100.0 km
+  total eros.     =     28.3 km2	total sed. =     28.4 km2
+  altitude   max. =   3080.2 m   	at x = -250.0 km
+  altitude   min. =   -996.3 m   	at x = 250.0 km   d
+T= 0.76 My
+  water depth max.=    996.3 m  	at x = 250.0 km
+  rain  now: +7.94e-03 m2/s evap.wat.: +7.94e-03 m2/s outp.water: +0.00e+00 m2/s
+  lake 2/2:   13.72 km2    88.0 km  898 m 176 nds @  10 km  1 sds @  76 km  0.0010 m2/s
+  noSed er.: +5.55e+11 N/m    sed.incr.: +5.49e+11 N    outp.seds:  +1.43e+09 N/m  
+  max. altit. sed.=   1833.8 m  	at x = -122.5 km
+  erosion max.    =    293.7 m  	at x = 164.5 km
+  sediment. max.  =    362.9 m  	at x = 100.0 km
+  total eros.     =     29.2 km2	total sed. =     29.3 km2
+  altitude   max. =   3079.6 m   	at x = -250.0 km
+  altitude   min. =   -996.1 m   	at x = 250.0 km   d
+T= 0.78 My
+  water depth max.=    996.1 m  	at x = 250.0 km
+  rain  now: +7.94e-03 m2/s evap.wat.: +7.94e-03 m2/s outp.water: +0.00e+00 m2/s
+  lake 2/2:   12.95 km2    86.0 km  893 m 172 nds @  11 km  1 sds @  76 km  0.0011 m2/s
+  noSed er.: +5.71e+11 N/m    sed.incr.: +5.66e+11 N    outp.seds:  +1.51e+09 N/m  
+  max. altit. sed.=   1833.7 m  	at x = -122.5 km
+  erosion max.    =    304.1 m  	at x = 165.0 km
+  sediment. max.  =    376.6 m  	at x = 100.0 km
+  total eros.     =     30.0 km2	total sed. =     30.1 km2
+  altitude   max. =   3078.9 m   	at x = -250.0 km
+  altitude   min. =   -995.8 m   	at x = 250.0 km   d
+T= 0.80 My
+  water depth max.=    995.8 m  	at x = 250.0 km
+  rain  now: +7.94e-03 m2/s evap.wat.: +7.94e-03 m2/s outp.water: +0.00e+00 m2/s
+  lake 2/2:   12.20 km2    84.0 km  887 m 168 nds @  12 km  1 sds @  74 km  0.0012 m2/s
+  noSed er.: +5.88e+11 N/m    sed.incr.: +5.82e+11 N    outp.seds:  +1.59e+09 N/m  
+  max. altit. sed.=   1832.6 m  	at x = -122.5 km
+  erosion max.    =    313.4 m  	at x = 165.5 km
+  sediment. max.  =    389.9 m  	at x = 100.0 km
+  total eros.     =     30.9 km2	total sed. =     31.0 km2
+  altitude   max. =   3078.3 m   	at x = -250.0 km
+  altitude   min. =   -995.6 m   	at x = 250.0 km   d
+T= 0.82 My
+  water depth max.=    995.6 m  	at x = 250.0 km
+  rain  now: +7.94e-03 m2/s evap.wat.: +7.90e-03 m2/s outp.water: +3.96e-05 m2/s
+  lake 2/2:   11.44 km2    82.0 km  882 m 164 nds @  13 km  1 sds @  74 km  0.0012 m2/s
+  noSed er.: +6.05e+11 N/m    sed.incr.: +5.99e+11 N    outp.seds:  +1.67e+09 N/m  
+  max. altit. sed.=   1855.5 m  	at x = -124.5 km
+  erosion max.    =    323.6 m  	at x = 166.0 km
+  sediment. max.  =    402.8 m  	at x = 100.0 km
+  total eros.     =     31.7 km2	total sed. =     31.8 km2
+  altitude   max. =   3077.6 m   	at x = -250.0 km
+  altitude   min. =   -995.4 m   	at x = 250.0 km   d
+T= 0.84 My
+  water depth max.=    995.4 m  	at x = 250.0 km
+  rain  now: +7.94e-03 m2/s evap.wat.: +7.80e-03 m2/s outp.water: +1.35e-04 m2/s
+  lake 2/2:   10.71 km2    80.5 km  877 m 161 nds @  14 km  1 sds @  72 km  0.0013 m2/s
+  noSed er.: +6.21e+11 N/m    sed.incr.: +6.15e+11 N    outp.seds:  +1.76e+09 N/m  
+  max. altit. sed.=   1946.1 m  	at x = -132.5 km
+  erosion max.    =    332.8 m  	at x = 166.5 km
+  sediment. max.  =    415.2 m  	at x = 100.0 km
+  total eros.     =     32.6 km2	total sed. =     32.7 km2
+  altitude   max. =   3076.9 m   	at x = -250.0 km
+  altitude   min. =   -995.1 m   	at x = 250.0 km   d
+T= 0.86 My
+  water depth max.=    995.1 m  	at x = 250.0 km
+  rain  now: +7.94e-03 m2/s evap.wat.: +7.68e-03 m2/s outp.water: +2.54e-04 m2/s
+  lake 2/2:   10.01 km2    78.5 km  872 m 157 nds @  16 km  1 sds @  72 km  0.0014 m2/s
+  noSed er.: +6.38e+11 N/m    sed.incr.: +6.32e+11 N    outp.seds:  +1.85e+09 N/m  
+  max. altit. sed.=   1826.9 m  	at x = -122.0 km
+  erosion max.    =    342.7 m  	at x = 167.0 km
+  sediment. max.  =    427.3 m  	at x = 100.0 km
+  total eros.     =     33.5 km2	total sed. =     33.6 km2
+  altitude   max. =   3076.2 m   	at x = -250.0 km
+  altitude   min. =   -994.9 m   	at x = 250.0 km   d
+T= 0.88 My
+  water depth max.=    994.9 m  	at x = 250.0 km
+  rain  now: +7.94e-03 m2/s evap.wat.: +7.56e-03 m2/s outp.water: +3.73e-04 m2/s
+  lake 2/2:    9.29 km2    76.5 km  867 m 153 nds @  16 km  1 sds @  70 km  0.0015 m2/s
+  noSed er.: +6.55e+11 N/m    sed.incr.: +6.48e+11 N    outp.seds:  +1.95e+09 N/m  
+  max. altit. sed.=   2014.3 m  	at x = -138.5 km
+  erosion max.    =    352.8 m  	at x = 167.5 km
+  sediment. max.  =    438.9 m  	at x = 100.0 km
+  total eros.     =     34.3 km2	total sed. =     34.4 km2
+  altitude   max. =   3075.5 m   	at x = -250.0 km
+  altitude   min. =   -994.6 m   	at x = 250.0 km   d
+T= 0.90 My
+  water depth max.=    994.6 m  	at x = 250.0 km
+  rain  now: +7.94e-03 m2/s evap.wat.: +7.49e-03 m2/s outp.water: +4.44e-04 m2/s
+  lake 2/2:    8.58 km2    75.0 km  862 m 150 nds @  18 km  1 sds @  70 km  0.0015 m2/s
+  noSed er.: +6.71e+11 N/m    sed.incr.: +6.65e+11 N    outp.seds:  +2.05e+09 N/m  
+  max. altit. sed.=   1995.8 m  	at x = -137.0 km
+  erosion max.    =    359.9 m  	at x = 168.0 km
+  sediment. max.  =    449.7 m  	at x = 100.0 km
+  total eros.     =     35.2 km2	total sed. =     35.3 km2
+  altitude   max. =   3074.7 m   	at x = -250.0 km
+  altitude   min. =   -994.3 m   	at x = 250.0 km   d
+T= 0.92 My
+  water depth max.=    994.3 m  	at x = 250.0 km
+  rain  now: +7.94e-03 m2/s evap.wat.: +7.35e-03 m2/s outp.water: +5.87e-04 m2/s
+  lake 2/2:    7.89 km2    72.5 km  857 m 145 nds @  18 km  1 sds @  68 km  0.0016 m2/s
+  noSed er.: +6.87e+11 N/m    sed.incr.: +6.81e+11 N    outp.seds:  +2.15e+09 N/m  
+  max. altit. sed.=   1898.7 m  	at x = -128.5 km
+  erosion max.    =    368.7 m  	at x = 168.5 km
+  sediment. max.  =    460.3 m  	at x = 100.0 km
+  total eros.     =     36.0 km2	total sed. =     36.1 km2
+  altitude   max. =   3074.0 m   	at x = -250.0 km
+  altitude   min. =   -994.1 m   	at x = 250.0 km   d
+T= 0.94 My
+  water depth max.=    994.1 m  	at x = 250.0 km
+  rain  now: +7.94e-03 m2/s evap.wat.: +7.23e-03 m2/s outp.water: +7.06e-04 m2/s
+  lake 2/2:    7.22 km2    70.5 km  852 m 141 nds @  20 km  1 sds @  67 km  0.0017 m2/s
+  noSed er.: +7.03e+11 N/m    sed.incr.: +6.96e+11 N    outp.seds:  +2.26e+09 N/m  
+  max. altit. sed.=   1849.0 m  	at x = -124.0 km
+  erosion max.    =    377.6 m  	at x = 169.0 km
+  sediment. max.  =    469.8 m  	at x = 100.0 km
+  total eros.     =     36.9 km2	total sed. =     37.0 km2
+  altitude   max. =   3073.2 m   	at x = -250.0 km
+  altitude   min. =   -993.8 m   	at x = 250.0 km   d
+T= 0.96 My
+  water depth max.=    993.8 m  	at x = 250.0 km
+  rain  now: +7.94e-03 m2/s evap.wat.: +7.13e-03 m2/s outp.water: +8.01e-04 m2/s
+  lake 2/2:    6.56 km2    69.0 km  847 m 138 nds @  20 km  1 sds @  66 km  0.0017 m2/s
+  noSed er.: +7.19e+11 N/m    sed.incr.: +7.12e+11 N    outp.seds:  +2.37e+09 N/m  
+  max. altit. sed.=   1843.4 m  	at x = -123.5 km
+  erosion max.    =    386.2 m  	at x = 169.5 km
+  sediment. max.  =    478.4 m  	at x = 100.0 km
+  total eros.     =     37.7 km2	total sed. =     37.8 km2
+  altitude   max. =   3072.4 m   	at x = -250.0 km
+  altitude   min. =   -993.4 m   	at x = 250.0 km   d
+T= 0.98 My
+  water depth max.=    993.4 m  	at x = 250.0 km
+  rain  now: +7.94e-03 m2/s evap.wat.: +7.02e-03 m2/s outp.water: +9.20e-04 m2/s
+  lake 2/2:    5.92 km2    67.0 km  842 m 134 nds @  22 km  1 sds @  65 km  0.0018 m2/s
+  noSed er.: +7.35e+11 N/m    sed.incr.: +7.27e+11 N    outp.seds:  +2.49e+09 N/m  
+  max. altit. sed.=   1827.1 m  	at x = -122.0 km
+  erosion max.    =    394.6 m  	at x = 170.0 km
+  sediment. max.  =    487.6 m  	at x = 100.0 km
+  total eros.     =     38.5 km2	total sed. =     38.7 km2
+  altitude   max. =   3071.7 m   	at x = -250.0 km
+  altitude   min. =   -993.1 m   	at x = 250.0 km   d
+T= 1.00 My
+  water depth max.=    993.1 m  	at x = 250.0 km   u
+  rain  now: +7.94e-03 m2/s evap.wat.: +6.90e-03 m2/s outp.water: +1.04e-03 m2/s
+  lake 2/2:    5.33 km2    65.0 km  838 m 130 nds @  22 km  1 sds @  64 km  0.0019 m2/s
+  noSed er.: +7.50e+11 N/m    sed.incr.: +7.43e+11 N    outp.seds:  +2.61e+09 N/m  
+  max. altit. sed.=   1837.3 m  	at x = -123.0 km
+  erosion max.    =    402.9 m  	at x = 170.5 km
+  sediment. max.  =    494.4 m  	at x = 100.0 km
+  total eros.     =     39.4 km2	total sed. =     39.5 km2
+  altitude   max. =   3070.9 m   	at x = -250.0 km
+  altitude   min. =   -992.8 m   	at x = 250.0 km   d
+T= 1.02 My
+  water depth max.=    992.8 m  	at x = 250.0 km
+  rain  now: +7.94e-03 m2/s evap.wat.: +6.80e-03 m2/s outp.water: +1.13e-03 m2/s
+  lake 2/2:    4.75 km2    63.5 km  834 m 127 nds @  24 km  1 sds @  63 km  0.0020 m2/s
+  noSed er.: +7.66e+11 N/m    sed.incr.: +7.58e+11 N    outp.seds:  +2.73e+09 N/m  
+  max. altit. sed.=   1895.9 m  	at x = -128.5 km
+  erosion max.    =    412.9 m  	at x = 170.5 km
+  sediment. max.  =    500.9 m  	at x = 100.0 km
+  total eros.     =     40.2 km2	total sed. =     40.4 km2
+  altitude   max. =   3070.1 m   	at x = -250.0 km
+  altitude   min. =   -992.5 m   	at x = 250.0 km   d
+T= 1.04 My
+  water depth max.=    992.5 m  	at x = 250.0 km
+  rain  now: +7.94e-03 m2/s evap.wat.: +6.66e-03 m2/s outp.water: +1.28e-03 m2/s
+  lake 2/2:    4.19 km2    61.0 km  830 m 122 nds @  24 km  1 sds @  62 km  0.0021 m2/s
+  noSed er.: +7.82e+11 N/m    sed.incr.: +7.74e+11 N    outp.seds:  +2.86e+09 N/m  
+  max. altit. sed.=   1819.9 m  	at x = -121.5 km
+  erosion max.    =    422.6 m  	at x = 171.0 km
+  sediment. max.  =    505.6 m  	at x = 100.0 km
+  total eros.     =     41.0 km2	total sed. =     41.2 km2
+  altitude   max. =   3069.3 m   	at x = -250.0 km
+  altitude   min. =   -992.1 m   	at x = 250.0 km   d
+T= 1.06 My
+  water depth max.=    992.1 m  	at x = 250.0 km
+  rain  now: +7.94e-03 m2/s evap.wat.: +6.49e-03 m2/s outp.water: +1.44e-03 m2/s
+  lake 2/2:    3.67 km2    58.0 km  825 m 116 nds @  26 km  1 sds @  61 km  0.0022 m2/s
+  noSed er.: +7.97e+11 N/m    sed.incr.: +7.89e+11 N    outp.seds:  +3.00e+09 N/m  
+  max. altit. sed.=   1819.8 m  	at x = -121.5 km
+  erosion max.    =    433.6 m  	at x = 171.5 km
+  sediment. max.  =    513.1 m  	at x = 100.0 km
+  total eros.     =     41.9 km2	total sed. =     42.1 km2
+  altitude   max. =   3068.4 m   	at x = -250.0 km
+  altitude   min. =   -991.7 m   	at x = 250.0 km   d
+T= 1.08 My
+  water depth max.=    991.7 m  	at x = 250.0 km
+  rain  now: +7.94e-03 m2/s evap.wat.: +6.33e-03 m2/s outp.water: +1.61e-03 m2/s
+  lake 2/2:    3.20 km2    55.0 km  822 m 110 nds @  26 km  1 sds @  60 km  0.0023 m2/s
+  noSed er.: +8.13e+11 N/m    sed.incr.: +8.04e+11 N    outp.seds:  +3.14e+09 N/m  
+  max. altit. sed.=   1831.2 m  	at x = -122.5 km
+  erosion max.    =    442.3 m  	at x = 172.0 km
+  sediment. max.  =    520.2 m  	at x = 100.0 km
+  total eros.     =     42.7 km2	total sed. =     42.9 km2
+  altitude   max. =   3067.6 m   	at x = -250.0 km
+  altitude   min. =   -991.3 m   	at x = 250.0 km   d
+T= 1.10 My
+  water depth max.=    991.3 m  	at x = 250.0 km
+  rain  now: +7.94e-03 m2/s evap.wat.: +6.16e-03 m2/s outp.water: +1.78e-03 m2/s
+  lake 2/2:    2.75 km2    52.0 km  818 m 104 nds @  27 km  1 sds @  58 km  0.0024 m2/s
+  noSed er.: +8.29e+11 N/m    sed.incr.: +8.20e+11 N    outp.seds:  +3.29e+09 N/m  
+  max. altit. sed.=   1819.7 m  	at x = -121.5 km
+  erosion max.    =    453.3 m  	at x = 172.5 km
+  sediment. max.  =    526.4 m  	at x = 100.0 km
+  total eros.     =     43.6 km2	total sed. =     43.8 km2
+  altitude   max. =   3066.8 m   	at x = -250.0 km
+  altitude   min. =   -990.9 m   	at x = 250.0 km   d
+T= 1.12 My
+  water depth max.=    990.9 m  	at x = 250.0 km
+  rain  now: +7.94e-03 m2/s evap.wat.: +6.02e-03 m2/s outp.water: +1.92e-03 m2/s
+  lake 2/2:    2.34 km2    49.5 km  815 m  99 nds @  28 km  1 sds @  58 km  0.0025 m2/s
+  noSed er.: +8.44e+11 N/m    sed.incr.: +8.35e+11 N    outp.seds:  +3.45e+09 N/m  
+  max. altit. sed.=   1825.8 m  	at x = -122.0 km
+  erosion max.    =    462.3 m  	at x = 173.0 km
+  sediment. max.  =    535.1 m  	at x = 100.0 km
+  total eros.     =     44.4 km2	total sed. =     44.6 km2
+  altitude   max. =   3066.0 m   	at x = -250.0 km
+  altitude   min. =   -990.5 m   	at x = 250.0 km   d
+T= 1.14 My
+  water depth max.=    990.5 m  	at x = 250.0 km
+  rain  now: +7.94e-03 m2/s evap.wat.: +5.85e-03 m2/s outp.water: +2.08e-03 m2/s
+  lake 2/2:    1.96 km2    46.5 km  811 m  93 nds @  29 km  1 sds @  56 km  0.0027 m2/s
+  noSed er.: +8.60e+11 N/m    sed.incr.: +8.51e+11 N    outp.seds:  +3.61e+09 N/m  
+  max. altit. sed.=   1877.4 m  	at x = -127.0 km
+  erosion max.    =    472.7 m  	at x = 173.5 km
+  sediment. max.  =    542.0 m  	at x = 100.0 km
+  total eros.     =     45.3 km2	total sed. =     45.5 km2
+  altitude   max. =   3065.2 m   	at x = -250.0 km
+  altitude   min. =   -990.0 m   	at x = 250.0 km   d
+T= 1.16 My
+  water depth max.=    990.0 m  	at x = 250.0 km
+  rain  now: +7.94e-03 m2/s evap.wat.: +5.68e-03 m2/s outp.water: +2.25e-03 m2/s
+  lake 2/2:    1.63 km2    43.5 km  809 m  87 nds @  30 km  1 sds @  56 km  0.0028 m2/s
+  noSed er.: +8.76e+11 N/m    sed.incr.: +8.67e+11 N    outp.seds:  +3.78e+09 N/m  
+  max. altit. sed.=   1866.7 m  	at x = -126.0 km
+  erosion max.    =    483.1 m  	at x = 174.0 km
+  sediment. max.  =    550.0 m  	at x = 100.0 km
+  total eros.     =     46.1 km2	total sed. =     46.3 km2
+  altitude   max. =   3064.3 m   	at x = -250.0 km
+  altitude   min. =   -989.6 m   	at x = 250.0 km   d
+T= 1.18 My
+  water depth max.=    989.6 m  	at x = 250.0 km
+  rain  now: +7.94e-03 m2/s evap.wat.: +5.52e-03 m2/s outp.water: +2.42e-03 m2/s
+  lake 2/2:    1.29 km2    40.5 km  806 m  81 nds @  31 km  1 sds @  54 km  0.0029 m2/s
+  noSed er.: +8.92e+11 N/m    sed.incr.: +8.82e+11 N    outp.seds:  +3.96e+09 N/m  
+  max. altit. sed.=   1824.9 m  	at x = -122.0 km
+  erosion max.    =    492.3 m  	at x = 174.5 km
+  sediment. max.  =    555.4 m  	at x = 100.0 km
+  total eros.     =     47.0 km2	total sed. =     47.2 km2
+  altitude   max. =   3063.5 m   	at x = -250.0 km
+  altitude   min. =   -989.1 m   	at x = 250.0 km   d
+T= 1.20 My
+  water depth max.=    989.1 m  	at x = 250.0 km
+  rain  now: +7.94e-03 m2/s evap.wat.: +5.33e-03 m2/s outp.water: +2.61e-03 m2/s
+  lake 2/2:    1.00 km2    37.0 km  803 m  74 nds @  32 km  1 sds @  53 km  0.0031 m2/s
+  noSed er.: +9.08e+11 N/m    sed.incr.: +8.98e+11 N    outp.seds:  +4.15e+09 N/m  
+  max. altit. sed.=   1813.1 m  	at x = -121.0 km
+  erosion max.    =    502.5 m  	at x = 175.0 km
+  sediment. max.  =    563.8 m  	at x = 100.0 km
+  total eros.     =     47.8 km2	total sed. =     48.1 km2
+  altitude   max. =   3062.6 m   	at x = -250.0 km
+  altitude   min. =   -988.5 m   	at x = 250.0 km   d
+T= 1.22 My
+  water depth max.=    988.5 m  	at x = 250.0 km
+  rain  now: +7.94e-03 m2/s evap.wat.: +5.14e-03 m2/s outp.water: +2.80e-03 m2/s
+  lake 2/2:    0.74 km2    33.5 km  800 m  67 nds @  33 km  1 sds @  52 km  0.0032 m2/s
+  noSed er.: +9.24e+11 N/m    sed.incr.: +9.14e+11 N    outp.seds:  +4.35e+09 N/m  
+  max. altit. sed.=   1880.3 m  	at x = -127.5 km
+  erosion max.    =    512.4 m  	at x = 175.5 km
+  sediment. max.  =    572.5 m  	at x = 100.0 km
+  total eros.     =     48.7 km2	total sed. =     49.0 km2
+  altitude   max. =   3061.7 m   	at x = -250.0 km
+  altitude   min. =   -988.0 m   	at x = 250.0 km   d
+T= 1.24 My
+  water depth max.=    988.0 m  	at x = 250.0 km
+  rain  now: +7.94e-03 m2/s evap.wat.: +4.92e-03 m2/s outp.water: +3.01e-03 m2/s
+  lake 2/2:    0.52 km2    29.5 km  799 m  59 nds @  34 km  1 sds @  50 km  0.0034 m2/s
+  noSed er.: +9.40e+11 N/m    sed.incr.: +9.30e+11 N    outp.seds:  +4.56e+09 N/m  
+  max. altit. sed.=   1813.9 m  	at x = -121.0 km
+  erosion max.    =    523.1 m  	at x = 176.0 km
+  sediment. max.  =    578.1 m  	at x = 100.0 km
+  total eros.     =     49.6 km2	total sed. =     49.8 km2
+  altitude   max. =   3060.8 m   	at x = -250.0 km
+  altitude   min. =   -987.4 m   	at x = 250.0 km   d
+T= 1.26 My
+  water depth max.=    987.4 m  	at x = 250.0 km
+  rain  now: +7.94e-03 m2/s evap.wat.: +4.71e-03 m2/s outp.water: +3.23e-03 m2/s
+  lake 2/2:    0.33 km2    25.5 km  797 m  51 nds @  35 km  1 sds @  49 km  0.0035 m2/s
+  noSed er.: +9.56e+11 N/m    sed.incr.: +9.46e+11 N    outp.seds:  +4.78e+09 N/m  
+  max. altit. sed.=   1818.5 m  	at x = -121.5 km
+  erosion max.    =    532.1 m  	at x = 176.5 km
+  sediment. max.  =    585.5 m  	at x = 100.0 km
+  total eros.     =     50.5 km2	total sed. =     50.7 km2
+  altitude   max. =   3059.8 m   	at x = -250.0 km
+  altitude   min. =   -986.8 m   	at x = 250.0 km   d
+T= 1.28 My
+  water depth max.=    986.8 m  	at x = 250.0 km
+  rain  now: +7.94e-03 m2/s evap.wat.: +4.47e-03 m2/s outp.water: +3.46e-03 m2/s
+  lake 2/2:    0.17 km2    21.0 km  795 m  42 nds @  36 km  1 sds @  48 km  0.0037 m2/s
+  noSed er.: +9.72e+11 N/m    sed.incr.: +9.62e+11 N    outp.seds:  +5.01e+09 N/m  
+  max. altit. sed.=   1813.2 m  	at x = -121.0 km
+  erosion max.    =    543.0 m  	at x = 177.5 km
+  sediment. max.  =    594.8 m  	at x = 100.0 km
+  total eros.     =     51.3 km2	total sed. =     51.6 km2
+  altitude   max. =   3058.9 m   	at x = -250.0 km
+  altitude   min. =   -986.2 m   	at x = 250.0 km   d
+T= 1.30 My
+  water depth max.=    986.2 m  	at x = 250.0 km
+  rain  now: +7.94e-03 m2/s evap.wat.: +4.21e-03 m2/s outp.water: +3.73e-03 m2/s
+  lake 2/2:    0.05 km2    16.0 km  794 m  32 nds @  38 km  1 sds @  46 km  0.0039 m2/s
+  noSed er.: +9.88e+11 N/m    sed.incr.: +9.78e+11 N    outp.seds:  +5.25e+09 N/m  
+  max. altit. sed.=   1812.0 m  	at x = -121.0 km
+  erosion max.    =    555.0 m  	at x = 178.0 km
+  sediment. max.  =    600.8 m  	at x = 100.0 km
+  total eros.     =     52.2 km2	total sed. =     52.5 km2
+  altitude   max. =   3057.9 m   	at x = -250.0 km
+  altitude   min. =   -985.5 m   	at x = 250.0 km   d
+T= 1.32 My
+  water depth max.=    985.5 m  	at x = 250.0 km
+  rain  now: +7.94e-03 m2/s evap.wat.: +4.16e-03 m2/s outp.water: +3.77e-03 m2/s
+  lake 2/2:    0.01 km2    15.5 km  794 m  31 nds @  38 km  1 sds @  45 km  0.0039 m2/s
+  noSed er.: +1.00e+12 N/m    sed.incr.: +9.93e+11 N    outp.seds:  +5.50e+09 N/m  
+  max. altit. sed.=   1924.1 m  	at x = -132.0 km
+  erosion max.    =    567.3 m  	at x = 178.5 km
+  sediment. max.  =    608.3 m  	at x = 100.0 km
+  total eros.     =     53.0 km2	total sed. =     53.3 km2
+  altitude   max. =   3056.9 m   	at x = -250.0 km
+  altitude   min. =   -984.8 m   	at x = 250.0 km   d
+T= 1.34 My
+  water depth max.=    984.8 m  	at x = 250.0 km
+  rain  now: +7.94e-03 m2/s evap.wat.: +3.38e-03 m2/s outp.water: +4.56e-03 m2/s
+  lake 1/1:   55.69 km2    71.0 km    0 m 142 nds @ 250 km  1 sds Sea       0.0079 m2/s
+  noSed er.: +1.02e+12 N/m    sed.incr.: +1.01e+12 N    outp.seds:  +5.77e+09 N/m  
+  max. altit. sed.=   1811.5 m  	at x = -121.0 km
+  erosion max.    =    582.0 m  	at x = 179.0 km
+  sediment. max.  =    614.9 m  	at x = 100.0 km
+  total eros.     =     53.8 km2	total sed. =     54.1 km2
+  altitude   max. =   3055.9 m   	at x = -250.0 km
+  altitude   min. =   -984.1 m   	at x = 250.0 km   d
+T= 1.36 My
+  water depth max.=    984.1 m  	at x = 250.0 km
+  rain  now: +7.94e-03 m2/s evap.wat.: +3.35e-03 m2/s outp.water: +4.58e-03 m2/s
+  lake 1/1:   55.14 km2    70.5 km    0 m 141 nds @ 250 km  1 sds Sea       0.0079 m2/s
+  noSed er.: +1.03e+12 N/m    sed.incr.: +1.02e+12 N    outp.seds:  +6.06e+09 N/m  
+  max. altit. sed.=   1892.1 m  	at x = -129.0 km
+  erosion max.    =    592.5 m  	at x = 179.5 km
+  sediment. max.  =    622.1 m  	at x = 100.0 km
+  total eros.     =     54.6 km2	total sed. =     54.9 km2
+  altitude   max. =   3054.9 m   	at x = -250.0 km
+  altitude   min. =   -983.3 m   	at x = 250.0 km   d
+T= 1.38 My
+  water depth max.=    983.3 m  	at x = 250.0 km
+  rain  now: +7.94e-03 m2/s evap.wat.: +3.33e-03 m2/s outp.water: +4.61e-03 m2/s
+  lake 1/1:   54.58 km2    70.0 km    0 m 140 nds @ 250 km  1 sds Sea       0.0079 m2/s
+  noSed er.: +1.05e+12 N/m    sed.incr.: +1.04e+12 N    outp.seds:  +6.37e+09 N/m  
+  max. altit. sed.=   1805.7 m  	at x = -120.5 km
+  erosion max.    =    602.6 m  	at x = 180.0 km
+  sediment. max.  =    631.4 m  	at x = 100.0 km
+  total eros.     =     55.4 km2	total sed. =     55.7 km2
+  altitude   max. =   3053.8 m   	at x = -250.0 km
+  altitude   min. =   -982.4 m   	at x = 250.0 km   d
+T= 1.40 My
+  water depth max.=    982.4 m  	at x = 250.0 km
+  rain  now: +7.94e-03 m2/s evap.wat.: +3.31e-03 m2/s outp.water: +4.63e-03 m2/s
+  lake 1/1:   54.03 km2    69.5 km    0 m 139 nds @ 250 km  1 sds Sea       0.0079 m2/s
+  noSed er.: +1.06e+12 N/m    sed.incr.: +1.05e+12 N    outp.seds:  +6.67e+09 N/m  
+  max. altit. sed.=   1806.3 m  	at x = -120.5 km
+  erosion max.    =    612.8 m  	at x = 180.5 km
+  sediment. max.  =    637.9 m  	at x = 100.0 km
+  total eros.     =     56.2 km2	total sed. =     56.6 km2
+  altitude   max. =   3052.8 m   	at x = -250.0 km
+  altitude   min. =   -981.6 m   	at x = 250.0 km   d
+T= 1.42 My
+  water depth max.=    981.6 m  	at x = 250.0 km
+  rain  now: +7.94e-03 m2/s evap.wat.: +3.28e-03 m2/s outp.water: +4.65e-03 m2/s
+  lake 1/1:   53.48 km2    69.0 km    0 m 138 nds @ 250 km  1 sds Sea       0.0079 m2/s
+  noSed er.: +1.08e+12 N/m    sed.incr.: +1.07e+12 N    outp.seds:  +6.99e+09 N/m  
+  max. altit. sed.=   1804.9 m  	at x = -120.5 km
+  erosion max.    =    623.1 m  	at x = 181.0 km
+  sediment. max.  =    644.0 m  	at x = 100.0 km
+  total eros.     =     57.0 km2	total sed. =     57.4 km2
+  altitude   max. =   3051.7 m   	at x = -250.0 km
+  altitude   min. =   -980.7 m   	at x = 250.0 km   d
+T= 1.44 My
+  water depth max.=    980.7 m  	at x = 250.0 km
+  rain  now: +7.94e-03 m2/s evap.wat.: +3.26e-03 m2/s outp.water: +4.68e-03 m2/s
+  lake 1/1:   52.94 km2    68.5 km    0 m 137 nds @ 250 km  1 sds Sea       0.0079 m2/s
+  noSed er.: +1.09e+12 N/m    sed.incr.: +1.08e+12 N    outp.seds:  +7.31e+09 N/m  
+  max. altit. sed.=   1889.5 m  	at x = -129.0 km
+  erosion max.    =    632.0 m  	at x = 181.5 km
+  sediment. max.  =    649.2 m  	at x = 100.0 km
+  total eros.     =     57.8 km2	total sed. =     58.2 km2
+  altitude   max. =   3050.6 m   	at x = -250.0 km
+  altitude   min. =   -979.8 m   	at x = 250.0 km   d
+T= 1.46 My
+  water depth max.=    979.8 m  	at x = 250.0 km
+  rain  now: +7.94e-03 m2/s evap.wat.: +3.23e-03 m2/s outp.water: +4.70e-03 m2/s
+  lake 1/1:   52.41 km2    68.0 km    0 m 136 nds @ 250 km  1 sds Sea       0.0079 m2/s
+  noSed er.: +1.11e+12 N/m    sed.incr.: +1.09e+12 N    outp.seds:  +7.63e+09 N/m  
+  max. altit. sed.=   1970.2 m  	at x = -137.0 km
+  erosion max.    =    642.5 m  	at x = 182.5 km
+  sediment. max.  =    654.7 m  	at x = 100.0 km
+  total eros.     =     58.5 km2	total sed. =     58.9 km2
+  altitude   max. =   3049.5 m   	at x = -250.0 km
+  altitude   min. =   -978.9 m   	at x = 250.0 km   d
+T= 1.48 My
+  water depth max.=    978.9 m  	at x = 250.0 km
+  rain  now: +7.94e-03 m2/s evap.wat.: +3.21e-03 m2/s outp.water: +4.72e-03 m2/s
+  lake 1/1:   51.89 km2    67.5 km    0 m 135 nds @ 250 km  1 sds Sea       0.0079 m2/s
+  noSed er.: +1.12e+12 N/m    sed.incr.: +1.11e+12 N    outp.seds:  +7.96e+09 N/m  
+  max. altit. sed.=   1803.7 m  	at x = -120.5 km
+  erosion max.    =    653.3 m  	at x = 183.0 km
+  sediment. max.  =    659.9 m  	at x = 100.0 km
+  total eros.     =     59.3 km2	total sed. =     59.7 km2
+  altitude   max. =   3048.4 m   	at x = -250.0 km
+  altitude   min. =   -978.0 m   	at x = 250.0 km   d
+T= 1.50 My
+  water depth max.=    978.0 m  	at x = 250.0 km
+  rain  now: +7.94e-03 m2/s evap.wat.: +3.19e-03 m2/s outp.water: +4.75e-03 m2/s
+  lake 1/1:   51.36 km2    67.0 km    0 m 134 nds @ 250 km  1 sds Sea       0.0079 m2/s
+  noSed er.: +1.14e+12 N/m    sed.incr.: +1.12e+12 N    outp.seds:  +8.30e+09 N/m  
+  max. altit. sed.=   1798.4 m  	at x = -120.0 km
+  erosion max.    =    664.2 m  	at x = 183.5 km
+  sediment. max.  =    665.9 m  	at x = 100.0 km
+  total eros.     =     60.0 km2	total sed. =     60.5 km2
+  altitude   max. =   3047.3 m   	at x = -250.0 km
+  altitude   min. =   -977.1 m   	at x = 250.0 km   d
+T= 1.52 My
+  water depth max.=    977.1 m  	at x = 250.0 km
+  rain  now: +7.94e-03 m2/s evap.wat.: +3.16e-03 m2/s outp.water: +4.77e-03 m2/s
+  lake 1/1:   50.84 km2    66.5 km    0 m 133 nds @ 250 km  1 sds Sea       0.0079 m2/s
+  noSed er.: +1.15e+12 N/m    sed.incr.: +1.14e+12 N    outp.seds:  +8.64e+09 N/m  
+  max. altit. sed.=   1799.1 m  	at x = -120.0 km
+  erosion max.    =    674.1 m  	at x = 184.0 km
+  sediment. max.  =    670.8 m  	at x = 100.0 km
+  total eros.     =     60.7 km2	total sed. =     61.2 km2
+  altitude   max. =   3046.1 m   	at x = -250.0 km
+  altitude   min. =   -976.2 m   	at x = 250.0 km   d
+T= 1.54 My
+  water depth max.=    976.2 m  	at x = 250.0 km
+  rain  now: +7.94e-03 m2/s evap.wat.: +3.14e-03 m2/s outp.water: +4.80e-03 m2/s
+  lake 1/1:   50.31 km2    66.0 km    0 m 132 nds @ 250 km  1 sds Sea       0.0079 m2/s
+  noSed er.: +1.16e+12 N/m    sed.incr.: +1.15e+12 N    outp.seds:  +9.00e+09 N/m  
+  max. altit. sed.=   1797.6 m  	at x = -120.0 km
+  erosion max.    =    684.8 m  	at x = 184.5 km
+  sediment. max.  =    676.2 m  	at x = 100.0 km
+  total eros.     =     61.5 km2	total sed. =     62.0 km2
+  altitude   max. =   3045.0 m   	at x = -250.0 km
+  altitude   min. =   -975.2 m   	at x = 250.0 km   d
+T= 1.56 My
+  water depth max.=    975.2 m  	at x = 250.0 km
+  rain  now: +7.94e-03 m2/s evap.wat.: +3.12e-03 m2/s outp.water: +4.82e-03 m2/s
+  lake 1/1:   49.81 km2    65.5 km    0 m 131 nds @ 250 km  1 sds Sea       0.0079 m2/s
+  noSed er.: +1.18e+12 N/m    sed.incr.: +1.16e+12 N    outp.seds:  +9.35e+09 N/m  
+  max. altit. sed.=   1836.6 m  	at x = -124.0 km
+  erosion max.    =    693.6 m  	at x = 185.0 km
+  sediment. max.  =    681.2 m  	at x = 100.0 km
+  total eros.     =     62.2 km2	total sed. =     62.7 km2
+  altitude   max. =   3043.8 m   	at x = -250.0 km
+  altitude   min. =   -974.2 m   	at x = 250.0 km   d
+T= 1.58 My
+  water depth max.=    974.2 m  	at x = 250.0 km
+  rain  now: +7.94e-03 m2/s evap.wat.: +3.09e-03 m2/s outp.water: +4.84e-03 m2/s
+  lake 1/1:   49.28 km2    65.0 km    0 m 130 nds @ 250 km  1 sds Sea       0.0079 m2/s
+  noSed er.: +1.19e+12 N/m    sed.incr.: +1.18e+12 N    outp.seds:  +9.72e+09 N/m  
+  max. altit. sed.=   1796.8 m  	at x = -120.0 km
+  erosion max.    =    703.4 m  	at x = 185.5 km
+  sediment. max.  =    687.8 m  	at x = 100.0 km
+  total eros.     =     62.9 km2	total sed. =     63.4 km2
+  altitude   max. =   3042.6 m   	at x = -250.0 km
+  altitude   min. =   -973.2 m   	at x = 250.0 km   d
+T= 1.60 My
+  water depth max.=    973.2 m  	at x = 250.0 km
+  rain  now: +7.94e-03 m2/s evap.wat.: +3.07e-03 m2/s outp.water: +4.87e-03 m2/s
+  lake 1/1:   48.78 km2    64.5 km    0 m 129 nds @ 250 km  1 sds Sea       0.0079 m2/s
+  noSed er.: +1.20e+12 N/m    sed.incr.: +1.19e+12 N    outp.seds:  +1.01e+10 N/m  
+  max. altit. sed.=   1796.8 m  	at x = -120.0 km
+  erosion max.    =    712.3 m  	at x = 185.5 km
+  sediment. max.  =    690.4 m  	at x = 100.0 km
+  total eros.     =     63.5 km2	total sed. =     64.1 km2
+  altitude   max. =   3041.4 m   	at x = -250.0 km
+  altitude   min. =   -972.2 m   	at x = 250.0 km   d
+T= 1.62 My
+  water depth max.=    972.2 m  	at x = 250.0 km
+  rain  now: +7.94e-03 m2/s evap.wat.: +3.04e-03 m2/s outp.water: +4.89e-03 m2/s
+  lake 1/1:   48.27 km2    64.0 km    0 m 128 nds @ 250 km  1 sds Sea       0.0079 m2/s
+  noSed er.: +1.22e+12 N/m    sed.incr.: +1.20e+12 N    outp.seds:  +1.05e+10 N/m  
+  max. altit. sed.=   1820.8 m  	at x = -122.5 km
+  erosion max.    =    722.8 m  	at x = 186.0 km
+  sediment. max.  =    695.5 m  	at x = 100.0 km
+  total eros.     =     64.2 km2	total sed. =     64.8 km2
+  altitude   max. =   3040.2 m   	at x = -250.0 km
+  altitude   min. =   -971.1 m   	at x = 250.0 km   d
+T= 1.64 My
+  water depth max.=    971.1 m  	at x = 250.0 km
+  rain  now: +7.94e-03 m2/s evap.wat.: +3.02e-03 m2/s outp.water: +4.91e-03 m2/s
+  lake 1/1:   47.77 km2    63.5 km    0 m 127 nds @ 250 km  1 sds Sea       0.0079 m2/s
+  noSed er.: +1.23e+12 N/m    sed.incr.: +1.21e+12 N    outp.seds:  +1.09e+10 N/m  
+  max. altit. sed.=   1806.4 m  	at x = -121.0 km
+  erosion max.    =    731.4 m  	at x = 186.5 km
+  sediment. max.  =    700.8 m  	at x = 100.0 km
+  total eros.     =     64.9 km2	total sed. =     65.5 km2
+  altitude   max. =   3039.0 m   	at x = -250.0 km
+  altitude   min. =   -970.0 m   	at x = 250.0 km   d
+T= 1.66 My
+  water depth max.=    970.0 m  	at x = 250.0 km
+  rain  now: +7.94e-03 m2/s evap.wat.: +3.00e-03 m2/s outp.water: +4.94e-03 m2/s
+  lake 1/1:   47.28 km2    63.0 km    0 m 126 nds @ 250 km  1 sds Sea       0.0079 m2/s
+  noSed er.: +1.24e+12 N/m    sed.incr.: +1.22e+12 N    outp.seds:  +1.12e+10 N/m  
+  max. altit. sed.=   1790.3 m  	at x = -119.5 km
+  erosion max.    =    741.8 m  	at x = 187.0 km
+  sediment. max.  =    707.0 m  	at x = 100.0 km
+  total eros.     =     65.5 km2	total sed. =     66.1 km2
+  altitude   max. =   3037.7 m   	at x = -250.0 km
+  altitude   min. =   -969.0 m   	at x = 250.0 km   d
+T= 1.68 My
+  water depth max.=    969.0 m  	at x = 250.0 km
+  rain  now: +7.94e-03 m2/s evap.wat.: +2.97e-03 m2/s outp.water: +4.96e-03 m2/s
+  lake 1/1:   46.79 km2    62.5 km    0 m 125 nds @ 250 km  1 sds Sea       0.0079 m2/s
+  noSed er.: +1.25e+12 N/m    sed.incr.: +1.24e+12 N    outp.seds:  +1.16e+10 N/m  
+  max. altit. sed.=   1791.1 m  	at x = -119.5 km
+  erosion max.    =    752.4 m  	at x = 187.5 km
+  sediment. max.  =    710.5 m  	at x = 100.0 km
+  total eros.     =     66.2 km2	total sed. =     66.8 km2
+  altitude   max. =   3036.5 m   	at x = -250.0 km
+  altitude   min. =   -967.9 m   	at x = 250.0 km   d
+T= 1.70 My
+  water depth max.=    967.9 m  	at x = 250.0 km
+  rain  now: +7.94e-03 m2/s evap.wat.: +2.95e-03 m2/s outp.water: +4.99e-03 m2/s
+  lake 1/1:   46.30 km2    62.0 km    0 m 124 nds @ 250 km  1 sds Sea       0.0079 m2/s
+  noSed er.: +1.26e+12 N/m    sed.incr.: +1.25e+12 N    outp.seds:  +1.20e+10 N/m  
+  max. altit. sed.=   1789.5 m  	at x = -119.5 km
+  erosion max.    =    761.9 m  	at x = 188.0 km
+  sediment. max.  =    712.3 m  	at x = 100.0 km
+  total eros.     =     66.8 km2	total sed. =     67.5 km2
+  altitude   max. =   3035.2 m   	at x = -250.0 km
+  altitude   min. =   -966.8 m   	at x = 250.0 km   d
+T= 1.72 My
+  water depth max.=    966.8 m  	at x = 250.0 km
+  rain  now: +7.94e-03 m2/s evap.wat.: +2.93e-03 m2/s outp.water: +5.01e-03 m2/s
+  lake 1/1:   45.83 km2    61.5 km    0 m 123 nds @ 250 km  1 sds Sea       0.0079 m2/s
+  noSed er.: +1.28e+12 N/m    sed.incr.: +1.26e+12 N    outp.seds:  +1.24e+10 N/m  
+  max. altit. sed.=   1799.7 m  	at x = -120.5 km
+  erosion max.    =    771.5 m  	at x = 188.5 km
+  sediment. max.  =    716.7 m  	at x = 100.0 km
+  total eros.     =     67.4 km2	total sed. =     68.1 km2
+  altitude   max. =   3033.9 m   	at x = -250.0 km
+  altitude   min. =   -965.7 m   	at x = 250.0 km   d
+T= 1.74 My
+  water depth max.=    965.7 m  	at x = 250.0 km
+  rain  now: +7.94e-03 m2/s evap.wat.: +2.90e-03 m2/s outp.water: +5.03e-03 m2/s
+  lake 1/1:   45.32 km2    61.0 km    0 m 122 nds @ 250 km  1 sds Sea       0.0079 m2/s
+  noSed er.: +1.29e+12 N/m    sed.incr.: +1.27e+12 N    outp.seds:  +1.29e+10 N/m  
+  max. altit. sed.=   1803.9 m  	at x = -121.0 km
+  erosion max.    =    781.7 m  	at x = 189.0 km
+  sediment. max.  =    719.9 m  	at x = 100.0 km
+  total eros.     =     68.0 km2	total sed. =     68.7 km2
+  altitude   max. =   3032.6 m   	at x = -250.0 km
+  altitude   min. =   -964.5 m   	at x = 250.0 km   d
+T= 1.76 My
+  water depth max.=    964.5 m  	at x = 250.0 km
+  rain  now: +7.94e-03 m2/s evap.wat.: +2.90e-03 m2/s outp.water: +5.03e-03 m2/s
+  lake 1/1:   44.85 km2    61.0 km    0 m 122 nds @ 250 km  1 sds Sea       0.0079 m2/s
+  noSed er.: +1.30e+12 N/m    sed.incr.: +1.28e+12 N    outp.seds:  +1.33e+10 N/m  
+  max. altit. sed.=   1783.8 m  	at x = -119.0 km
+  erosion max.    =    785.5 m  	at x = 189.5 km
+  sediment. max.  =    724.1 m  	at x = 100.0 km
+  total eros.     =     68.7 km2	total sed. =     69.4 km2
+  altitude   max. =   3031.3 m   	at x = -250.0 km
+  altitude   min. =   -963.3 m   	at x = 250.0 km   d
+T= 1.78 My
+  water depth max.=    963.3 m  	at x = 250.0 km
+  rain  now: +7.94e-03 m2/s evap.wat.: +2.88e-03 m2/s outp.water: +5.06e-03 m2/s
+  lake 1/1:   44.39 km2    60.5 km    0 m 121 nds @ 250 km  1 sds Sea       0.0079 m2/s
+  noSed er.: +1.31e+12 N/m    sed.incr.: +1.29e+12 N    outp.seds:  +1.37e+10 N/m  
+  max. altit. sed.=   1783.1 m  	at x = -119.0 km
+  erosion max.    =    792.1 m  	at x = 189.5 km
+  sediment. max.  =    727.3 m  	at x = 100.0 km
+  total eros.     =     69.3 km2	total sed. =     70.0 km2
+  altitude   max. =   3029.9 m   	at x = -250.0 km
+  altitude   min. =   -962.1 m   	at x = 250.0 km   d
+T= 1.80 My
+  water depth max.=    962.1 m  	at x = 250.0 km
+  rain  now: +7.94e-03 m2/s evap.wat.: +2.85e-03 m2/s outp.water: +5.08e-03 m2/s
+  lake 1/1:   43.92 km2    60.0 km    0 m 120 nds @ 250 km  1 sds Sea       0.0079 m2/s
+  noSed er.: +1.32e+12 N/m    sed.incr.: +1.30e+12 N    outp.seds:  +1.41e+10 N/m  
+  max. altit. sed.=   1782.8 m  	at x = -119.0 km
+  erosion max.    =    802.7 m  	at x = 190.0 km
+  sediment. max.  =    730.7 m  	at x = 100.0 km
+  total eros.     =     69.9 km2	total sed. =     70.6 km2
+  altitude   max. =   3028.6 m   	at x = -250.0 km
+  altitude   min. =   -961.0 m   	at x = 250.0 km   d
+T= 1.82 My
+  water depth max.=    961.0 m  	at x = 250.0 km
+  rain  now: +7.94e-03 m2/s evap.wat.: +2.83e-03 m2/s outp.water: +5.11e-03 m2/s
+  lake 1/1:   43.46 km2    59.5 km    0 m 119 nds @ 250 km  1 sds Sea       0.0079 m2/s
+  noSed er.: +1.33e+12 N/m    sed.incr.: +1.32e+12 N    outp.seds:  +1.46e+10 N/m  
+  max. altit. sed.=   1782.8 m  	at x = -119.0 km
+  erosion max.    =    811.8 m  	at x = 190.5 km
+  sediment. max.  =    733.9 m  	at x = 100.0 km
+  total eros.     =     70.4 km2	total sed. =     71.2 km2
+  altitude   max. =   3027.2 m   	at x = -250.0 km
+  altitude   min. =   -959.7 m   	at x = 250.0 km   d
+T= 1.84 My
+  water depth max.=    959.7 m  	at x = 250.0 km
+  rain  now: +7.94e-03 m2/s evap.wat.: +2.81e-03 m2/s outp.water: +5.13e-03 m2/s
+  lake 1/1:   42.98 km2    59.0 km    0 m 118 nds @ 250 km  1 sds Sea       0.0079 m2/s
+  noSed er.: +1.35e+12 N/m    sed.incr.: +1.33e+12 N    outp.seds:  +1.50e+10 N/m  
+  max. altit. sed.=   1792.9 m  	at x = -120.0 km
+  erosion max.    =    821.2 m  	at x = 191.0 km
+  sediment. max.  =    737.3 m  	at x = 100.0 km
+  total eros.     =     71.0 km2	total sed. =     71.9 km2
+  altitude   max. =   3025.8 m   	at x = -250.0 km
+  altitude   min. =   -958.5 m   	at x = 250.0 km   d
+T= 1.86 My
+  water depth max.=    958.5 m  	at x = 250.0 km
+  rain  now: +7.94e-03 m2/s evap.wat.: +2.81e-03 m2/s outp.water: +5.13e-03 m2/s
+  lake 1/1:   42.52 km2    59.0 km    0 m 118 nds @ 250 km  1 sds Sea       0.0079 m2/s
+  noSed er.: +1.36e+12 N/m    sed.incr.: +1.34e+12 N    outp.seds:  +1.55e+10 N/m  
+  max. altit. sed.=   1847.2 m  	at x = -126.0 km
+  erosion max.    =    827.3 m  	at x = 191.5 km
+  sediment. max.  =    741.1 m  	at x = 100.0 km
+  total eros.     =     71.6 km2	total sed. =     72.4 km2
+  altitude   max. =   3024.5 m   	at x = -250.0 km
+  altitude   min. =   -957.2 m   	at x = 250.0 km   d
+T= 1.88 My
+  water depth max.=    957.2 m  	at x = 250.0 km
+  rain  now: +7.94e-03 m2/s evap.wat.: +2.78e-03 m2/s outp.water: +5.15e-03 m2/s
+  lake 1/1:   42.07 km2    58.5 km    0 m 117 nds @ 250 km  1 sds Sea       0.0079 m2/s
+  noSed er.: +1.37e+12 N/m    sed.incr.: +1.35e+12 N    outp.seds:  +1.60e+10 N/m  
+  max. altit. sed.=   1777.2 m  	at x = -118.5 km
+  erosion max.    =    831.4 m  	at x = 191.5 km
+  sediment. max.  =    743.5 m  	at x = 100.0 km
+  total eros.     =     72.2 km2	total sed. =     73.0 km2
+  altitude   max. =   3023.1 m   	at x = -250.0 km
+  altitude   min. =   -956.0 m   	at x = 250.0 km   d
+T= 1.90 My
+  water depth max.=    956.0 m  	at x = 250.0 km
+  rain  now: +7.94e-03 m2/s evap.wat.: +2.76e-03 m2/s outp.water: +5.18e-03 m2/s
+  lake 1/1:   41.62 km2    58.0 km    0 m 116 nds @ 250 km  1 sds Sea       0.0079 m2/s
+  noSed er.: +1.38e+12 N/m    sed.incr.: +1.36e+12 N    outp.seds:  +1.64e+10 N/m  
+  max. altit. sed.=   1776.7 m  	at x = -118.5 km
+  erosion max.    =    841.6 m  	at x = 192.0 km
+  sediment. max.  =    747.6 m  	at x = 100.0 km
+  total eros.     =     72.7 km2	total sed. =     73.6 km2
+  altitude   max. =   3021.6 m   	at x = -250.0 km
+  altitude   min. =   -954.7 m   	at x = 250.0 km   d
+T= 1.92 My
+  water depth max.=    954.7 m  	at x = 250.0 km
+  rain  now: +7.94e-03 m2/s evap.wat.: +2.73e-03 m2/s outp.water: +5.20e-03 m2/s
+  lake 1/1:   41.17 km2    57.5 km    0 m 115 nds @ 250 km  1 sds Sea       0.0079 m2/s
+  noSed er.: +1.39e+12 N/m    sed.incr.: +1.37e+12 N    outp.seds:  +1.69e+10 N/m  
+  max. altit. sed.=   1836.1 m  	at x = -125.0 km
+  erosion max.    =    851.7 m  	at x = 192.5 km
+  sediment. max.  =    750.7 m  	at x = 100.0 km
+  total eros.     =     73.3 km2	total sed. =     74.2 km2
+  altitude   max. =   3020.2 m   	at x = -250.0 km
+  altitude   min. =   -953.4 m   	at x = 250.0 km   d
+T= 1.94 My
+  water depth max.=    953.4 m  	at x = 250.0 km
+  rain  now: +7.94e-03 m2/s evap.wat.: +2.73e-03 m2/s outp.water: +5.20e-03 m2/s
+  lake 1/1:   40.71 km2    57.5 km    0 m 115 nds @ 250 km  1 sds Sea       0.0079 m2/s
+  noSed er.: +1.40e+12 N/m    sed.incr.: +1.38e+12 N    outp.seds:  +1.74e+10 N/m  
+  max. altit. sed.=   1775.8 m  	at x = -118.5 km
+  erosion max.    =    859.9 m  	at x = 193.0 km
+  sediment. max.  =    752.3 m  	at x = 100.0 km
+  total eros.     =     73.8 km2	total sed. =     74.8 km2
+  altitude   max. =   3018.8 m   	at x = -250.0 km
+  altitude   min. =   -952.0 m   	at x = 250.0 km   d
+T= 1.96 My
+  water depth max.=    952.0 m  	at x = 250.0 km
+  rain  now: +7.94e-03 m2/s evap.wat.: +2.71e-03 m2/s outp.water: +5.22e-03 m2/s
+  lake 1/1:   40.26 km2    57.0 km    0 m 114 nds @ 250 km  1 sds Sea       0.0079 m2/s
+  noSed er.: +1.41e+12 N/m    sed.incr.: +1.39e+12 N    outp.seds:  +1.79e+10 N/m  
+  max. altit. sed.=   1780.4 m  	at x = -119.0 km
+  erosion max.    =    862.2 m  	at x = 193.5 km
+  sediment. max.  =    755.6 m  	at x = 100.0 km
+  total eros.     =     74.4 km2	total sed. =     75.3 km2
+  altitude   max. =   3017.3 m   	at x = -250.0 km
+  altitude   min. =   -950.7 m   	at x = 250.0 km   d
+T= 1.98 My
+  water depth max.=    950.7 m  	at x = 250.0 km
+  rain  now: +7.94e-03 m2/s evap.wat.: +2.69e-03 m2/s outp.water: +5.25e-03 m2/s
+  lake 1/1:   39.82 km2    56.5 km    0 m 113 nds @ 250 km  1 sds Sea       0.0079 m2/s
+  noSed er.: +1.42e+12 N/m    sed.incr.: +1.40e+12 N    outp.seds:  +1.84e+10 N/m  
+  max. altit. sed.=   1774.9 m  	at x = -118.5 km
+  erosion max.    =    871.8 m  	at x = 193.5 km
+  sediment. max.  =    757.7 m  	at x = 100.0 km
+  total eros.     =     74.9 km2	total sed. =     75.9 km2
+  altitude   max. =   3015.9 m   	at x = -250.0 km
+  altitude   min. =   -949.3 m   	at x = 250.0 km   d
+T= 2.00 My
+  water depth max.=    949.3 m  	at x = 250.0 km   u
+  rain  now: +7.94e-03 m2/s evap.wat.: +2.66e-03 m2/s outp.water: +5.27e-03 m2/s
+  lake 1/1:   39.37 km2    56.0 km    0 m 112 nds @ 250 km  1 sds Sea       0.0079 m2/s
+  noSed er.: +1.43e+12 N/m    sed.incr.: +1.41e+12 N    outp.seds:  +1.89e+10 N/m  
+  max. altit. sed.=   1769.7 m  	at x = -118.0 km
+  erosion max.    =    881.5 m  	at x = 194.0 km
+  sediment. max.  =    760.4 m  	at x = 100.0 km
+  total eros.     =     75.4 km2	total sed. =     76.5 km2
+  altitude   max. =   3014.4 m   	at x = -250.0 km
+  altitude   min. =   -947.9 m   	at x = 250.0 km   d
+T= 2.02 My
+  water depth max.=    947.9 m  	at x = 250.0 km
+  rain  now: +7.94e-03 m2/s evap.wat.: +2.66e-03 m2/s outp.water: +5.27e-03 m2/s
+  lake 1/1:   38.94 km2    56.0 km    0 m 112 nds @ 250 km  1 sds Sea       0.0079 m2/s
+  noSed er.: +1.44e+12 N/m    sed.incr.: +1.42e+12 N    outp.seds:  +1.94e+10 N/m  
+  max. altit. sed.=   1792.8 m  	at x = -120.5 km
+  erosion max.    =    888.7 m  	at x = 194.5 km
+  sediment. max.  =    765.6 m  	at x = 100.0 km
+  total eros.     =     76.0 km2	total sed. =     77.0 km2
+  altitude   max. =   3012.9 m   	at x = -250.0 km
+  altitude   min. =   -946.5 m   	at x = 250.0 km   d
+T= 2.04 My
+  water depth max.=    946.5 m  	at x = 250.0 km
+  rain  now: +7.94e-03 m2/s evap.wat.: +2.64e-03 m2/s outp.water: +5.30e-03 m2/s
+  lake 1/1:   38.51 km2    55.5 km    0 m 111 nds @ 250 km  1 sds Sea       0.0079 m2/s
+  noSed er.: +1.45e+12 N/m    sed.incr.: +1.43e+12 N    outp.seds:  +1.99e+10 N/m  
+  max. altit. sed.=   1787.9 m  	at x = -120.0 km
+  erosion max.    =    891.8 m  	at x = 194.5 km
+  sediment. max.  =    766.5 m  	at x = 100.0 km
+  total eros.     =     76.5 km2	total sed. =     77.6 km2
+  altitude   max. =   3011.4 m   	at x = -250.0 km
+  altitude   min. =   -945.1 m   	at x = 250.0 km   d
+T= 2.06 My
+  water depth max.=    945.1 m  	at x = 250.0 km
+  rain  now: +7.94e-03 m2/s evap.wat.: +2.62e-03 m2/s outp.water: +5.32e-03 m2/s
+  lake 1/1:   38.08 km2    55.0 km    0 m 110 nds @ 250 km  1 sds Sea       0.0079 m2/s
+  noSed er.: +1.46e+12 N/m    sed.incr.: +1.44e+12 N    outp.seds:  +2.04e+10 N/m  
+  max. altit. sed.=   1769.0 m  	at x = -118.0 km
+  erosion max.    =    901.9 m  	at x = 195.0 km
+  sediment. max.  =    768.6 m  	at x = 100.0 km
+  total eros.     =     77.0 km2	total sed. =     78.1 km2
+  altitude   max. =   3009.9 m   	at x = -250.0 km
+  altitude   min. =   -943.7 m   	at x = 250.0 km   d
+T= 2.08 My
+  water depth max.=    943.7 m  	at x = 250.0 km
+  rain  now: +7.94e-03 m2/s evap.wat.: +2.59e-03 m2/s outp.water: +5.34e-03 m2/s
+  lake 1/1:   37.64 km2    54.5 km    0 m 109 nds @ 250 km  1 sds Sea       0.0079 m2/s
+  noSed er.: +1.47e+12 N/m    sed.incr.: +1.45e+12 N    outp.seds:  +2.09e+10 N/m  
+  max. altit. sed.=   1778.5 m  	at x = -119.0 km
+  erosion max.    =    911.4 m  	at x = 195.5 km
+  sediment. max.  =    771.1 m  	at x = 100.0 km
+  total eros.     =     77.5 km2	total sed. =     78.6 km2
+  altitude   max. =   3008.4 m   	at x = -250.0 km
+  altitude   min. =   -942.2 m   	at x = 250.0 km   d
+T= 2.10 My
+  water depth max.=    942.2 m  	at x = 250.0 km
+  rain  now: +7.94e-03 m2/s evap.wat.: +2.59e-03 m2/s outp.water: +5.34e-03 m2/s
+  lake 1/1:   37.21 km2    54.5 km    0 m 109 nds @ 250 km  1 sds Sea       0.0079 m2/s
+  noSed er.: +1.48e+12 N/m    sed.incr.: +1.45e+12 N    outp.seds:  +2.15e+10 N/m  
+  max. altit. sed.=   1826.7 m  	at x = -124.5 km
+  erosion max.    =    913.1 m  	at x = 196.0 km
+  sediment. max.  =    774.1 m  	at x = 100.0 km
+  total eros.     =     78.0 km2	total sed. =     79.1 km2
+  altitude   max. =   3006.8 m   	at x = -250.0 km
+  altitude   min. =   -940.7 m   	at x = 250.0 km   d
+T= 2.12 My
+  water depth max.=    940.7 m  	at x = 250.0 km
+  rain  now: +7.94e-03 m2/s evap.wat.: +2.57e-03 m2/s outp.water: +5.37e-03 m2/s
+  lake 1/1:   36.79 km2    54.0 km    0 m 108 nds @ 250 km  1 sds Sea       0.0079 m2/s
+  noSed er.: +1.49e+12 N/m    sed.incr.: +1.46e+12 N    outp.seds:  +2.20e+10 N/m  
+  max. altit. sed.=   1808.5 m  	at x = -122.5 km
+  erosion max.    =    920.9 m  	at x = 196.0 km
+  sediment. max.  =    775.5 m  	at x = 100.0 km
+  total eros.     =     78.5 km2	total sed. =     79.7 km2
+  altitude   max. =   3005.3 m   	at x = -250.0 km
+  altitude   min. =   -939.2 m   	at x = 250.0 km   d
+T= 2.14 My
+  water depth max.=    939.2 m  	at x = 250.0 km
+  rain  now: +7.94e-03 m2/s evap.wat.: +2.54e-03 m2/s outp.water: +5.39e-03 m2/s
+  lake 1/1:   36.37 km2    53.5 km    0 m 107 nds @ 250 km  1 sds Sea       0.0079 m2/s
+  noSed er.: +1.50e+12 N/m    sed.incr.: +1.47e+12 N    outp.seds:  +2.26e+10 N/m  
+  max. altit. sed.=   1763.2 m  	at x = -117.5 km
+  erosion max.    =    931.8 m  	at x = 196.5 km
+  sediment. max.  =    777.2 m  	at x = 100.0 km
+  total eros.     =     79.0 km2	total sed. =     80.2 km2
+  altitude   max. =   3003.7 m   	at x = -250.0 km
+  altitude   min. =   -937.7 m   	at x = 250.0 km   d
+T= 2.16 My
+  water depth max.=    937.7 m  	at x = 250.0 km
+  rain  now: +7.94e-03 m2/s evap.wat.: +2.54e-03 m2/s outp.water: +5.39e-03 m2/s
+  lake 1/1:   35.94 km2    53.5 km    0 m 107 nds @ 250 km  1 sds Sea       0.0079 m2/s
+  noSed er.: +1.51e+12 N/m    sed.incr.: +1.48e+12 N    outp.seds:  +2.31e+10 N/m  
+  max. altit. sed.=   1763.1 m  	at x = -117.5 km
+  erosion max.    =    935.1 m  	at x = 197.0 km
+  sediment. max.  =    780.9 m  	at x = 100.0 km
+  total eros.     =     79.5 km2	total sed. =     80.7 km2
+  altitude   max. =   3002.2 m   	at x = -250.0 km
+  altitude   min. =   -936.1 m   	at x = 250.0 km   d
+T= 2.18 My
+  water depth max.=    936.1 m  	at x = 250.0 km
+  rain  now: +7.94e-03 m2/s evap.wat.: +2.52e-03 m2/s outp.water: +5.41e-03 m2/s
+  lake 1/1:   35.53 km2    53.0 km    0 m 106 nds @ 250 km  1 sds Sea       0.0079 m2/s
+  noSed er.: +1.52e+12 N/m    sed.incr.: +1.49e+12 N    outp.seds:  +2.37e+10 N/m  
+  max. altit. sed.=   1762.5 m  	at x = -117.5 km
+  erosion max.    =    941.7 m  	at x = 197.0 km
+  sediment. max.  =    782.1 m  	at x = 100.0 km
+  total eros.     =     79.9 km2	total sed. =     81.2 km2
+  altitude   max. =   3000.6 m   	at x = -250.0 km
+  altitude   min. =   -934.6 m   	at x = 250.0 km   d
+T= 2.20 My
+  water depth max.=    934.6 m  	at x = 250.0 km
+  rain  now: +7.94e-03 m2/s evap.wat.: +2.50e-03 m2/s outp.water: +5.44e-03 m2/s
+  lake 1/1:   35.11 km2    52.5 km    0 m 105 nds @ 250 km  1 sds Sea       0.0079 m2/s
+  noSed er.: +1.53e+12 N/m    sed.incr.: +1.50e+12 N    outp.seds:  +2.43e+10 N/m  
+  max. altit. sed.=   1761.9 m  	at x = -117.5 km
+  erosion max.    =    951.3 m  	at x = 197.5 km
+  sediment. max.  =    783.1 m  	at x = 100.0 km
+  total eros.     =     80.4 km2	total sed. =     81.7 km2
+  altitude   max. =   2999.0 m   	at x = -250.0 km
+  altitude   min. =   -933.0 m   	at x = 250.0 km   d
+T= 2.22 My
+  water depth max.=    933.0 m  	at x = 250.0 km
+  rain  now: +7.94e-03 m2/s evap.wat.: +2.50e-03 m2/s outp.water: +5.44e-03 m2/s
+  lake 1/1:   34.70 km2    52.5 km    0 m 105 nds @ 250 km  1 sds Sea       0.0079 m2/s
+  noSed er.: +1.54e+12 N/m    sed.incr.: +1.51e+12 N    outp.seds:  +2.48e+10 N/m  
+  max. altit. sed.=   1784.1 m  	at x = -120.0 km
+  erosion max.    =    954.5 m  	at x = 198.0 km
+  sediment. max.  =    786.7 m  	at x = 100.0 km
+  total eros.     =     80.9 km2	total sed. =     82.2 km2
+  altitude   max. =   2997.4 m   	at x = -250.0 km
+  altitude   min. =   -931.4 m   	at x = 250.0 km   d
+T= 2.24 My
+  water depth max.=    931.4 m  	at x = 250.0 km
+  rain  now: +7.94e-03 m2/s evap.wat.: +2.47e-03 m2/s outp.water: +5.46e-03 m2/s
+  lake 1/1:   34.28 km2    52.0 km    0 m 104 nds @ 250 km  1 sds Sea       0.0079 m2/s
+  noSed er.: +1.55e+12 N/m    sed.incr.: +1.52e+12 N    outp.seds:  +2.54e+10 N/m  
+  max. altit. sed.=   1760.8 m  	at x = -117.5 km
+  erosion max.    =    962.1 m  	at x = 198.0 km
+  sediment. max.  =    787.6 m  	at x = 100.0 km
+  total eros.     =     81.4 km2	total sed. =     82.8 km2
+  altitude   max. =   2995.8 m   	at x = -250.0 km
+  altitude   min. =   -929.8 m   	at x = 250.0 km   d
+T= 2.26 My
+  water depth max.=    929.8 m  	at x = 250.0 km
+  rain  now: +7.94e-03 m2/s evap.wat.: +2.45e-03 m2/s outp.water: +5.49e-03 m2/s
+  lake 1/1:   33.86 km2    51.5 km    0 m 103 nds @ 250 km  1 sds Sea       0.0079 m2/s
+  noSed er.: +1.56e+12 N/m    sed.incr.: +1.53e+12 N    outp.seds:  +2.60e+10 N/m  
+  max. altit. sed.=   1783.2 m  	at x = -120.0 km
+  erosion max.    =    971.6 m  	at x = 198.5 km
+  sediment. max.  =    791.0 m  	at x = 100.0 km
+  total eros.     =     81.8 km2	total sed. =     83.2 km2
+  altitude   max. =   2994.1 m   	at x = -250.0 km
+  altitude   min. =   -928.1 m   	at x = 250.0 km   d
+T= 2.28 My
+  water depth max.=    928.1 m  	at x = 250.0 km
+  rain  now: +7.94e-03 m2/s evap.wat.: +2.45e-03 m2/s outp.water: +5.49e-03 m2/s
+  lake 1/1:   33.45 km2    51.5 km    0 m 103 nds @ 250 km  1 sds Sea       0.0079 m2/s
+  noSed er.: +1.57e+12 N/m    sed.incr.: +1.53e+12 N    outp.seds:  +2.67e+10 N/m  
+  max. altit. sed.=   1765.8 m  	at x = -118.0 km
+  erosion max.    =    973.8 m  	at x = 199.0 km
+  sediment. max.  =    792.9 m  	at x = 100.0 km
+  total eros.     =     82.3 km2	total sed. =     83.7 km2
+  altitude   max. =   2992.5 m   	at x = -250.0 km
+  altitude   min. =   -926.4 m   	at x = 250.0 km   d
+T= 2.30 My
+  water depth max.=    926.4 m  	at x = 250.0 km
+  rain  now: +7.94e-03 m2/s evap.wat.: +2.43e-03 m2/s outp.water: +5.51e-03 m2/s
+  lake 1/1:   33.05 km2    51.0 km    0 m 102 nds @ 250 km  1 sds Sea       0.0079 m2/s
+  noSed er.: +1.58e+12 N/m    sed.incr.: +1.54e+12 N    outp.seds:  +2.73e+10 N/m  
+  max. altit. sed.=   1825.3 m  	at x = -125.0 km
+  erosion max.    =    981.5 m  	at x = 199.0 km
+  sediment. max.  =    794.3 m  	at x = 100.0 km
+  total eros.     =     82.7 km2	total sed. =     84.2 km2
+  altitude   max. =   2990.9 m   	at x = -250.0 km
+  altitude   min. =   -924.8 m   	at x = 250.0 km   d
+T= 2.32 My
+  water depth max.=    924.8 m  	at x = 250.0 km
+  rain  now: +7.94e-03 m2/s evap.wat.: +2.40e-03 m2/s outp.water: +5.53e-03 m2/s
+  lake 1/1:   32.64 km2    50.5 km    0 m 101 nds @ 250 km  1 sds Sea       0.0079 m2/s
+  noSed er.: +1.59e+12 N/m    sed.incr.: +1.55e+12 N    outp.seds:  +2.79e+10 N/m  
+  max. altit. sed.=   1755.1 m  	at x = -117.0 km
+  erosion max.    =    992.2 m  	at x = 199.5 km
+  sediment. max.  =    797.2 m  	at x = 100.0 km
+  total eros.     =     83.2 km2	total sed. =     84.7 km2
+  altitude   max. =   2989.2 m   	at x = -250.0 km
+  altitude   min. =   -923.1 m   	at x = 250.0 km   d
+T= 2.34 My
+  water depth max.=    923.1 m  	at x = 250.0 km
+  rain  now: +7.94e-03 m2/s evap.wat.: +2.40e-03 m2/s outp.water: +5.53e-03 m2/s
+  lake 1/1:   32.25 km2    50.5 km    0 m 101 nds @ 250 km  1 sds Sea       0.0079 m2/s
+  noSed er.: +1.59e+12 N/m    sed.incr.: +1.56e+12 N    outp.seds:  +2.85e+10 N/m  
+  max. altit. sed.=   1764.1 m  	at x = -118.0 km
+  erosion max.    =    994.4 m  	at x = 200.0 km
+  sediment. max.  =    798.6 m  	at x = 100.0 km
+  total eros.     =     83.7 km2	total sed. =     85.2 km2
+  altitude   max. =   2987.6 m   	at x = -250.0 km
+  altitude   min. =   -921.3 m   	at x = 250.0 km   d
+T= 2.36 My
+  water depth max.=    921.3 m  	at x = 250.0 km
+  rain  now: +7.94e-03 m2/s evap.wat.: +2.38e-03 m2/s outp.water: +5.56e-03 m2/s
+  lake 1/1:   31.86 km2    50.0 km    0 m 100 nds @ 250 km  1 sds Sea       0.0079 m2/s
+  noSed er.: +1.60e+12 N/m    sed.incr.: +1.57e+12 N    outp.seds:  +2.91e+10 N/m  
+  max. altit. sed.=   1755.1 m  	at x = -117.0 km
+  erosion max.    =   1001.3 m  	at x = 200.0 km
+  sediment. max.  =    799.8 m  	at x = 100.0 km
+  total eros.     =     84.1 km2	total sed. =     85.7 km2
+  altitude   max. =   2985.9 m   	at x = -250.0 km
+  altitude   min. =   -919.6 m   	at x = 250.0 km   d
+T= 2.38 My
+  water depth max.=    919.6 m  	at x = 250.0 km
+  rain  now: +7.94e-03 m2/s evap.wat.: +2.35e-03 m2/s outp.water: +5.58e-03 m2/s
+  lake 1/1:   31.46 km2    49.5 km    0 m  99 nds @ 250 km  1 sds Sea       0.0079 m2/s
+  noSed er.: +1.61e+12 N/m    sed.incr.: +1.58e+12 N    outp.seds:  +2.98e+10 N/m  
+  max. altit. sed.=   1753.6 m  	at x = -117.0 km
+  erosion max.    =   1003.9 m  	at x = 200.0 km
+  sediment. max.  =    802.8 m  	at x = 100.0 km
+  total eros.     =     84.5 km2	total sed. =     86.2 km2
+  altitude   max. =   2984.2 m   	at x = -250.0 km
+  altitude   min. =   -917.9 m   	at x = 250.0 km   d
+T= 2.40 My
+  water depth max.=    917.9 m  	at x = 250.0 km
+  rain  now: +7.94e-03 m2/s evap.wat.: +2.33e-03 m2/s outp.water: +5.60e-03 m2/s
+  lake 1/1:   31.07 km2    49.0 km    0 m  98 nds @ 250 km  1 sds Sea       0.0079 m2/s
+  noSed er.: +1.62e+12 N/m    sed.incr.: +1.59e+12 N    outp.seds:  +3.04e+10 N/m  
+  max. altit. sed.=   1805.5 m  	at x = -123.0 km
+  erosion max.    =   1005.6 m  	at x = 200.0 km
+  sediment. max.  =    802.4 m  	at x = 100.0 km
+  total eros.     =     85.0 km2	total sed. =     86.6 km2
+  altitude   max. =   2982.5 m   	at x = -250.0 km
+  altitude   min. =   -916.1 m   	at x = 250.0 km   d
+T= 2.42 My
+  water depth max.=    916.1 m  	at x = 250.0 km
+  rain  now: +7.94e-03 m2/s evap.wat.: +2.31e-03 m2/s outp.water: +5.63e-03 m2/s
+  lake 1/1:   30.67 km2    48.5 km    0 m  97 nds @ 250 km  1 sds Sea       0.0079 m2/s
+  noSed er.: +1.63e+12 N/m    sed.incr.: +1.59e+12 N    outp.seds:  +3.11e+10 N/m  
+  max. altit. sed.=   1758.3 m  	at x = -117.5 km
+  erosion max.    =   1005.4 m  	at x = 200.0 km
+  sediment. max.  =    805.0 m  	at x = 100.0 km
+  total eros.     =     85.4 km2	total sed. =     87.1 km2
+  altitude   max. =   2980.8 m   	at x = -250.0 km
+  altitude   min. =   -914.2 m   	at x = 250.0 km   d
+T= 2.44 My
+  water depth max.=    914.2 m  	at x = 250.0 km
+  rain  now: +7.94e-03 m2/s evap.wat.: +2.31e-03 m2/s outp.water: +5.63e-03 m2/s
+  lake 1/1:   30.29 km2    48.5 km    0 m  97 nds @ 250 km  1 sds Sea       0.0079 m2/s
+  noSed er.: +1.64e+12 N/m    sed.incr.: +1.60e+12 N    outp.seds:  +3.18e+10 N/m  
+  max. altit. sed.=   1748.0 m  	at x = -116.5 km
+  erosion max.    =   1007.6 m  	at x = 200.0 km
+  sediment. max.  =    806.9 m  	at x = 100.0 km
+  total eros.     =     85.8 km2	total sed. =     87.6 km2
+  altitude   max. =   2979.1 m   	at x = -250.0 km
+  altitude   min. =   -912.4 m   	at x = 250.0 km   d
+T= 2.46 My
+  water depth max.=    912.4 m  	at x = 250.0 km
+  rain  now: +7.94e-03 m2/s evap.wat.: +2.28e-03 m2/s outp.water: +5.65e-03 m2/s
+  lake 1/1:   29.90 km2    48.0 km    0 m  96 nds @ 250 km  1 sds Sea       0.0079 m2/s
+  noSed er.: +1.65e+12 N/m    sed.incr.: +1.61e+12 N    outp.seds:  +3.24e+10 N/m  
+  max. altit. sed.=   1753.3 m  	at x = -117.0 km
+  erosion max.    =   1008.1 m  	at x = 200.0 km
+  sediment. max.  =    807.9 m  	at x = 100.0 km
+  total eros.     =     86.3 km2	total sed. =     88.0 km2
+  altitude   max. =   2977.4 m   	at x = -250.0 km
+  altitude   min. =   -910.5 m   	at x = 250.0 km   d
+T= 2.48 My
+  water depth max.=    910.5 m  	at x = 250.0 km
+  rain  now: +7.94e-03 m2/s evap.wat.: +2.26e-03 m2/s outp.water: +5.68e-03 m2/s
+  lake 1/1:   29.52 km2    47.5 km    0 m  95 nds @ 250 km  1 sds Sea       0.0079 m2/s
+  noSed er.: +1.66e+12 N/m    sed.incr.: +1.62e+12 N    outp.seds:  +3.31e+10 N/m  
+  max. altit. sed.=   1836.7 m  	at x = -127.0 km
+  erosion max.    =   1010.4 m  	at x = 200.0 km
+  sediment. max.  =    809.9 m  	at x = 100.0 km
+  total eros.     =     86.7 km2	total sed. =     88.5 km2
+  altitude   max. =   2975.7 m   	at x = -250.0 km
+  altitude   min. =   -908.6 m   	at x = 250.0 km   d
+T= 2.50 My
+  water depth max.=    908.6 m  	at x = 250.0 km
+  rain  now: +7.94e-03 m2/s evap.wat.: +2.24e-03 m2/s outp.water: +5.70e-03 m2/s
+  lake 1/1:   29.15 km2    47.0 km    0 m  94 nds @ 250 km  1 sds Sea       0.0079 m2/s
+  noSed er.: +1.67e+12 N/m    sed.incr.: +1.63e+12 N    outp.seds:  +3.38e+10 N/m  
+  max. altit. sed.=   1747.0 m  	at x = -116.5 km
+  erosion max.    =   1010.6 m  	at x = 200.0 km
+  sediment. max.  =    810.5 m  	at x = 100.0 km
+  total eros.     =     87.1 km2	total sed. =     88.9 km2
+  altitude   max. =   2974.0 m   	at x = -250.0 km
+  altitude   min. =   -906.6 m   	at x = 250.0 km   d
+T= 2.52 My
+  water depth max.=    906.6 m  	at x = 250.0 km
+  rain  now: +7.94e-03 m2/s evap.wat.: +2.21e-03 m2/s outp.water: +5.72e-03 m2/s
+  lake 1/1:   28.77 km2    46.5 km    0 m  93 nds @ 250 km  1 sds Sea       0.0079 m2/s
+  noSed er.: +1.67e+12 N/m    sed.incr.: +1.63e+12 N    outp.seds:  +3.45e+10 N/m  
+  max. altit. sed.=   1746.6 m  	at x = -116.5 km
+  erosion max.    =   1013.0 m  	at x = 200.0 km
+  sediment. max.  =    811.3 m  	at x = 100.0 km
+  total eros.     =     87.5 km2	total sed. =     89.4 km2
+  altitude   max. =   2972.2 m   	at x = -250.0 km
+  altitude   min. =   -904.7 m   	at x = 250.0 km   d
+T= 2.54 My
+  water depth max.=    904.7 m  	at x = 250.0 km
+  rain  now: +7.94e-03 m2/s evap.wat.: +2.19e-03 m2/s outp.water: +5.75e-03 m2/s
+  lake 1/1:   28.39 km2    46.0 km    0 m  92 nds @ 250 km  1 sds Sea       0.0079 m2/s
+  noSed er.: +1.68e+12 N/m    sed.incr.: +1.64e+12 N    outp.seds:  +3.53e+10 N/m  
+  max. altit. sed.=   1746.1 m  	at x = -116.5 km
+  erosion max.    =   1013.1 m  	at x = 200.0 km
+  sediment. max.  =    813.7 m  	at x = 100.0 km
+  total eros.     =     87.9 km2	total sed. =     89.8 km2
+  altitude   max. =   2970.5 m   	at x = -250.0 km
+  altitude   min. =   -902.6 m   	at x = 250.0 km   d
+T= 2.56 My
+  water depth max.=    902.6 m  	at x = 250.0 km
+  rain  now: +7.94e-03 m2/s evap.wat.: +2.19e-03 m2/s outp.water: +5.75e-03 m2/s
+  lake 1/1:   28.03 km2    46.0 km    0 m  92 nds @ 250 km  1 sds Sea       0.0079 m2/s
+  noSed er.: +1.69e+12 N/m    sed.incr.: +1.65e+12 N    outp.seds:  +3.60e+10 N/m  
+  max. altit. sed.=   1804.8 m  	at x = -123.5 km
+  erosion max.    =   1014.9 m  	at x = 200.0 km
+  sediment. max.  =    815.2 m  	at x = 100.0 km
+  total eros.     =     88.3 km2	total sed. =     90.3 km2
+  altitude   max. =   2968.8 m   	at x = -250.0 km
+  altitude   min. =   -900.6 m   	at x = 250.0 km   d
+T= 2.58 My
+  water depth max.=    900.6 m  	at x = 250.0 km
+  rain  now: +7.94e-03 m2/s evap.wat.: +2.16e-03 m2/s outp.water: +5.77e-03 m2/s
+  lake 1/1:   27.67 km2    45.5 km    0 m  91 nds @ 250 km  1 sds Sea       0.0079 m2/s
+  noSed er.: +1.70e+12 N/m    sed.incr.: +1.66e+12 N    outp.seds:  +3.68e+10 N/m  
+  max. altit. sed.=   1741.2 m  	at x = -116.0 km
+  erosion max.    =   1016.5 m  	at x = 200.0 km
+  sediment. max.  =    816.0 m  	at x = 100.0 km
+  total eros.     =     88.7 km2	total sed. =     90.7 km2
+  altitude   max. =   2967.0 m   	at x = -250.0 km
+  altitude   min. =   -898.6 m   	at x = 250.0 km   d
+T= 2.60 My
+  water depth max.=    898.6 m  	at x = 250.0 km
+  rain  now: +7.94e-03 m2/s evap.wat.: +2.14e-03 m2/s outp.water: +5.79e-03 m2/s
+  lake 1/1:   27.31 km2    45.0 km    0 m  90 nds @ 250 km  1 sds Sea       0.0079 m2/s
+  noSed er.: +1.71e+12 N/m    sed.incr.: +1.66e+12 N    outp.seds:  +3.75e+10 N/m  
+  max. altit. sed.=   1740.6 m  	at x = -116.0 km
+  erosion max.    =   1018.2 m  	at x = 200.0 km
+  sediment. max.  =    817.8 m  	at x = 100.0 km
+  total eros.     =     89.1 km2	total sed. =     91.2 km2
+  altitude   max. =   2965.2 m   	at x = -250.0 km
+  altitude   min. =   -896.5 m   	at x = 250.0 km   d
+T= 2.62 My
+  water depth max.=    896.5 m  	at x = 250.0 km
+  rain  now: +7.94e-03 m2/s evap.wat.: +2.12e-03 m2/s outp.water: +5.82e-03 m2/s
+  lake 1/1:   26.95 km2    44.5 km    0 m  89 nds @ 250 km  1 sds Sea       0.0079 m2/s
+  noSed er.: +1.72e+12 N/m    sed.incr.: +1.67e+12 N    outp.seds:  +3.83e+10 N/m  
+  max. altit. sed.=   1782.2 m  	at x = -121.0 km
+  erosion max.    =   1019.1 m  	at x = 200.0 km
+  sediment. max.  =    819.6 m  	at x = 100.0 km
+  total eros.     =     89.5 km2	total sed. =     91.6 km2
+  altitude   max. =   2963.5 m   	at x = -250.0 km
+  altitude   min. =   -894.4 m   	at x = 250.0 km   d
+T= 2.64 My
+  water depth max.=    894.4 m  	at x = 250.0 km
+  rain  now: +7.94e-03 m2/s evap.wat.: +2.09e-03 m2/s outp.water: +5.84e-03 m2/s
+  lake 1/1:   26.59 km2    44.0 km    0 m  88 nds @ 250 km  1 sds Sea       0.0079 m2/s
+  noSed er.: +1.73e+12 N/m    sed.incr.: +1.68e+12 N    outp.seds:  +3.91e+10 N/m  
+  max. altit. sed.=   1739.7 m  	at x = -116.0 km
+  erosion max.    =   1019.7 m  	at x = 200.0 km
+  sediment. max.  =    821.6 m  	at x = 100.0 km
+  total eros.     =     89.9 km2	total sed. =     92.0 km2
+  altitude   max. =   2961.7 m   	at x = -250.0 km
+  altitude   min. =   -892.2 m   	at x = 250.0 km   d
+T= 2.66 My
+  water depth max.=    892.2 m  	at x = 250.0 km
+  rain  now: +7.94e-03 m2/s evap.wat.: +2.09e-03 m2/s outp.water: +5.84e-03 m2/s
+  lake 1/1:   26.23 km2    44.0 km    0 m  88 nds @ 250 km  1 sds Sea       0.0079 m2/s
+  noSed er.: +1.73e+12 N/m    sed.incr.: +1.69e+12 N    outp.seds:  +3.99e+10 N/m  
+  max. altit. sed.=   1739.3 m  	at x = -116.0 km
+  erosion max.    =   1020.1 m  	at x = 200.0 km
+  sediment. max.  =    822.5 m  	at x = 100.0 km
+  total eros.     =     90.3 km2	total sed. =     92.5 km2
+  altitude   max. =   2959.9 m   	at x = -250.0 km
+  altitude   min. =   -890.0 m   	at x = 250.0 km   d
+T= 2.68 My
+  water depth max.=    890.0 m  	at x = 250.0 km
+  rain  now: +7.94e-03 m2/s evap.wat.: +2.07e-03 m2/s outp.water: +5.87e-03 m2/s
+  lake 1/1:   25.88 km2    43.5 km    0 m  87 nds @ 250 km  1 sds Sea       0.0079 m2/s
+  noSed er.: +1.74e+12 N/m    sed.incr.: +1.69e+12 N    outp.seds:  +4.07e+10 N/m  
+  max. altit. sed.=   1738.5 m  	at x = -116.0 km
+  erosion max.    =   1021.9 m  	at x = 200.0 km
+  sediment. max.  =    822.8 m  	at x = 100.0 km
+  total eros.     =     90.7 km2	total sed. =     92.9 km2
+  altitude   max. =   2958.1 m   	at x = -250.0 km
+  altitude   min. =   -887.7 m   	at x = 250.0 km   d
+T= 2.70 My
+  water depth max.=    887.7 m  	at x = 250.0 km
+  rain  now: +7.94e-03 m2/s evap.wat.: +2.05e-03 m2/s outp.water: +5.89e-03 m2/s
+  lake 1/1:   25.52 km2    43.0 km    0 m  86 nds @ 250 km  1 sds Sea       0.0079 m2/s
+  noSed er.: +1.75e+12 N/m    sed.incr.: +1.70e+12 N    outp.seds:  +4.15e+10 N/m  
+  max. altit. sed.=   1780.1 m  	at x = -121.0 km
+  erosion max.    =   1023.6 m  	at x = 200.0 km
+  sediment. max.  =    823.8 m  	at x = 100.0 km
+  total eros.     =     91.1 km2	total sed. =     93.3 km2
+  altitude   max. =   2956.3 m   	at x = -250.0 km
+  altitude   min. =   -885.4 m   	at x = 250.0 km   d
+T= 2.72 My
+  water depth max.=    885.4 m  	at x = 250.0 km
+  rain  now: +7.94e-03 m2/s evap.wat.: +2.02e-03 m2/s outp.water: +5.91e-03 m2/s
+  lake 1/1:   25.18 km2    42.5 km    0 m  85 nds @ 250 km  1 sds Sea       0.0079 m2/s
+  noSed er.: +1.76e+12 N/m    sed.incr.: +1.71e+12 N    outp.seds:  +4.23e+10 N/m  
+  max. altit. sed.=   1743.3 m  	at x = -116.5 km
+  erosion max.    =   1024.9 m  	at x = 200.0 km
+  sediment. max.  =    824.7 m  	at x = 100.0 km
+  total eros.     =     91.5 km2	total sed. =     93.7 km2
+  altitude   max. =   2954.5 m   	at x = -250.0 km
+  altitude   min. =   -883.1 m   	at x = 250.0 km   d
+T= 2.74 My
+  water depth max.=    883.1 m  	at x = 250.0 km
+  rain  now: +7.94e-03 m2/s evap.wat.: +2.00e-03 m2/s outp.water: +5.94e-03 m2/s
+  lake 1/1:   24.82 km2    42.0 km    0 m  84 nds @ 250 km  1 sds Sea       0.0079 m2/s
+  noSed er.: +1.77e+12 N/m    sed.incr.: +1.72e+12 N    outp.seds:  +4.32e+10 N/m  
+  max. altit. sed.=   1733.4 m  	at x = -115.5 km
+  erosion max.    =   1025.4 m  	at x = 200.0 km
+  sediment. max.  =    827.1 m  	at x = 100.0 km
+  total eros.     =     91.8 km2	total sed. =     94.2 km2
+  altitude   max. =   2952.7 m   	at x = -250.0 km
+  altitude   min. =   -880.8 m   	at x = 250.0 km   d
+T= 2.76 My
+  water depth max.=    880.8 m  	at x = 250.0 km
+  rain  now: +7.94e-03 m2/s evap.wat.: +2.00e-03 m2/s outp.water: +5.94e-03 m2/s
+  lake 1/1:   24.48 km2    42.0 km    0 m  84 nds @ 250 km  1 sds Sea       0.0079 m2/s
+  noSed er.: +1.78e+12 N/m    sed.incr.: +1.72e+12 N    outp.seds:  +4.41e+10 N/m  
+  max. altit. sed.=   1733.1 m  	at x = -115.5 km
+  erosion max.    =   1026.0 m  	at x = 200.0 km
+  sediment. max.  =    825.9 m  	at x = 100.0 km
+  total eros.     =     92.2 km2	total sed. =     94.6 km2
+  altitude   max. =   2950.9 m   	at x = -250.0 km
+  altitude   min. =   -878.4 m   	at x = 250.0 km   d
+T= 2.78 My
+  water depth max.=    878.4 m  	at x = 250.0 km
+  rain  now: +7.94e-03 m2/s evap.wat.: +1.97e-03 m2/s outp.water: +5.96e-03 m2/s
+  lake 1/1:   24.13 km2    41.5 km    0 m  83 nds @ 250 km  1 sds Sea       0.0079 m2/s
+  noSed er.: +1.78e+12 N/m    sed.incr.: +1.73e+12 N    outp.seds:  +4.50e+10 N/m  
+  max. altit. sed.=   1881.4 m  	at x = -133.5 km
+  erosion max.    =   1027.0 m  	at x = 200.0 km
+  sediment. max.  =    829.2 m  	at x = 100.0 km
+  total eros.     =     92.6 km2	total sed. =     95.0 km2
+  altitude   max. =   2949.0 m   	at x = -250.0 km
+  altitude   min. =   -875.9 m   	at x = 250.0 km   d
+T= 2.80 My
+  water depth max.=    875.9 m  	at x = 250.0 km
+  rain  now: +7.94e-03 m2/s evap.wat.: +1.95e-03 m2/s outp.water: +5.99e-03 m2/s
+  lake 1/1:   23.79 km2    41.0 km    0 m  82 nds @ 250 km  1 sds Sea       0.0079 m2/s
+  noSed er.: +1.79e+12 N/m    sed.incr.: +1.74e+12 N    outp.seds:  +4.58e+10 N/m  
+  max. altit. sed.=   1773.5 m  	at x = -120.5 km
+  erosion max.    =   1028.4 m  	at x = 200.0 km
+  sediment. max.  =    829.3 m  	at x = 100.0 km
+  total eros.     =     92.9 km2	total sed. =     95.4 km2
+  altitude   max. =   2947.2 m   	at x = -250.0 km
+  altitude   min. =   -873.5 m   	at x = 250.0 km   d
+T= 2.82 My
+  water depth max.=    873.5 m  	at x = 250.0 km
+  rain  now: +7.94e-03 m2/s evap.wat.: +1.93e-03 m2/s outp.water: +6.01e-03 m2/s
+  lake 1/1:   23.46 km2    40.5 km    0 m  81 nds @ 250 km  1 sds Sea       0.0079 m2/s
+  noSed er.: +1.80e+12 N/m    sed.incr.: +1.74e+12 N    outp.seds:  +4.67e+10 N/m  
+  max. altit. sed.=   1781.1 m  	at x = -121.5 km
+  erosion max.    =   1029.2 m  	at x = 200.0 km
+  sediment. max.  =    831.0 m  	at x = 100.0 km
+  total eros.     =     93.3 km2	total sed. =     95.8 km2
+  altitude   max. =   2945.4 m   	at x = -250.0 km
+  altitude   min. =   -871.0 m   	at x = 250.0 km   d
+T= 2.84 My
+  water depth max.=    871.0 m  	at x = 250.0 km
+  rain  now: +7.94e-03 m2/s evap.wat.: +1.93e-03 m2/s outp.water: +6.01e-03 m2/s
+  lake 1/1:   23.11 km2    40.5 km    0 m  81 nds @ 250 km  1 sds Sea       0.0079 m2/s
+  noSed er.: +1.81e+12 N/m    sed.incr.: +1.75e+12 N    outp.seds:  +4.77e+10 N/m  
+  max. altit. sed.=   1772.2 m  	at x = -120.5 km
+  erosion max.    =   1030.4 m  	at x = 200.0 km
+  sediment. max.  =    831.9 m  	at x = 100.0 km
+  total eros.     =     93.7 km2	total sed. =     96.2 km2
+  altitude   max. =   2943.5 m   	at x = -250.0 km
+  altitude   min. =   -868.4 m   	at x = 250.0 km   d
+T= 2.86 My
+  water depth max.=    868.4 m  	at x = 250.0 km
+  rain  now: +7.94e-03 m2/s evap.wat.: +1.90e-03 m2/s outp.water: +6.03e-03 m2/s
+  lake 1/1:   22.78 km2    40.0 km    0 m  80 nds @ 250 km  1 sds Sea       0.0079 m2/s
+  noSed er.: +1.81e+12 N/m    sed.incr.: +1.76e+12 N    outp.seds:  +4.86e+10 N/m  
+  max. altit. sed.=   1779.7 m  	at x = -121.5 km
+  erosion max.    =   1032.1 m  	at x = 200.0 km
+  sediment. max.  =    832.1 m  	at x = 100.0 km
+  total eros.     =     94.0 km2	total sed. =     96.6 km2
+  altitude   max. =   2941.6 m   	at x = -250.0 km
+  altitude   min. =   -865.8 m   	at x = 250.0 km   d
+T= 2.88 My
+  water depth max.=    865.8 m  	at x = 250.0 km
+  rain  now: +7.94e-03 m2/s evap.wat.: +1.88e-03 m2/s outp.water: +6.06e-03 m2/s
+  lake 1/1:   22.45 km2    39.5 km    0 m  79 nds @ 250 km  1 sds Sea       0.0079 m2/s
+  noSed er.: +1.82e+12 N/m    sed.incr.: +1.76e+12 N    outp.seds:  +4.96e+10 N/m  
+  max. altit. sed.=   1726.4 m  	at x = -115.0 km
+  erosion max.    =   1032.3 m  	at x = 200.0 km
+  sediment. max.  =    833.5 m  	at x = 100.0 km
+  total eros.     =     94.4 km2	total sed. =     97.1 km2
+  altitude   max. =   2939.8 m   	at x = -250.0 km
+  altitude   min. =   -863.2 m   	at x = 250.0 km   d
+T= 2.90 My
+  water depth max.=    863.2 m  	at x = 250.0 km
+  rain  now: +7.94e-03 m2/s evap.wat.: +1.86e-03 m2/s outp.water: +6.08e-03 m2/s
+  lake 1/1:   22.12 km2    39.0 km    0 m  78 nds @ 250 km  1 sds Sea       0.0079 m2/s
+  noSed er.: +1.83e+12 N/m    sed.incr.: +1.77e+12 N    outp.seds:  +5.05e+10 N/m  
+  max. altit. sed.=   1725.9 m  	at x = -115.0 km
+  erosion max.    =   1033.5 m  	at x = 200.0 km
+  sediment. max.  =    834.5 m  	at x = 100.0 km
+  total eros.     =     94.7 km2	total sed. =     97.5 km2
+  altitude   max. =   2937.9 m   	at x = -250.0 km
+  altitude   min. =   -860.5 m   	at x = 250.0 km   d
+T= 2.92 My
+  water depth max.=    860.5 m  	at x = 250.0 km
+  rain  now: +7.94e-03 m2/s evap.wat.: +1.86e-03 m2/s outp.water: +6.08e-03 m2/s
+  lake 1/1:   21.79 km2    39.0 km    0 m  78 nds @ 250 km  1 sds Sea       0.0079 m2/s
+  noSed er.: +1.84e+12 N/m    sed.incr.: +1.77e+12 N    outp.seds:  +5.15e+10 N/m  
+  max. altit. sed.=   1725.4 m  	at x = -115.0 km
+  erosion max.    =   1034.1 m  	at x = 200.0 km
+  sediment. max.  =    834.8 m  	at x = 100.0 km
+  total eros.     =     95.1 km2	total sed. =     97.9 km2
+  altitude   max. =   2936.1 m   	at x = -250.0 km
+  altitude   min. =   -857.7 m   	at x = 250.0 km   d
+T= 2.94 My
+  water depth max.=    857.7 m  	at x = 250.0 km
+  rain  now: +7.94e-03 m2/s evap.wat.: +1.83e-03 m2/s outp.water: +6.10e-03 m2/s
+  lake 1/1:   21.45 km2    38.5 km    0 m  77 nds @ 250 km  1 sds Sea       0.0079 m2/s
+  noSed er.: +1.85e+12 N/m    sed.incr.: +1.78e+12 N    outp.seds:  +5.26e+10 N/m  
+  max. altit. sed.=   1725.0 m  	at x = -115.0 km
+  erosion max.    =   1034.3 m  	at x = 200.0 km
+  sediment. max.  =    836.0 m  	at x = 100.0 km
+  total eros.     =     95.4 km2	total sed. =     98.3 km2
+  altitude   max. =   2934.2 m   	at x = -250.0 km
+  altitude   min. =   -854.9 m   	at x = 250.0 km   d
+T= 2.96 My
+  water depth max.=    854.9 m  	at x = 250.0 km
+  rain  now: +7.94e-03 m2/s evap.wat.: +1.81e-03 m2/s outp.water: +6.13e-03 m2/s
+  lake 1/1:   21.13 km2    38.0 km    0 m  76 nds @ 250 km  1 sds Sea       0.0079 m2/s
+  noSed er.: +1.85e+12 N/m    sed.incr.: +1.79e+12 N    outp.seds:  +5.36e+10 N/m  
+  max. altit. sed.=   1724.5 m  	at x = -115.0 km
+  erosion max.    =   1035.5 m  	at x = 200.0 km
+  sediment. max.  =    837.6 m  	at x = 100.0 km
+  total eros.     =     95.8 km2	total sed. =     98.7 km2
+  altitude   max. =   2932.3 m   	at x = -250.0 km
+  altitude   min. =   -852.1 m   	at x = 250.0 km   d
+T= 2.98 My
+  water depth max.=    852.1 m  	at x = 250.0 km
+  rain  now: +7.94e-03 m2/s evap.wat.: +1.78e-03 m2/s outp.water: +6.15e-03 m2/s
+  lake 1/1:   20.80 km2    37.5 km    0 m  75 nds @ 250 km  1 sds Sea       0.0079 m2/s
+  noSed er.: +1.86e+12 N/m    sed.incr.: +1.79e+12 N    outp.seds:  +5.46e+10 N/m  
+  max. altit. sed.=   1772.5 m  	at x = -121.0 km
+  erosion max.    =   1037.0 m  	at x = 200.0 km
+  sediment. max.  =    840.5 m  	at x = 100.0 km
+  total eros.     =     96.1 km2	total sed. =     99.0 km2
+  altitude   max. =   2930.4 m   	at x = -250.0 km
+  altitude   min. =   -849.2 m   	at x = 250.0 km   d
+
+End of evolution.
+
+Final statistics:
+	Total weight load = -3.063e+11 N/m
+	Total rest. force =  0.000e+00 N/m
+	Total units mass  =  2.122e+11 kg/m
+	Total sedim mass  =  2.122e+11 kg/m
+
+3 units:
+No.	Density	Age 	Volume 	Vel   	Shift 	From x	To x 	Stop	Erodabil.
+   	(kg/m3)	(My)	(km2) 	(km/My)	(km)  	(km)  	(km) 	 (My)	         
+3:	2200 	2.0	22.8	0.0	0.0	-121.5	250.0	9999.0	2.40e-02
+2:	2200 	1.0	36.1	0.0	0.0	-103.5	250.0	9999.0	2.40e-02
+1:	2200 	0.0	37.5	0.0	0.0	-115.5	250.0	9999.0	2.40e-02
+0:	2850	0.0	-	0	-	-	-	-	(basament)
+
+Wroten restart file 'sp_param.all'.
+Wroten units file 'sp_param.pfl'.
+Wroten erosion/sedimentation in 'sp_param.eros'
+

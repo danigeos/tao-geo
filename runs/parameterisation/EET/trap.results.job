@@ -1,0 +1,59 @@
+#!/bin/csh
+##############################################################################
+#	Job for tao graphic output with GMT
+##############################################################################
+
+
+set ps   	= trap.results.ps
+set xmin	= 500
+set xmax	= 1000
+set ymin	= -4000
+set ymax	= 2000
+
+set project = trap
+
+psbasemap -JX3.0/1.4 -R$xmin/$xmax/$ymin/$ymax \
+	-Ba200f100:distancia\ \(km\):/2000f1000:altitud\ \(m\):SWen -K -Y2 -X1.4 -P > $ps
+
+tao $project -M0 -T10e3 -S
+awk '{print $1,$2}' $project.pfl | psxy -JX -R -O -K -W1 >> $ps
+awk '{print $1,$3}' $project.pfl | psxy -JX -R -O -K -W1 >> $ps
+tao $project -M0 -T30e3 -S
+awk '{print $1,$2}' $project.pfl | psxy -JX -R -O -K -W5 >> $ps
+awk '{print $1,$3}' $project.pfl | psxy -JX -R -O -K -W5 >> $ps
+tao $project -M0 -T90e3 -S
+awk '{print $1,$2}' $project.pfl | psxy -JX -R -O -K -W9 >> $ps
+awk '{print $1,$3}' $project.pfl | psxy -JX -R -O -K -W9 >> $ps
+
+pstext -JX -R -O -K <<END>> $ps
+	510 -3400 	10 0 1 4 	placa el\337stica
+	510    -500	10 5 1 1	carga
+	710	100	8 0 1 1		10 
+	730	-450	8 0 1 1		30 
+	750	-950	8 0 1 1		90 km
+END
+
+
+psbasemap -JX -R \
+	-Ba200f100:distancia\ \(km\):/2000f1000Swen -K -O -X3.2 -P >> $ps
+
+
+tao $project -M1 -T90e3 -S -tf0 -td.01
+awk '{print $1,$2}' $project.pfl | psxy -JX -R -O -K -W9 >> $ps
+awk '{print $1,$3}' $project.pfl | psxy -JX -R -O -K -W9 >> $ps
+tao $project -M1 -T90e3 -S -tf4
+awk '{print $1,$2}' $project.pfl | psxy -JX -R -O -K -W5 >> $ps
+awk '{print $1,$3}' $project.pfl | psxy -JX -R -O -K -W5 >> $ps
+tao $project -M1 -T90e3 -S -tf49
+awk '{print $1,$2}' $project.pfl | psxy -JX -R -O -K -W1 >> $ps
+awk '{print $1,$3}' $project.pfl | psxy -JX -R -O -K -W1 >> $ps
+
+pstext -JX -R -O <<END>> $ps
+	510 -3400 	10 0 1 4 	placa viscoel\337stica   @~t@~=0.5 Ma; Te=90 km
+	510    -500	10 5 1 1	carga
+	710	100	8 0 1 1		50 
+	730	-450	8 0 1 1		5
+	750	-950	8 0 1 1		0 Ma
+END
+
+rm -f pru*.tmp

@@ -1,0 +1,48 @@
+#!/bin/csh
+
+set prj = GI
+set ps = run_flex_profiles.ps
+
+cat - <<END>> $prj\1.UNIT
+time		0	
+density		920
+-50e3	0
+-50e3	1000
++50e3	1000
++50e3	0
+END
+
+psbasemap -JX14/5 -R-200/200/-500/500 -Ba100f50:"x (km)":/a500f100nSeW:"z (m)": \
+	-X4 -Y4 -P -K  >! $ps
+
+
+set tau = .001;  	set Te = 100e3
+tao $prj -T$Te -tv$tau -S
+awk '{print $1, $(NF-1)}' $prj.xzt | psxy -JX -R -O -K -H2 -W2   >> $ps
+
+set tau = .005;  	set Te = 100e3
+tao $prj -T$Te -tv$tau -S
+awk '{print $1, $(NF-1)}' $prj.xzt | psxy -JX -R -O -K -H2 -W2to >> $ps
+
+set tau = .02;  	set Te = 100e3
+tao $prj -T$Te -tv$tau -S
+awk '{print $1, $(NF-1)}' $prj.xzt | psxy -JX -R -O -K -H2 -W2ta >> $ps
+
+
+
+set tau = .001;  	set Te = 200e3
+tao $prj -T$Te -tv$tau -S
+awk '{print $1, $(NF-1)}' $prj.xzt | psxy -JX -R -O -K -H2 -W2/255/0/0   >> $ps
+
+set tau = .005;  	set Te = 200e3
+tao $prj -T$Te -tv$tau -S
+awk '{print $1, $(NF-1)}' $prj.xzt | psxy -JX -R -O -K -H2 -W2/255/0/0to >> $ps
+
+set tau = .02;  	set Te = 200e3
+tao $prj -T$Te -tv$tau -S
+awk '{print $1, $(NF-1)}' $prj.xzt | psxy -JX -R -O -K -H2 -W2/255/0/0ta >> $ps
+
+
+
+
+psbasemap -JX -R -Ba -O >> $ps

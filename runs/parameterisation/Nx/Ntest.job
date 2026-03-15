@@ -1,0 +1,32 @@
+
+psxy NtestBROKEN.results2 -JX5l/3 -R100/100000/-5/25 -Ba100f10/5f1SneW -X1.5 -Y1.5 -V -K -P > Ntest.ps
+psxy NtestBROKEN.results2 -JX -R -B -Sc.1 -G100 -V -O -K >> Ntest.ps
+psxy NtestBROKEN.results2 -JX -R -B -W2/0 -Sc.1 -V -O -K >> Ntest.ps
+psxy NtestCONT.results2 -JX -R -B -V -O -K >> Ntest.ps
+psxy NtestCONT.results2 -JX -R -B -Ss.1 -G150 -V -O -K >> Ntest.ps
+psxy NtestCONT.results2 -JX -R -B -Ss.1 -W2/0 -V -O -K >> Ntest.ps
+psxy -JX -R -O -V -W8 -K << END >> Ntest.ps
+	100	0
+	100000	0	#error cero => Wo=4065.8
+END
+
+psxy -JX -R -O -V -Sc.1 -G100 -K << END >> Ntest.ps
+	4000	16
+END
+psxy -JX -R -O -V -Sc.1 -W2/0 -K << END >> Ntest.ps
+	4000	16
+END
+
+psxy -JX -R -O -V -Ss.1 -G150 -K << END >> Ntest.ps
+	4000	13
+END
+psxy -JX -R -O -V -Ss.1 -W2/0 -K << END >> Ntest.ps
+	4000	13
+END
+pstext	-JX -R -O -V << END >> Ntest.ps
+	4000	22	13 0 1 2	Test de sensibilidad al metodo de diferencias finitas
+	60	10	13 90 1 2	Error (%)
+	4000	-10	13 0 1 2	Numero de puntos de discretizacion
+	5000	15.5	12 0 1 1	Limite de placa
+	5000	12.5	12 0 1 1	Centro de placa simetrica
+END
