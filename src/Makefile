@@ -28,9 +28,10 @@ backup:
 clean:
 	rm -f $(OBJ)/*.o $(LIB)/*.o $(LIB)/*.a
 	
+TAO_OBJS = tao.o taosp.o globals.o
 
-tao :	tao.o libreria.o taosp.o notify
-	$(CC)  $(OBJ)/tao.o $(OBJ)/taosp.o $(LIB)/libreria.o $(OPTS) $(LIBS) -o $(BIN)/tao 
+tao :	$(TAO_OBJS) libreria.o notify
+	$(CC)  $(TAO_OBJS) $(LIB)/libreria.o $(OPTS) $(LIBS) -o $(BIN)/tao 
 	chmod a+x $(BIN)/tao
 
 
@@ -46,6 +47,9 @@ tao.o : tao.c taolib.c taosp.c taoio.c
 
 taosp.o : taosp.c
 	$(CC) -c -o $(OBJ)/taosp.o $(OPTS) -I$(INCL) taosp.c
+
+globals.o : globals.c
+	$(CC) -c -o $(OBJ)/globals.o $(OPTS) -I$(INCL) globals.c
 
 call_taosp.o : call_taosp.c
 	$(CC) -c -o call_taosp.o $(OPTS) -I$(INCL) call_taosp.c
@@ -64,8 +68,8 @@ taoconv :
 	chmod a+x $(BIN)/taoconv
 
 
-taofit : libreria.o
-	$(CC) taofit.c $(OPTS) $(LIB)/libreria.o  -lc -lm -I$(INCL) -o $(BIN)/taofit
+taofit : libreria.o globals.o
+	$(CC) taofit.c $(OPTS) globals.o $(LIB)/libreria.o  -lc -lm -I$(INCL) -o $(BIN)/taofit
 	chmod a+x $(BIN)/taofit
 
 notify :
@@ -73,4 +77,3 @@ notify :
 	then echo ; else echo First compilation of tAo in `hostname` by `whoami`>../doc/.first_compilation.txt; pwd>>../doc/.first_compilation.txt; \
 		date>>../doc/.first_compilation.txt ; echo>> ../doc/.first_compilation.txt; finger `whoami` >> ../doc/.first_compilation.txt; mail danielgc@ija.csic.es<../doc/.first_compilation.txt; \
 	fi
-

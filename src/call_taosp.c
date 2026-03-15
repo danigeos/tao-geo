@@ -114,6 +114,11 @@ int call_surf_proc_ (
 	if (switch_debug) fprintf(stdout, "\nTransporting during %.2f Ma: %d nodes ; write files = %d ",
 		dt/Matosec, Nx, *ad_write_files);
 
+	ModelConfig cfg = {0}; ModelContext ctx = {0};
+	cfg.Nx = Nx; cfg.dx = dx; cfg.riverbasinwidth = riverbasinwidth; 
+	cfg.denssedim = denssedim; cfg.denscrust = denscrust; cfg.erosed_model = erosed_type;
+	ctx.dt = dt; ctx.dt_eros = dt_eros; ctx.topo = topo; ctx.numBlocks = numBlocks;
+
 	for (j=0; j<Nx; j++)  {
 		Blocks[numBlocks-1].thick[j]=sed_thick[j]; 
 		Blocks_base[j] = topo[j] - Blocks[numBlocks-1].thick[j];
@@ -132,11 +137,12 @@ int call_surf_proc_ (
 
 	/*Fluvial Transport: adds to the topo and the next load Dq and removes material from Blocks*/
 	if (switch_debug) fprintf(stdout, "\nCalling Fluvial_Transport: ");
-	if (erosed_type>=2) Fluvial_Transport (topo, dt, dt_eros, erosed_type);
+	if (erosed_type>=2) Fluvial_Transport (&cfg, &ctx, topo, dt);
+	numBlocks = ctx.numBlocks;
 
 	if (*ad_write_files) {
 		if (switch_debug) fprintf(stdout, "\nWritting ST & drainage file.  rain=%.2f l/m/a total_rain=%.2e m3/s", rain/1e6*Matosec*1e3, total_rain);
-		write_file_erosed(total_erosion);
+		write_file_erosed(&cfg, &ctx, total_erosion);
 	}
 
 	for (j=0; j<Nx; j++) {
@@ -173,6 +179,9 @@ int Allocate_Memory_for_external_use()
 		eros_now	= calloc(Nx, sizeof(float));
 		total_erosion	= calloc(Nx, sizeof(float));
 	}
+
+	ModelConfig cfg = {0}; ModelContext ctx = {0};
+	cfg.Nx = Nx; cfg.dx = dx;
 
 	/*Allocation for Lake #0, which is not used.*/
 	Lake = (struct LAKE_INFO_1D *) calloc(1, sizeof(struct LAKE_INFO_1D));

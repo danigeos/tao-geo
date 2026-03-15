@@ -5,38 +5,39 @@
 
 
 
-int Allocate_Memory()
+int Allocate_Memory(ModelConfig *cfg, ModelContext *ctx)
 {
 	/* Allocates dynamic memory for the arrays and initializes them to zero*/
 
-	w = 		(float *) calloc(Nx, sizeof(float));
-	D = 		(float *) calloc(Nx, sizeof(float));
-	q = 		(float *) calloc(Nx, sizeof(float));
-	Dw = 		(float *) calloc(Nx, sizeof(float));
-	Dq = 		(float *) calloc(Nx, sizeof(float));
-	h_water = 	(float *) calloc(Nx, sizeof(float));
-	h_last_unit =	(float *) calloc(Nx, sizeof(float));
-	Te =	 	(float *) calloc(Nx, sizeof(float));
-	crust_thick = 	(float *) calloc(Nx, sizeof(float));
-	upper_crust_thick = (float *) calloc(Nx, sizeof(float));
-	topo =  	(float *) calloc(Nx, sizeof(float));
-	Blocks_base = 	(float *) calloc(Nx, sizeof(float));
-	yieldcompres =	alloc_matrix(Nx, Nz);
-	yieldextens = 	alloc_matrix(Nx, Nz);
+	w = 		(float *) calloc(cfg->Nx, sizeof(float));
+	D = 		(float *) calloc(cfg->Nx, sizeof(float));
+	q = 		(float *) calloc(cfg->Nx, sizeof(float));
+	Dw = 		(float *) calloc(cfg->Nx, sizeof(float));
+	Dq = 		(float *) calloc(cfg->Nx, sizeof(float));
+	h_water = 	(float *) calloc(cfg->Nx, sizeof(float));
+	h_last_unit =	(float *) calloc(cfg->Nx, sizeof(float));
+	Te =	 	(float *) calloc(cfg->Nx, sizeof(float));
+	crust_thick = 	(float *) calloc(cfg->Nx, sizeof(float));
+	upper_crust_thick = (float *) calloc(cfg->Nx, sizeof(float));
+	ctx->topo =  	(float *) calloc(cfg->Nx, sizeof(float));
+	topo = ctx->topo; /* Ensure compatibility for un-refactored parts */
+	Blocks_base = 	(float *) calloc(cfg->Nx, sizeof(float));
+	yieldcompres =	alloc_matrix(cfg->Nx, cfg->Nz);
+	yieldextens = 	alloc_matrix(cfg->Nx, cfg->Nz);
 
 	Blocks =		(struct BLOCK_1D *) calloc(NmaxBlocks, sizeof(struct BLOCK_1D));
 
-	if (hydro_model) {
+	if (cfg->hydro_model) {
 		int i; 
-		precipitation =	(float *) calloc(Nx, sizeof(float));
-		evaporation =	(float *) calloc(Nx, sizeof(float));
-		sortcell = (int *) calloc(Nx, sizeof(int));
-		for (i=0; i<Nx; i++) {sortcell[i]=i;}
-		drainage = (struct DRAINAGE_1D *) calloc(Nx, sizeof(struct DRAINAGE));
+		precipitation =	(float *) calloc(cfg->Nx, sizeof(float));
+		evaporation =	(float *) calloc(cfg->Nx, sizeof(float));
+		sortcell = (int *) calloc(cfg->Nx, sizeof(int));
+		for (i=0; i<cfg->Nx; i++) {sortcell[i]=i;}
+		drainage = (struct DRAINAGE_1D *) calloc(cfg->Nx, sizeof(struct DRAINAGE_1D));
 	}
-	if (erosed_model) {
-		eros_now =	(float *) calloc(Nx, sizeof(float));
-		total_erosion =	(float *) calloc(Nx, sizeof(float));
+	if (cfg->erosed_model) {
+		eros_now =	(float *) calloc(cfg->Nx, sizeof(float));
+		total_erosion =	(float *) calloc(cfg->Nx, sizeof(float));
 	}
 
 	/*lake 0 is not used; thus create it now with no content*/
@@ -49,59 +50,60 @@ int Allocate_Memory()
 
 
 
-float calculate_topo(float *topo_new)
+float calculate_topo(ModelConfig *cfg, ModelContext *ctx, float *topo_new)
 {
 	float mean=0;
 	/*Calculates current topography based on Blocks, Blocks_base and deflection*/
 	PRINT_DEBUG("Entering");
-	for (int i=0; i<Nx; i++) {
+	for (int i=0; i<cfg->Nx; i++) {
 		float thickness_above=0;
-		for (int i_Block=0; i_Block<numBlocks; i_Block++) 
+		for (int i_Block=0; i_Block<ctx->numBlocks; i_Block++) 
 			thickness_above += Blocks[i_Block].thick[i];
 		topo_new[i] = Blocks_base[i]-w[i];
-		for (int i_Block=0; i_Block<numBlocks; i_Block++) {
+		for (int i_Block=0; i_Block<ctx->numBlocks; i_Block++) {
 			thickness_above -= Blocks[i_Block].thick[i];
 			topo_new[i] += Blocks[i_Block].thick[i];
-			if (Blocks[i_Block].density==denssedim) topo_new[i] -= compaction(sed_porosity, compact_depth, thickness_above, thickness_above+Blocks[i_Block].thick[i]);
+			if (Blocks[i_Block].density==cfg->denssedim) topo_new[i] -= compaction(cfg->sed_porosity, compact_depth, thickness_above, thickness_above+Blocks[i_Block].thick[i]);
 		}
 		mean += topo_new[i];
 	}
-	mean /= Nx;
+	mean /= cfg->Nx;
 	return (mean);
 }
 
 
 
-int Delete_Block(int i_Block)
+int Delete_Block(ModelContext *ctx, int i_Block)
 {
 	int  	k;
 
 	/*Deallocates one Block*/
 
-	PRINT_DEBUG("Block being deleted: %d ; numBlocks= %d ; i_first_Block_load = %d ; i_Block_insert = %d", i_Block, numBlocks, i_first_Block_load, i_Block_insert);
+	PRINT_DEBUG("Block being deleted: %d ; numBlocks= %d ; i_first_Block_load = %d ; i_Block_insert = %d", i_Block, ctx->numBlocks, i_first_Block_load, i_Block_insert);
 	free(Blocks[i_Block].thick);
 	if (Blocks[i_Block].type == 'S') {
 		free(Blocks[i_Block].detr_ratio);
 		free(Blocks[i_Block].detr_grsize);
 	}
-	for (k=i_Block; k<numBlocks-1; k++) Blocks[k] = Blocks[k+1];
-	numBlocks--;
+	for (k=i_Block; k<ctx->numBlocks-1; k++) Blocks[k] = Blocks[k+1];
+	ctx->numBlocks--;
+	numBlocks = ctx->numBlocks;
 	return(1);
 }
 
 
 
-int gradual_Block()
+int gradual_Block(ModelConfig *cfg, ModelContext *ctx)
 {
 	float 	Dhl;
 
 	/*Non-instantaneous loading of a file load (distributed along time).*/
 
 	/*interpolation can only last until next load because then the original load shape is then lost*/
-	if (!switch_gradual || Time>Blocks[i_Block_insert].time_stop-dt*.1) return(0);
+	if (!switch_gradual || ctx->Time>Blocks[i_Block_insert].time_stop-ctx->dt*.1) return(0);
 
-	for (int i=0; i<Nx; i++) { 
-		Dhl = h_last_unit[i]*dt/(Blocks[i_Block_insert].time_stop-Blocks[i_Block_insert].age);
+	for (int i=0; i<cfg->Nx; i++) { 
+		Dhl = h_last_unit[i]*ctx->dt/(Blocks[i_Block_insert].time_stop-Blocks[i_Block_insert].age);
 		/*Increments the load for this time interval*/
 		if (Blocks[i_Block_insert].type != 'H') {
 			if (Dhl>=0) {
@@ -122,7 +124,7 @@ int gradual_Block()
 				}
 			}
 		}
-		Dq[i] += (Blocks[i_Block_insert].density-densenv)*g*Dhl;
+		Dq[i] += (Blocks[i_Block_insert].density-cfg->densenv)*g*Dhl;
 	}
 
 	fflush(stdout);
@@ -132,7 +134,7 @@ int gradual_Block()
 
 
 
-int Init_Stress()
+int Init_Stress(ModelConfig *cfg)
 {
 	int 	ix, iz, iter, numiter=50;
 	float 	iterforce, criterio, mechanical_thickness, refstress;
@@ -140,24 +142,24 @@ int Init_Stress()
 
 	if (isost_model<3) return (0);
 	
-	stress = alloc_matrix(Nx, Nz);
+	stress = alloc_matrix(cfg->Nx, cfg->Nz);
 
 	/*Distributes the tectonic force along the strong lithosphere.*/
 	if (switch_strs_history && horz_force) {
-		for (ix=0; ix<Nx; ix++) {
+		for (ix=0; ix<cfg->Nx; ix++) {
 			/*Finds the YSE from temperature & geometry*/
 			if (!switch_YSE_file) yield_stress_envelope (
-				Temperature[ix], Nz, dz, 0, 
+				cfg,
+				Temperature[ix], 0, 
 				upper_crust_thick[ix], crust_thick[ix],
-				isost_model,
 				yieldcompres[ix], yieldextens[ix],
 				&mechanical_thickness
 			);
 
-			for (iter=0, refstress=-horz_force/Nz/dz ;  iter<numiter ; iter++) {
-				for (iz=iterforce=0; iz<Nz; iz++) {
+			for (iter=0, refstress=-horz_force/cfg->Nz/cfg->dz ;  iter<numiter ; iter++) {
+				for (iz=iterforce=0; iz<cfg->Nz; iz++) {
 					stress[ix][iz] = ((refstress>0) ? MIN_2(refstress, yieldextens[ix][iz]) : MAX_2(refstress, yieldcompres[ix][iz]) ) ;
-					iterforce += stress[ix][iz] * dz ;
+					iterforce += stress[ix][iz] * cfg->dz ;
 				}
 				/*horz_force tiene el criterio de signos contrario a stress.*/
 				criterio = (-horz_force - iterforce) ;
@@ -165,7 +167,7 @@ int Init_Stress()
 				refstress += criterio/fabs(criterio) * 1000e6 / pow(2,iter);
 			}
 			if (iter>=numiter && refstress<1000e6) {fprintf(stderr, "ERROR: horz_force is bigger than lithospheric strength!"); exit(0);}
-			if (verbose_level>=4) fprintf (stderr, "\nRefstress=%.2e\tIterforce:%.2e\tCriterio:%.2e\tIters:%d", refstress, iterforce, criterio, iter);
+			if (cfg->verbose_level>=4) fprintf (stderr, "\nRefstress=%.2e\tIterforce:%.2e\tCriterio:%.2e\tIters:%d", refstress, iterforce, criterio, iter);
 		}
 	}
 
@@ -174,7 +176,7 @@ int Init_Stress()
 
 
 
-int insert_new_Block(int num_new_Block)
+int insert_new_Block(ModelConfig *cfg, ModelContext *ctx, int num_new_Block)
 {
 	struct BLOCK_1D	Block_aux;
 
@@ -185,29 +187,30 @@ int insert_new_Block(int num_new_Block)
 	*/
 
 	if (verbose_level>=2) fprintf(stdout, "  b"); fflush(stdout);
-	PRINT_DEBUG("New Block being created: %d ; numBlocks= %d ; i_first_Block_load = %d ; i_Block_insert = %d", num_new_Block, numBlocks, i_first_Block_load, i_Block_insert);
-	if (numBlocks>NmaxBlocks-5) PRINT_WARNING("Lots of Blocks! "); 
+	PRINT_DEBUG("New Block being created: %d ; numBlocks= %d ; i_first_Block_load = %d ; i_Block_insert = %d", num_new_Block, ctx->numBlocks, i_first_Block_load, i_Block_insert);
+	if (ctx->numBlocks>NmaxBlocks-5) PRINT_WARNING("Lots of Blocks! "); 
 
-	Blocks[numBlocks].thick = 	(float *) calloc(Nx, sizeof(float));
+	Blocks[ctx->numBlocks].thick = 	(float *) calloc(cfg->Nx, sizeof(float));
 
 	//shift blocks upwards
-	Block_aux = Blocks[numBlocks];
-	for (int j_Block=numBlocks; j_Block>num_new_Block; j_Block--) 
+	Block_aux = Blocks[ctx->numBlocks];
+	for (int j_Block=ctx->numBlocks; j_Block>num_new_Block; j_Block--) 
 		Blocks[j_Block] = Blocks[j_Block-1];
 	Blocks[num_new_Block] = Block_aux;
 
 	/*Default properties*/
 	Blocks[num_new_Block].type = '-';
-	Blocks[num_new_Block].age = Time;
+	Blocks[num_new_Block].age = ctx->Time;
 	Blocks[num_new_Block].density = 0;
 	Blocks[num_new_Block].erodibility = erodibility;
 	Blocks[num_new_Block].vel = 0;
-	Blocks[num_new_Block].last_vel_time = Time;
+	Blocks[num_new_Block].last_vel_time = ctx->Time;
 	Blocks[num_new_Block].time_stop = 9999*Matosec;
 	Blocks[num_new_Block].shift = 0;
 	Blocks[num_new_Block].last_shift = 0;
 	
-	numBlocks++;
+	ctx->numBlocks++;
+	numBlocks = ctx->numBlocks;
 
 	return(1);
 }
@@ -297,23 +300,23 @@ int match_parameter(char *str1, char *str2, int show, int replace, char *line)
 
 
 
-int make_gravi_body(float *upper_hor, float *lower_hor, float *body_x, float *body_z)
+int make_gravi_body(ModelConfig *cfg, float *upper_hor, float *lower_hor, float *body_x, float *body_z)
 {
 	/*Makes a gravity body from two horizons to be used
 	with subrutine anompolig() to calculate its gravitational effect
 	*/
 	int 	ix, np_body=0;
 
-	for (ix=0; ix<Nx; ix++) {
-		body_x[np_body] = x0+ix*dx;	body_z[np_body] = upper_hor[ix];
+	for (ix=0; ix<cfg->Nx; ix++) {
+		body_x[np_body] = cfg->x0+ix*cfg->dx;	body_z[np_body] = upper_hor[ix];
 		np_body++ ;
 	}
-	body_x[np_body] = body_x[np_body-1]+1e8;	body_z[np_body] = upper_hor[Nx-1];
+	body_x[np_body] = body_x[np_body-1]+1e8;	body_z[np_body] = upper_hor[cfg->Nx-1];
 	np_body++ ;
-	body_x[np_body] = body_x[np_body-1];		body_z[np_body] = lower_hor[Nx-1];
+	body_x[np_body] = body_x[np_body-1];		body_z[np_body] = lower_hor[cfg->Nx-1];
 	np_body++ ;
-	for (ix=Nx-1; ix>=0; ix--) {
-		body_x[np_body] = x0+ix*dx;	body_z[np_body] = lower_hor[ix];
+	for (ix=cfg->Nx-1; ix>=0; ix--) {
+		body_x[np_body] = cfg->x0+ix*cfg->dx;	body_z[np_body] = lower_hor[ix];
 		np_body++ ;
 	}
 	body_x[np_body] = body_x[np_body-1]-1e8;	body_z[np_body] = lower_hor[0];
@@ -327,9 +330,10 @@ int make_gravi_body(float *upper_hor, float *lower_hor, float *body_x, float *bo
 
 
 
-int LES_matrix (double **A,	/* Matrix of the lineal equation system. */
+int LES_matrix (ModelConfig *cfg, ModelContext *ctx,
+		double **A,	/* Matrix of the lineal equation system. */
 		double *b, 	/* Independent term. */
-		float *D, 	/* Rigidity [N·m] */
+		float *D, 	/* Rigidity [Nï¿½m] */
 		float *q,	/* Total load (not including restitutive force).*/
 		float *Dq,	/* Load increment [N] which effect (deflection) is to be calculated (not including restitutive force).*/
 		float *w, 
@@ -342,22 +346,22 @@ int LES_matrix (double **A,	/* Matrix of the lineal equation system. */
 	/* 
 	  DEFINE LA MATRIZ CASI DIAGONAL (en banda) DEL SISTEMA DE ECUACIONES 
 	  RESULTANTE DE LA ECUACION DIFERENCIAL ELASTICA O VISCOELASTICA  
-	  A·w = b DISCRETIZADA POR EL METODO DE LAS DIFERENCIAS FINITAS
+	  Aï¿½w = b DISCRETIZADA POR EL METODO DE LAS DIFERENCIAS FINITAS
 	*/
 
-	dx2 = dx*dx;
-	dx3 = dx2*dx;
+	dx2 = cfg->dx*cfg->dx;
+	dx3 = dx2*cfg->dx;
 	dx4 = dx2*dx2;
-	for (i=0; i<Nx; i++) {
+	for (i=0; i<cfg->Nx; i++) {
 		for (j=0; j<NDi+1+NDs; j++) A[i][j] = 0.;
 		b[i]= 0.;
 	}
 
 	/*In viscoelastic model nu=.5*/
-	if (doing_visco)  {  for (i=0; i<Nx; i++) D[i] *= (1-nu*nu)/(1-.25) ;	}	
+	if (doing_visco)  {  for (i=0; i<cfg->Nx; i++) D[i] *= (1-nu*nu)/(1-.25) ;	}	
 
 
-	for (i=2; i<Nx-2; i++)
+	for (i=2; i<cfg->Nx-2; i++)
 	{
 		/*Krest is the bouyancy or restitution force constant*/
 		GET_KREST(Krest, Dq, i)
@@ -378,7 +382,7 @@ int LES_matrix (double **A,	/* Matrix of the lineal equation system. */
 
 			case 1:	/* VISCOELASTIC EQUATION */
 				/*Viscoelastic equation, see Nadai (1963); Lambeck (1983)*/
-				b[i] = (double) dx4 * ((q[i] - w[i]*Krest - horz_force*(w[i+1]-2*w[i]+w[i-1])/dx2) / tau /*termino que deberia estar:+Dq[i]/dt*/);
+				b[i] = (double) dx4 * ((q[i] - w[i]*Krest - horz_force*(w[i+1]-2*w[i]+w[i-1])/dx2) / tau /*termino que deberia estar:+Dq[i]/ctx->dt*/);
 				break;
 		}
 	}
@@ -395,10 +399,10 @@ int LES_matrix (double **A,	/* Matrix of the lineal equation system. */
 	  case 0:	/* B.C. simetric continuous half-plate (the model only considers half of a simetric plate). */
 		A[0][3]	= 1 ;
 		A[0][5]	= -1;
-		b[0] 	= 0 ;		/* 1ª Derivada 0 en el extremo izda.*/
+		b[0] 	= 0 ;		/* 1ï¿½ Derivada 0 en el extremo izda.*/
 		A[1][2]	= (double) -1;
 		A[1][3]	= (double) +3 - horz_force/D[1]*dx2;
-		A[1][4]	= (double) -3 + horz_force/D[1]*dx2;	/* Derivada 3ª en el extremo igual a */
+		A[1][4]	= (double) -3 + horz_force/D[1]*dx2;	/* Derivada 3ï¿½ en el extremo igual a */
 		A[1][5]	= (double) +1;				/* la applied vertical shear force.  */
 		b[1] 	= (double) -vert_force/2 /D[1]*dx3 / ((doing_visco)? tau : 1) ;
 		break;
@@ -408,13 +412,13 @@ int LES_matrix (double **A,	/* Matrix of the lineal equation system. */
 		A[0][3]	= +1;
 		A[0][4]	= -2;
 		A[0][5]	= +1;
-		b[0] 	= (Time==Timeini || doing_visco || (isost_model>=3 && !switch_strs_history)) ? -appmoment*dx2/D[1] : 0 ;
+		b[0] 	= (ctx->Time==ctx->Timeini || doing_visco || (isost_model>=3 && !switch_strs_history)) ? -appmoment*dx2/D[1] : 0 ;
 		/* 3rd derivate (point #2.5) = applied vertical force*/
 		A[1][2]	= (double) -1;
 		A[1][3]	= (double) +3 - horz_force/D[1]*dx2;
 		A[1][4]	= (double) -3 + horz_force/D[1]*dx2;
 		A[1][5]	= (double) +1;
-		b[1] 	= (double) (Time==Timeini || doing_visco || (isost_model>=3 && !switch_strs_history)) ? -vert_force/D[1]*dx3 / ((doing_visco)? tau : 1) : 0 ;
+		b[1] 	= (double) (ctx->Time==ctx->Timeini || doing_visco || (isost_model>=3 && !switch_strs_history)) ? -vert_force/D[1]*dx3 / ((doing_visco)? tau : 1) : 0 ;
 		break;
 	  case 2:	/* B.C. continuous plate*/
 		A[0][4]	= 1 ;
@@ -426,10 +430,10 @@ int LES_matrix (double **A,	/* Matrix of the lineal equation system. */
 	  case 4:	/* B.C. hunging plate*/
 	  case 5:	/* B.C. Broken plate at right, free at left.*/
 		A[0][3]	= 1 ;
-		A[0][4]	= -2;		/* Derivada 2ª en el pto. 1 nula */
+		A[0][4]	= -2;		/* Derivada 2ï¿½ en el pto. 1 nula */
 		A[0][5]	= 1 ;		/*	  (no moment).			 */
 		b[0] 	= 0 ;
-		A[1][3]	= 1 ;		/* Deflexi¢n 0 en el extremo.	*/
+		A[1][3]	= 1 ;		/* Deflexiï¿½n 0 en el extremo.	*/
 		b[1] 	= 0 ;
 		break;
 	}
@@ -438,51 +442,51 @@ int LES_matrix (double **A,	/* Matrix of the lineal equation system. */
 	switch (boundary_conds) {
 	  case 0:	/* B.C. Simetric continuous half-plate*/
 	  case 2:	/* B.C. placa continua*/
-		A[Nx-2][2] = 1 ;
-		A[Nx-2][4] = -1;		/* 1ª Derivada 0 en el extremo.*/
-		b[Nx-2]	   = 0 ;
-		A[Nx-1][2] = 1 ;		/* Flexi¢n 0 en el extremo.*/
-		b[Nx-1]	   = 0 ;
+		A[cfg->Nx-2][2] = 1 ;
+		A[cfg->Nx-2][4] = -1;		/* 1 Derivada 0 en el extremo.*/
+		b[cfg->Nx-2]	   = 0 ;
+		A[cfg->Nx-1][2] = 1 ;		/* Flexin 0 en el extremo.*/
+		b[cfg->Nx-1]	   = 0 ;
 		break;
 	  case 1:	/* B.C. Broken at left, free at right*/
 	  case 3:	/* B.C. Free ends*/
-		A[Nx-1][3] = 1 ;
-		A[Nx-1][2] = -2;		/* Derivada 2ª en el pto. 1 nula*/
-		A[Nx-1][1] = 1 ;		/*	  (no moment).*/
-		b[Nx-1]	= 0 ;
-		A[Nx-2][1] = -1;
-		A[Nx-2][2] = +3;
-		A[Nx-2][3] = -3;		/*	 Derivada 3ª en el 2 nula*/
-		A[Nx-2][4] = 1 ;		/*  (no vertical shear force).*/
-		b[Nx-2]	= 0 ;
+		A[cfg->Nx-1][3] = 1 ;
+		A[cfg->Nx-1][2] = -2;		/* Derivada 2 en el pto. 1 nula*/
+		A[cfg->Nx-1][1] = 1 ;		/*	  (no moment).*/
+		b[cfg->Nx-1]	= 0 ;
+		A[cfg->Nx-2][1] = -1;
+		A[cfg->Nx-2][2] = +3;
+		A[cfg->Nx-2][3] = -3;		/*	 Derivada 3 en el 2 nula*/
+		A[cfg->Nx-2][4] = 1 ;		/*  (no vertical shear force).*/
+		b[cfg->Nx-2]	= 0 ;
 		break;
 	  case 4:	/* B.C. hunging plate*/
-		A[Nx-1][3] = 1 ;
-		A[Nx-1][2] = -2;		/* Derivada 2ª en el pto. 1 nula*/
-		A[Nx-1][1] = 1 ;		/*	  (no hay momento).*/
-		b[Nx-1]	= 0 ;
-		A[Nx-2][3] = 1 ;		/* Null deflection 0 at the end.*/
-		b[Nx-2]	   = 0 ;
+		A[cfg->Nx-1][3] = 1 ;
+		A[cfg->Nx-1][2] = -2;		/* Derivada 2 en el pto. 1 nula*/
+		A[cfg->Nx-1][1] = 1 ;		/*	  (no hay momento).*/
+		b[cfg->Nx-1]	= 0 ;
+		A[cfg->Nx-2][3] = 1 ;		/* Null deflection 0 at the end.*/
+		b[cfg->Nx-2]	   = 0 ;
 		break;
 	  case 5:	/* B.C. Broken plate at right, free at left.*/
-		A[Nx-1][3] = 1 ;
-		A[Nx-1][2] = -2;		/* Derivada 2ª en el pto. 1 nula*/
-		A[Nx-1][1] = 1 ;		/*	  (moment).*/
-		b[Nx-1]	= (double) (Time==Timeini || doing_visco || (isost_model>=3 && !switch_strs_history)) ? -appmoment*dx2/D[Nx-2]/2 : 0 ;
-		A[Nx-2][1] = -1;
-		A[Nx-2][2] = +3;
-		A[Nx-2][3] = -3;		/* Derivada 3ª en el 2 nula*/
-		A[Nx-2][4] = 1 ;		/*   (shear force).*/
-		b[Nx-2]	= (double) (Time==Timeini || doing_visco || (isost_model>=3 && !switch_strs_history)) ? -vert_force*dx3/D[Nx-2]/ ((doing_visco)? tau : 1) : 0 ;
+		A[cfg->Nx-1][3] = 1 ;
+		A[cfg->Nx-1][2] = -2;		/* Derivada 2 en el pto. 1 nula*/
+		A[cfg->Nx-1][1] = 1 ;		/*	  (moment).*/
+		b[cfg->Nx-1]	= (double) (ctx->Time==ctx->Timeini || doing_visco || (isost_model>=3 && !switch_strs_history)) ? -appmoment*dx2/D[cfg->Nx-2]/2 : 0 ;
+		A[cfg->Nx-2][1] = -1;
+		A[cfg->Nx-2][2] = +3;
+		A[cfg->Nx-2][3] = -3;		/* Derivada 3 en el 2 nula*/
+		A[cfg->Nx-2][4] = 1 ;		/*   (shear force).*/
+		b[cfg->Nx-2]	= (double) (ctx->Time==ctx->Timeini || doing_visco || (isost_model>=3 && !switch_strs_history)) ? -vert_force*dx3/D[cfg->Nx-2]/ ((doing_visco)? tau : 1) : 0 ;
 		break;
 	}
 	/* Restores the original value of rigidity */
-	if (doing_visco)  { for (i=0; i<Nx; i++) D[i] /= (1-nu*nu)/(1-.25) ;}
+	if (doing_visco)  { for (i=0; i<cfg->Nx; i++) D[i] /= (1-nu*nu)/(1-.25) ;}
 
 	sprintf(filename, "%s.mtrx", projectname); 
 	remove(filename);
-	if (verbose_level>=4 && switch_write_file && Nx<=201) { 
-		WriteAlmostDiagonalMatrix(A, b, Nx, filename, NDs, NDi);
+	if (cfg->verbose_level>=4 && switch_write_file && cfg->Nx<=201) { 
+		WriteAlmostDiagonalMatrix(A, b, cfg->Nx, filename, NDs, NDi);
 	}
 	return(1);
 }
@@ -490,15 +494,12 @@ int LES_matrix (double **A,	/* Matrix of the lineal equation system. */
 
 
 
-float moment_calculator (float 	d2wdx2, 
-			float 	horz_force, 
+float moment_calculator (ModelConfig *cfg,
+			float 	d2wdx2, 
 			float 	*yieldcompres, 
 			float 	*yieldextens, 
 			float 	*stress, 
-			int 	isost_model, 		/*3:oceanic; 4:cont always decoupled; 5:cont. never deoupled; 6:cont. auto deoupled*/
 			float 	decoupl_depth, 		/*In m. Only used when isost_model==4*/
-			int 	Nz, 
-			float 	dz, 
 			float 	*refstressdir, 
 			int 	*ncapas) 			/*Number of decoupled layers*/
 {
@@ -519,19 +520,19 @@ float moment_calculator (float 	d2wdx2,
 			*refstressv; 					/*Stress due to tect. force.*/
 	BOOL	switch_saturatedlayer;			/*YES if that decoupled layer is entirely at the yield stress due to horz_force*/
 
-	refstressv = (float *) calloc(Nz, sizeof(float));
+	refstressv = (float *) calloc(cfg->Nz, sizeof(float));
 
 	if (!d2wdx2) d2wdx2 = 1e-12; /*very little*/
 	stress_distrib_slope = - d2wdx2 * E / (1-nu*nu);
 
 	/*Distributes the tectonic force along the strong lithosphere.*/
 	if (horz_force) {
-		refstress = -horz_force/Nz/dz ;
+		refstress = -horz_force/cfg->Nz/cfg->dz ;
 		for (iter=0; iter<numiter; iter++) {
 			backpressure=0 ;
-			for (i=0; i<Nz; i++) {
+			for (i=0; i<cfg->Nz; i++) {
 				refstressv[i] = ((refstress>0) ? MIN_2(refstress, yieldextens[i]) : MAX_2(refstress, yieldcompres[i]) )  ;
-				backpressure += refstressv[i] * dz ;
+				backpressure += refstressv[i] * cfg->dz ;
 			}
 			/*horz_force has opposite sign criterion than stress.*/
 			criterio = (-horz_force - backpressure) ;
@@ -543,19 +544,19 @@ float moment_calculator (float 	d2wdx2,
 
 
 	/*Define decoupled layers.*/
-	for (i=0; i<Nz; i++) {
+	for (i=0; i<cfg->Nz; i++) {
 		float 	decoupl_stress_limit=50e6,	/*Default decoupling yield stress.*/
 				yield_stress_minim=10e6; 	/*Minimum yield stress. This defines mechanical thickness. Ranalli, 1994.*/
-		z = i*dz ;
+		z = i*cfg->dz ;
 		if (yieldextens[i]-yieldcompres[i] > 2*yield_stress_minim) {
 			ztoplayer[layer] = z;
-			for (; i<Nz; i++) {
-				z = i*dz;
+			for (; i<cfg->Nz; i++) {
+				z = i*cfg->dz;
 				Dsigma = yieldextens[i]-yieldcompres[i];
 				if  (
 						(Dsigma < decoupl_stress_limit && isost_model == 6)
-						|| (decoupl_depth>i*dz && decoupl_depth<=(i+1)*dz && isost_model == 4)
-						|| i==Nz-1
+						|| (decoupl_depth>i*cfg->dz && decoupl_depth<=(i+1)*cfg->dz && isost_model == 4)
+						|| i==cfg->Nz-1
 					) {
 					int iz;
 					/*Base of layer is controlled by yield_stress_minim*/
@@ -565,7 +566,7 @@ float moment_calculator (float 	d2wdx2,
 							|| fabs(yieldcompres[iz])<yield_stress_minim); 
 						iz--
 					) ;
-					zfloorlayer[layer] = iz*dz ;
+					zfloorlayer[layer] = iz*cfg->dz ;
 					mecanthick += zfloorlayer[layer] - ztoplayer[layer];
 					layer++;
 					break;
@@ -578,12 +579,12 @@ float moment_calculator (float 	d2wdx2,
 
 
 	/*Distribute bending stresses along each decoupled layer.*/
-	for (i=0 ; i<Nz; i++) stress[i]=0 ;
+	for (i=0 ; i<cfg->Nz; i++) stress[i]=0 ;
 	pressure = 0 ;
 	for (layer=0; layer<numlayers ; layer++) {
 		/*We need to find the depth where flexural bending stress is zero, crossing from positive to negative. This depth must accomplish that the integrated force equals horz_force*/
 		z_null_strs = (zfloorlayer[layer]+ztoplayer[layer])/2 ;
-		itop=ztoplayer[layer]/dz ; ifloor=zfloorlayer[layer]/dz ;
+		itop=ztoplayer[layer]/cfg->dz ; ifloor=zfloorlayer[layer]/cfg->dz ;
 		for (j=itop, switch_saturatedlayer=YES; j<=ifloor; j++) {
 			if ((refstressv[j]>0 && refstressv[j]<yieldextens[j]) || (refstressv[j]<=0 && refstressv[j]>yieldcompres[j])) {
 				switch_saturatedlayer=NO ;
@@ -594,7 +595,7 @@ float moment_calculator (float 	d2wdx2,
 				/*Iterates until null stress point position reach convergence.*/
 				pressurelayer = abspressure = momentlayer = 0 ;
 				for (j=itop; j<=ifloor; j++) {
-					z = j*dz ;
+					z = j*cfg->dz ;
 					linearstress = refstress+ stress_distrib_slope * (z-z_null_strs) ;
 					if (linearstress<yieldextens[j] && linearstress>yieldcompres[j]) 
 											stress[j] = linearstress;
@@ -602,13 +603,13 @@ float moment_calculator (float 	d2wdx2,
 						if (linearstress>yieldextens[j])	stress[j] = yieldextens[j];
 						else					stress[j] = yieldcompres[j];
 					}
-					pressurelayer += (stress[j] - refstressv[j])* dz ;
-					abspressure += fabs(stress[j]- refstressv[j]) * dz ;
-					momentlayer += (stress[j] - refstressv[j]) * (z-z_null_strs) * dz;
+					pressurelayer += (stress[j] - refstressv[j])* cfg->dz ;
+					abspressure += fabs(stress[j]- refstressv[j]) * cfg->dz ;
+					momentlayer += (stress[j] - refstressv[j]) * (z-z_null_strs) * cfg->dz;
 				}
 				criterio = pressurelayer ;
 				if (fabs(criterio)/abspressure < .001) break ;
-				z_null_strs -= (criterio*d2wdx2)/fabs(criterio*d2wdx2) * dz*(Nz-1) /pow(2, i) ;
+				z_null_strs -= (criterio*d2wdx2)/fabs(criterio*d2wdx2) * cfg->dz*(cfg->Nz-1) /pow(2, i) ;
 			}
 			if (i>=numiter && horz_force == 0) fprintf(stdout, "**%d", layer) ;
 		}
@@ -628,16 +629,12 @@ float moment_calculator (float 	d2wdx2,
 
 
 
-float moment_calculator_hist (
+float moment_calculator_hist (ModelConfig *cfg,
 			float 	d2wdx2, 
-			float 	horz_force, 		/*not used ! */
 			float 	*yieldcompres, 
 			float 	*yieldextens, 
 			float 	*stress, 
-			int 	isost_model, 		/*3:oceanic; 4:cont always decoupled; 5:cont. never deoupled; 6:cont. auto deoupled*/
 			float 	decoupl_depth, 		/*In m. Only used when isost_model==4*/
-			int 	Nz, 
-			float 	dz, 
 			float 	*totalmoment,  		/*Total (cumulative) moment at this point*/
 			int 	*nlayers) 		/*Number of decoupled layers*/
 {
@@ -660,20 +657,20 @@ float moment_calculator_hist (
 	BOOL	switch_saturatedlayer;
 
 	/*Define the n decoupled layers (top and bottom).*/
-	for (i=0; i<Nz; i++) {
+	for (i=0; i<cfg->Nz; i++) {
 		float 	decoupl_stress_limit=50e6,	/*Default decoupling yield stress.*/
 				yield_stress_minim=10e6; 	/*Minimum yield stress. This defines mechanical thickness. Ranalli, 1994.*/
-		z = i*dz ;
+		z = i*cfg->dz ;
 		if (yieldextens[i]-yieldcompres[i] > 2*yield_stress_minim) {
 			ztoplayer[layer] = z;
 			/*fprintf(stdout, "\n\tTop of layer: %.2f", ztoplayer[layer]);*/
-			for (; i<Nz; i++) {
-				z = i*dz;
+			for (; i<cfg->Nz; i++) {
+				z = i*cfg->dz;
 				Dsigma = yieldextens[i]-yieldcompres[i];
 				if (
 					(Dsigma < decoupl_stress_limit && isost_model == 6)
-					|| (decoupl_depth>i*dz && decoupl_depth<=(i+1)*dz && isost_model == 4)
-					|| i==Nz-1
+					|| (decoupl_depth>i*cfg->dz && decoupl_depth<=(i+1)*cfg->dz && isost_model == 4)
+					|| i==cfg->Nz-1
 				   ) {
 					/*Base of layer is controlled by yield_stress_minim*/
 					for (	iz=i; 
@@ -682,7 +679,7 @@ float moment_calculator_hist (
 						|| fabs(yieldcompres[iz])<yield_stress_minim); 
 						iz--
 					) ;
-					zbotlayer[layer] = iz*dz ;
+					zbotlayer[layer] = iz*cfg->dz ;
 					/*fprintf(stdout, "\tBase of layer: %.2f", zbotlayer[layer]);*/
 					mecanthick += zbotlayer[layer] - ztoplayer[layer];
 					layer++;
@@ -696,14 +693,14 @@ float moment_calculator_hist (
 	totalforceincre = 0;
 	if (!d2wdx2) d2wdx2 = 1e-12; /*very little*/
 	stress_distrib_slope = - d2wdx2 * E / (1-nu*nu);
-	newstress = calloc(Nz, sizeof(float));
+	newstress = calloc(cfg->Nz, sizeof(float));
 
 	/*Distribute bending stresses along each decoupled layer.*/
 	for (layer=0; layer<numlayers; layer++) {
 		float 	z_null_strs = (zbotlayer[layer]+ztoplayer[layer])/2,
 			layer_thick = zbotlayer[layer]-ztoplayer[layer];
 
-		itop=ztoplayer[layer]/dz; ibot=zbotlayer[layer]/dz;
+		itop=ztoplayer[layer]/cfg->dz; ibot=zbotlayer[layer]/cfg->dz;
 		for (j=itop, switch_saturatedlayer=YES; j<=ibot; j++) {
 			if ((stress[j]>0 && stress[j]<yieldextens[j]) || (stress[j]<=0 && stress[j]>yieldcompres[j])) {
 				switch_saturatedlayer=NO ;
@@ -715,15 +712,15 @@ float moment_calculator_hist (
 				layerforceincre = layerabsforceincre = cumulmomentlayer = incremomentlayer = 0;
 				for (iz=itop; iz<=ibot; iz++) {
 					float linearstress;
-					z = iz*dz;
+					z = iz*cfg->dz;
 					linearstress = stress_distrib_slope * (z-z_null_strs);
 					newstress[iz] = stress[iz] + linearstress;
 					if (newstress[iz]>yieldextens[iz])	newstress[iz] = yieldextens[iz];
 					if (newstress[iz]<yieldcompres[iz])	newstress[iz] = yieldcompres[iz];
-					layerforceincre += (newstress[iz]-stress[iz]) * dz;
-					layerabsforceincre += fabs(newstress[iz]-stress[iz]) * dz;
-					cumulmomentlayer += newstress[iz] * (z-z_null_strs) * dz;
-					incremomentlayer += (newstress[iz]-stress[iz]) * (z-z_null_strs) * dz;
+					layerforceincre += (newstress[iz]-stress[iz]) * cfg->dz;
+					layerabsforceincre += fabs(newstress[iz]-stress[iz]) * cfg->dz;
+					cumulmomentlayer += newstress[iz] * (z-z_null_strs) * cfg->dz;
+					incremomentlayer += (newstress[iz]-stress[iz]) * (z-z_null_strs) * cfg->dz;
 				}
 				/*fprintf(stdout, "\n\tIter.%d; Pres.lay. %.2e; Abspres. %.2e;\tNullpoint:%.2f", i, layerforceincre, layerabsforceincre, z_null_strs);*/
 				/*Exits if convergence ocurred; modifies null point depth otherwise:modifies*/
@@ -732,7 +729,7 @@ float moment_calculator_hist (
 			}
 			if (i>=numiter) fprintf(stdout, "*%d", layer);
 			for (iz=itop; iz<=ibot; iz++)  {
-				z = iz*dz;
+				z = iz*cfg->dz;
 				stress[iz] = newstress[iz];
 			}
 		}
@@ -755,24 +752,24 @@ float moment_calculator_hist (
 
 
 
-int Repare_Blocks()
+int Repare_Blocks(ModelConfig *cfg, ModelContext *ctx)
 {
 	int  	i_Block_max_arrange;
 
 	/*Avoids Blocks to have negative thickness or zero area*/
 
-	i_Block_max_arrange = (switch_topoest)? i_first_Block_load : numBlocks;
+	i_Block_max_arrange = (switch_topoest)? i_first_Block_load : ctx->numBlocks;
 	for (int i_Block=1; i_Block < i_Block_max_arrange; i_Block++) {
-		for (int i=0; i<Nx; i++) {
+		for (int i=0; i<cfg->Nx; i++) {
 			Blocks[i_Block-1].thick[i] = MAX_2(Blocks[i_Block-1].thick[i], 0);
 		}
 	}
 	/*Delete empty Blocks except if hidden*/
-	for (int i_Block=0; i_Block<numBlocks; i_Block++) {
+	for (int i_Block=0; i_Block<ctx->numBlocks; i_Block++) {
 		float Block_area=0;
-		for (int i=0; i<Nx; i++)  Block_area += Blocks[i_Block].thick[i];
-		Block_area *= dx;
-		if (Block_area<1e2 && Blocks[i_Block].type!='H' && Blocks[i_Block].type != 'I') {Delete_Block(i_Block); i_Block--;}
+		for (int i=0; i<cfg->Nx; i++)  Block_area += Blocks[i_Block].thick[i];
+		Block_area *= cfg->dx;
+		if (Block_area<1e2 && Blocks[i_Block].type!='H' && Blocks[i_Block].type != 'I') {Delete_Block(ctx, i_Block); i_Block--;}
 	}
 	return(1);
 }
@@ -781,7 +778,7 @@ int Repare_Blocks()
 
 
 
-int read_file_YSE()
+int read_file_YSE(ModelConfig *cfg)
 {
 	/*READS THE YIELD STRESS ENVELOPE FILE 'projectname.YSE'*/
 
@@ -811,9 +808,9 @@ int read_file_YSE()
 	switch_YSE_file = YES;
 
 	/*Interpolates vertically the YSE*/
-	for (ix=0; ix<Nx; ix++) {
-		for (iz=0; iz<Nz; iz++) {
-			z = iz*dz;
+	for (ix=0; ix<cfg->Nx; ix++) {
+		for (iz=0; iz<cfg->Nz; iz++) {
+			z = iz*cfg->dz;
 			yieldcompres[ix][iz] = interpol_in_xy_data(z_yse, yse_comp, nz_input, z);
 			yieldextens[ix][iz]  = interpol_in_xy_data(z_yse, yse_extn, nz_input, z);		
 		}
@@ -826,12 +823,12 @@ int read_file_YSE()
 
 
 
-int Rheo_Flex_Iter () {
+int Rheo_Flex_Iter (ModelConfig *cfg, ModelContext *ctx) {
 	int 	i, ix, iz, i_x_temp, j, rheoiter, 
 		ncapas, NDs=3, NDi=3;
 	float 	d2wdx2=SIGNAL, criterioconv, 
 		Te_ant, 
-		refstress, x, incremoment, 
+		refstress, xpos, incremoment, 
 		mechanical_thickness;	/*[m] */
 	FILE 	*file, *file_temp ;
 	char  	fileout[MAXLENFILE], gmtcommand[MAXLENLINE] ;
@@ -846,9 +843,9 @@ int Rheo_Flex_Iter () {
 
 	fprintf(stdout, " Rh  ");
 
-	A = alloc_matrix_dbl (Nx, NDi+1+NDs);
-	b = (double *) calloc (Nx , sizeof(double));
-	moment = (float *) calloc (Nx , sizeof(float));
+	A = alloc_matrix_dbl (cfg->Nx, NDi+1+NDs);
+	b = (double *) calloc (cfg->Nx , sizeof(double));
+	moment = (float *) calloc (cfg->Nx , sizeof(float));
 	if (!switch_strs_history) {
 		/*
 		  Note that in this case (no stress history) deflection is 
@@ -858,11 +855,11 @@ int Rheo_Flex_Iter () {
 		  be taken into account.
 		*/
 		float max_Te_var;
-		want =   (float *) calloc (Nx , sizeof(float));
-		for (i=0;i<Nx;i++) want[i] = w[i];
+		want =   (float *) calloc (cfg->Nx , sizeof(float));
+		for (i=0;i<cfg->Nx;i++) want[i] = w[i];
 		/*Calculates a pure elastic Initial deflection*/
-		LES_matrix(A, b, D, q, Dq, w, NO);
-		solveLES(A, b, Nx, 3, 3, w);
+		LES_matrix(cfg, ctx, A, b, D, q, Dq, w, NO);
+		solveLES(A, b, cfg->Nx, 3, 3, w);
 		/*
 		  Uses this w deflection as a first value for an iteration that
 		  finds succesive EET and deflection distributions
@@ -872,20 +869,19 @@ int Rheo_Flex_Iter () {
 			max_Te_var=0;
 			fprintf(stdout, "\b\b%2d", rheoiter);  fflush(stdout);
 			/*For each x position calculates stress distribution & EET:*/
-			for (ix=0, criterioconv=momentmax=0; ix<Nx; ix++) {
-				x=x0+dx*ix;
+			for (ix=0, criterioconv=momentmax=0; ix<cfg->Nx; ix++) {
+				xpos=cfg->x0+cfg->dx*ix;
 				/*Curvature from previous deflection (positive at forebulge)*/
-				if (ix>0 && ix<Nx-1)	d2wdx2 = (w[ix+1] -2*w[ix] + w[ix-1]) /dx/dx ;
-				if (ix==0)			d2wdx2 = (Dw[2] -2*Dw[1] + Dw[0]) /dx/dx;
-				if (ix==Nx-1) 		d2wdx2 = (Dw[Nx] -2*Dw[Nx-1] + Dw[Nx-2]) /dx/dx;
+				if (ix>0 && ix<cfg->Nx-1)	d2wdx2 = (w[ix+1] -2*w[ix] + w[ix-1]) /cfg->dx/cfg->dx ;
+				if (ix==0)			d2wdx2 = (Dw[2] -2*Dw[1] + Dw[0]) /cfg->dx/cfg->dx;
+				if (ix==cfg->Nx-1) 		d2wdx2 = (Dw[cfg->Nx] -2*Dw[cfg->Nx-1] + Dw[cfg->Nx-2]) /cfg->dx/cfg->dx;
 				if (fabs(d2wdx2)<1e-12) d2wdx2 = -1e-12;
 
 				/*Finds the yield stress envelope from temperature
 				and geometry:*/
 				if (!switch_YSE_file) yield_stress_envelope (
-					Temperature[ix], Nz, dz, 0, 
+					cfg, Temperature[ix], 0, 
 					upper_crust_thick[ix], crust_thick[ix], 
-					isost_model, 
 					yieldcompres[ix], yieldextens[ix], 
 					&mechanical_thickness
 				);
@@ -893,10 +889,9 @@ int Rheo_Flex_Iter () {
 				depending on preliminar plate curvature and 
 				returns the moment at this x position.*/
 				moment[ix] = moment_calculator (
-					d2wdx2, horz_force, 
+					cfg, d2wdx2, 
 					yieldcompres[ix], yieldextens[ix], 
-					stress[ix], isost_model, crust_thick[ix], 
-					Nz, dz, 
+					stress[ix], crust_thick[ix], 
 					&refstress, &ncapas
 				);
 				Te_ant = Te[ix] ;
@@ -910,20 +905,20 @@ int Rheo_Flex_Iter () {
 			}
 
 			/*Calculates new deflection with present EET*/
-			LES_matrix(A, b, D, q, Dq, w, NO) ;
-			solveLES(A, b, Nx, 3, 3, w) ;
+			LES_matrix(cfg, ctx, A, b, D, q, Dq, w, NO) ;
+			solveLES(A, b, cfg->Nx, 3, 3, w) ;
 
 			/*Checks convergence*/
-			if ((criterioconv*dx < MAXETERR && max_Te_var<MAX_Te_LOC_VAR) || rheoiter>=NMAXRHEOITERS-1) break;
+			if ((criterioconv*cfg->dx < MAXETERR && max_Te_var<MAX_Te_LOC_VAR) || rheoiter>=NMAXRHEOITERS-1) break;
 		}
 		fprintf(stdout, "\b\b") ;
 		if (rheoiter>=NMAXRHEOITERS-1) {
 			fprintf(stdout, "! \b");
-			if (verbose_level>=3)
-				fprintf(stderr, "\nERROR: Lack of convergence in EET!. EET error area = %.2f km2", criterioconv*dx/1e6);
+			if (cfg->verbose_level>=3)
+				fprintf(stderr, "\nERROR: Lack of convergence in EET!. EET error area = %.2f km2", criterioconv*cfg->dx/1e6);
 		}
 
-		for (i=0;i<Nx;i++) Dw[i] = w[i] - want[i];
+		for (i=0;i<cfg->Nx;i++) Dw[i] = w[i] - want[i];
 		free(want);
 	}
 
@@ -932,11 +927,11 @@ int Rheo_Flex_Iter () {
 		BOOL 	switch_last_repeat=NO;
 		float 	point_moment, max_Te_var;
 
-		x_stress = calloc (Nz , sizeof(float));
+		x_stress = calloc (cfg->Nz , sizeof(float));
 
 		/*Calculates a pure elastic initial deflection*/
-		LES_matrix(A, b, D, q, Dq, w, NO);
-		solveLES(A, b, Nx, 3, 3, Dw);
+		LES_matrix(cfg, ctx, A, b, D, q, Dq, w, NO);
+		solveLES(A, b, cfg->Nx, 3, 3, Dw);
 
 		/*
 		  Uses this Dw deflection increment as a first value for an iteration
@@ -947,20 +942,19 @@ int Rheo_Flex_Iter () {
 			max_Te_var=0;
 			fprintf(stdout, "\b\b%2d", rheoiter);  fflush(stdout);
 			/*For each x position calculates stress distribution & EET:*/
-			for (ix=0, criterioconv=momentmax=0; ix<Nx; ix++) {
-				x=x0+dx*ix;
+			for (ix=0, criterioconv=momentmax=0; ix<cfg->Nx; ix++) {
+				xpos=cfg->x0+cfg->dx*ix;
 				/*Curvature increment from previous deflection (positive at forebulge)*/
-				if (ix>0 && ix<Nx-1) 	d2wdx2 = (Dw[ix+1] -2*Dw[ix] + Dw[ix-1]) /dx/dx;
-				if (ix==0)	  	d2wdx2 = (Dw[2] -2*Dw[1] + Dw[0]) /dx/dx;
-				if (ix==Nx-1)   	d2wdx2 = (Dw[Nx-1] -2*Dw[Nx-2] + Dw[Nx-3]) /dx/dx;
+				if (ix>0 && ix<cfg->Nx-1) 	d2wdx2 = (Dw[ix+1] -2*Dw[ix] + Dw[ix-1]) /cfg->dx/cfg->dx;
+				if (ix==0)	  	d2wdx2 = (Dw[2] -2*Dw[1] + Dw[0]) /cfg->dx/cfg->dx;
+				if (ix==cfg->Nx-1)   	d2wdx2 = (Dw[cfg->Nx-1] -2*Dw[cfg->Nx-2] + Dw[cfg->Nx-3]) /cfg->dx/cfg->dx;
 				if (fabs(d2wdx2)<1e-12) d2wdx2 = -1e-12;
 
 				/*Finds the yield stress envelope from temperature
 				and geometry:*/
 				if (!switch_YSE_file) yield_stress_envelope (
-					Temperature[ix], Nz, dz, 0, 
+					cfg, Temperature[ix], 0, 
 					upper_crust_thick[ix], crust_thick[ix], 
-					isost_model, 
 					yieldcompres[ix], yieldextens[ix], 
 					&mechanical_thickness
 				);
@@ -970,12 +964,11 @@ int Rheo_Flex_Iter () {
 				  depending on preliminar plate curvature and 
 				  returns the moment at this x position.
 				*/
-				for (iz=0; iz<Nz; iz++) x_stress[iz]=stress[ix][iz];
+				for (iz=0; iz<cfg->Nz; iz++) x_stress[iz]=stress[ix][iz];
 				incremoment = moment_calculator_hist (
-					d2wdx2, horz_force, 
+					cfg, d2wdx2, 
 					yieldcompres[ix], yieldextens[ix], 
-					x_stress, isost_model, crust_thick[ix], 
-					Nz, dz, 
+					x_stress, crust_thick[ix], 
 					&point_moment, &ncapas
 				);
 				if (switch_last_repeat) {
@@ -983,7 +976,7 @@ int Rheo_Flex_Iter () {
 					if (fabs(momentmax)<fabs(moment[ix])) {
 						momentmax=moment[ix]; imomentmax=ix;
 					}
-					for (iz=0; iz<Nz; iz++) stress[ix][iz]=x_stress[iz];
+					for (iz=0; iz<cfg->Nz; iz++) stress[ix][iz]=x_stress[iz];
 				}
 
 				Te_ant = Te[ix];
@@ -994,26 +987,26 @@ int Rheo_Flex_Iter () {
 			}
 
 			/*Calculates new deflection with present EET*/
-			LES_matrix(A, b, D, q, Dq, w, NO) ;
-			solveLES(A, b, Nx, 3, 3, Dw) ;
+			LES_matrix(cfg, ctx, A, b, D, q, Dq, w, NO) ;
+			solveLES(A, b, cfg->Nx, 3, 3, Dw) ;
 		
 			/*Checks convergence*/
-			if ((criterioconv*dx < MAXETERR && max_Te_var<MAX_Te_LOC_VAR) || switch_last_repeat) {
+			if ((criterioconv*cfg->dx < MAXETERR && max_Te_var<MAX_Te_LOC_VAR) || switch_last_repeat) {
 				if (switch_last_repeat) break;
 				else {switch_last_repeat=YES; rheoiter--;}
 			}
 		}
 		fprintf(stdout, "\b\b") ;
 		if (rheoiter>=NMAXRHEOITERS-1) {
-			fprintf(stdout, "!(%s) \b", (criterioconv*dx<MAXETERR)? "M" : ((max_Te_var<MAX_Te_LOC_VAR)? "m" : "B"));
-			if (verbose_level>=3)
-				fprintf(stderr, "\nERROR: Lack of convergence in EET!. EET error area = %.2f km2  ", criterioconv*dx/1e6);
+			fprintf(stdout, "!(%s) \b", (criterioconv*cfg->dx<MAXETERR)? "M" : ((max_Te_var<MAX_Te_LOC_VAR)? "m" : "B"));
+			if (cfg->verbose_level>=3)
+				fprintf(stderr, "\nERROR: Lack of convergence in EET!. EET error area = %.2f km2  ", criterioconv*cfg->dx/1e6);
 		}
-		for (i=0;i<Nx;i++) w[i] += Dw[i];
+		for (i=0;i<cfg->Nx;i++) w[i] += Dw[i];
 		free(x_stress);
 	}
 
-	flexural_stats(moment);
+	flexural_stats(cfg, ctx, moment);
 
 	free (moment);
 	return(1);
@@ -1021,50 +1014,50 @@ int Rheo_Flex_Iter () {
 
 
 
-int flexural_stats (float *moment) {
-	if (verbose_level>=1) {
+int flexural_stats (ModelConfig *cfg, ModelContext *ctx, float *moment) {
+	if (cfg->verbose_level>=1) {
 		/*prints flexural statistics*/
 		int 	i, iwmindt=SIGNAL, iwmaxdt=SIGNAL, idwmindt=SIGNAL, idwmaxdt=SIGNAL, ihmaxdt=SIGNAL;
 		float	shear=0, shearmax=-1e19, xshearmax=-1e19, shearmin=+1e19, xshearmin=+1e19, 
 			momentmax=-1e19, xmomentmax=-1e19, momentmin=+1e19, xmomentmin=+1e19, 
-			xfirstnodo=0, x, 
+			xfirstnodo=0, xpos, 
 			wmaxdt=-1e19, wmindt=+1e19, dwmaxdt=-1e19, dwmindt=+1e19;
 		float 	Warea=0, Dmean=0;
 
-		for (i=1; i<Nx-1; i++) {
+		for (i=1; i<cfg->Nx-1; i++) {
 			if (w[i]*w[i+1] <= 0  &&  xfirstnodo == 0 )
-				xfirstnodo = i*dx+x0 ;
-			if ( i < Nx-2 )
-				shear = - D[i] * (w[i+2] - 3*w[i+1] + 3*w[i] -w[i-1]) / pow(dx,3);
+				xfirstnodo = i*cfg->dx+cfg->x0 ;
+			if ( i < cfg->Nx-2 )
+				shear = - D[i] * (w[i+2] - 3*w[i+1] + 3*w[i] -w[i-1]) / pow(cfg->dx,3);
 			if (shearmin > shear)
-				{ shearmin = shear;	xshearmin=x0+dx*(i+.5); }
+				{ shearmin = shear;	xshearmin=cfg->x0+cfg->dx*(i+.5); }
 			if (shearmax < shear)
-				{ shearmax = shear;	xshearmax=x0+dx*(i+.5); }
+				{ shearmax = shear;	xshearmax=cfg->x0+cfg->dx*(i+.5); }
 			if (shearmax < shear)
-				{ shearmax = shear;	xshearmax=x0+dx*(i+.5); }
-			if (momentmax < moment[i] && x0+dx*i>xmin && x0+dx*i<xmax)
-				{ momentmax = moment[i];	xmomentmax=x0+dx*i; }
-			if (momentmin > moment[i] && x0+dx*i>xmin && x0+dx*i<xmax)
-				{ momentmin = moment[i];	xmomentmin=x0+dx*i; }
+				{ shearmax = shear;	xshearmax=cfg->x0+cfg->dx*(i+.5); }
+			if (momentmax < moment[i] && cfg->x0+cfg->dx*i>cfg->xmin && cfg->x0+cfg->dx*i<cfg->xmax)
+				{ momentmax = moment[i];	xmomentmax=cfg->x0+cfg->dx*i; }
+			if (momentmin > moment[i] && cfg->x0+cfg->dx*i>cfg->xmin && cfg->x0+cfg->dx*i<cfg->xmax)
+				{ momentmin = moment[i];	xmomentmin=cfg->x0+cfg->dx*i; }
 		}
-		for (i=1; i<Nx-1; i++) {
-			if (x0+i*dx>=xmin && x0+i*dx<=xmax) {
+		for (i=1; i<cfg->Nx-1; i++) {
+			if (cfg->x0+i*cfg->dx>=cfg->xmin && cfg->x0+i*cfg->dx<=cfg->xmax) {
 			if (wmindt>w[i]) {		wmindt=w[i]; 	iwmindt=i; }
 			if (wmaxdt<w[i]) {		wmaxdt=w[i]; 	iwmaxdt=i; }
 			if (dwmindt>Dw[i]) {		dwmindt=Dw[i]; 	idwmindt=i; }
 			if (dwmaxdt<Dw[i]) {		dwmaxdt=Dw[i]; 	idwmaxdt=i; }
-			Warea += w[i]*dx;
-			Dmean += D[i]/Nx;
+			Warea += w[i]*cfg->dx;
+			Dmean += D[i]/cfg->Nx;
 			}
 		}
 		PRINT_SUMLINE("moment_max.	= %10.3e N  \t@x= %5.1f km", momentmax, xmomentmax/1000);
 		PRINT_SUMLINE("moment_min.	= %10.3e N  \t@x= %5.1f km", momentmin, xmomentmin/1000);
 		PRINT_SUMLINE("shear_max.	 = %10.3e N/m\t@x= %5.1f km", shearmax, xshearmax/1000);
 		PRINT_SUMLINE("shear_min.	 = %10.3e N/m\t@x= %5.1f km", shearmin, xshearmin/1000);
-		PRINT_SUMLINE("deflection_max.= %8.1f m   \t@x= %5.1f km", wmaxdt, (x0+iwmaxdt*dx)/1000);
-		PRINT_SUMLINE("deflection_min.= %8.1f m   \t@x= %5.1f km", wmindt, (x0+iwmindt*dx)/1000);
-		PRINT_SUMLINE("defl.vel.max.  = %8.1f m/My\t@x= %5.1f km", dwmaxdt/(dt/Matosec), (x0+idwmaxdt*dx)/1000);
-		PRINT_SUMLINE("defl.vel.min.  = %8.1f m/My\t@x= %5.1f km", dwmindt/(dt/Matosec), (x0+idwmindt*dx)/1000);
+		PRINT_SUMLINE("deflection_max.= %8.1f m   \t@x= %5.1f km", wmaxdt, (cfg->x0+iwmaxdt*cfg->dx)/1000);
+		PRINT_SUMLINE("deflection_min.= %8.1f m   \t@x= %5.1f km", wmindt, (cfg->x0+iwmindt*cfg->dx)/1000);
+		PRINT_SUMLINE("defl.vel.max.  = %8.1f m/My\t@x= %5.1f km", dwmaxdt/(ctx->dt/Matosec), (cfg->x0+idwmaxdt*cfg->dx)/1000);
+		PRINT_SUMLINE("defl.vel.min.  = %8.1f m/My\t@x= %5.1f km", dwmindt/(ctx->dt/Matosec), (cfg->x0+idwmindt*cfg->dx)/1000);
 		PRINT_SUMLINE("first zero @x= %8.1f km ", xfirstnodo/1000);
 		PRINT_SUMLINE("deflectn.area  = %8.1f km2 \tmean_rigid.= %.2e N m/m", Warea/1e6, Dmean);
 	}
@@ -1091,13 +1084,11 @@ int solveLES (double **A, double *b, int Nx, int nds, int ndi, float *x)
 
 
 int yield_stress_envelope_semibrittle (
+			ModelConfig *cfg,
 			float *Temperatura, 	/*Temperature array*/
-			int   Nz, 		/*Number of depth finite differences points*/
-			float dz, 		/*Depth gridding interval*/
 			float z0, 		/*Equivalent meters of crust to determine the pressure and strength at the top of the plate*/
 			float Uppercrustbase, 
 			float Lowercrustbase, 
-			int   isost_model, 	/*3: oceanic; >=4: Continental*/
 			float *yieldcompres, 
 			float *yieldextens, 
 			float *espmecanptr )
@@ -1145,17 +1136,17 @@ int yield_stress_envelope_semibrittle (
 		Qml = 522.5e3; 
 	}
 
-	for (i=0; i<Nz; i++) {
-		z = i*dz;
+	for (i=0; i<cfg->Nz; i++) {
+		z = i*cfg->dz;
 		T = Temperatura[i]+273.3;
 		if (z<Uppercrustbase) 				{Q=Quc; strainrateref=epsuc;}
 		if (z>=Uppercrustbase && z<Lowercrustbase) 	{Q=Qlc; strainrateref=epslc;}
 		if (z>=Lowercrustbase || isost_model==3) 	{Q=Qml; strainrateref=epsml;}
 
 		/*Brittle failure: (Ranalli, p. 248)*/
-		brittle_exten =  alpha_exten * g * denscrust * (z + z0) * (1-lambda);
-		brittle_compr = -alpha_compr * g * denscrust * (z + z0) * (1-lambda);
-		brittle_strik =  alpha_strik * g * denscrust * (z + z0) * (1-lambda);
+		brittle_exten =  alpha_exten * g * cfg->denscrust * (z + z0) * (1-lambda);
+		brittle_compr = -alpha_compr * g * cfg->denscrust * (z + z0) * (1-lambda);
+		brittle_strik =  alpha_strik * g * cfg->denscrust * (z + z0) * (1-lambda);
 
 		/*Ductil flow ('plastic'):*/
 		/*Power law flow (Bodine et al. 1981; Lynch & Morgan, 1987):*/
@@ -1171,7 +1162,7 @@ int yield_stress_envelope_semibrittle (
 		yieldcompres[i] = MAX_2(brittle_compr, -ductil) ;
 		yieldextens[i]  = MIN_2(brittle_exten,  ductil) ;
 		if (yieldextens[i] > mecanlimit || yieldcompres[i] < -mecanlimit || z<=Lowercrustbase) { 
-			espmecan += dz ;
+			espmecan += cfg->dz ;
 			if (!switch_competente) numlayers++ ; 
 			switch_competente = YES;
 		}
@@ -1185,13 +1176,11 @@ int yield_stress_envelope_semibrittle (
 
 
 int yield_stress_envelope (
+			ModelConfig *cfg,
 			float *Temperatura, /*Temperature array*/
-			int   Nz, 		/*Number of depth finite differences points*/
-			float dz, 		/*Depth gridding interval*/
 			float z0, 		/*Equivalent meters of crust to determine the pressure and strength at the top of the plate*/
 			float Uppercrustbase, 
 			float Lowercrustbase, 
-			int   isost_model, 	/*3: oceanic; >=4: Continental*/
 			float *yieldcompres, 
 			float *yieldextens, 
 			float *espmecanptr )
@@ -1245,8 +1234,8 @@ int yield_stress_envelope (
 	else {
 	}
 
-	for (i=0; i<Nz; i++) {
-		z = i*dz;
+	for (i=0; i<cfg->Nz; i++) {
+		z = i*cfg->dz;
 		T = Temperatura[i]+273.3;
 		if (z<Uppercrustbase) 				{Q=Quc; strainrateref=epsuc;}
 		if (z>=Uppercrustbase && z<Lowercrustbase) 	{Q=Qlc; strainrateref=epslc;}
@@ -1278,7 +1267,7 @@ int yield_stress_envelope (
 		yieldcompres[i] = (brittlecomp > -ductil)? 	brittlecomp : -ductil ;
 		yieldextens[i]  = (brittleext < ductil)?	brittleext  :  ductil ;
 		if (yieldextens[i] > mecanlimit || yieldcompres[i] < -mecanlimit || z<=Lowercrustbase) { 
-			espmecan += dz ;
+			espmecan += cfg->dz ;
 			if (!switch_competente) numlayers++ ; 
 			switch_competente = YES;
 		}
@@ -1292,7 +1281,7 @@ int yield_stress_envelope (
 
 
 
-float calculate_sea_level()
+float calculate_sea_level(float current_time)
 {
 	/*
 	  Calculates the sea level and the load related to changes 
@@ -1305,11 +1294,11 @@ float calculate_sea_level()
 	if (n_sea_level_input_points) {
 		int i;
 		for (i=0; i<n_sea_level_input_points; i++) {
-		if (var_sea_level[i][0]>=Time) break;
+		if (var_sea_level[i][0]>=current_time) break;
 			}
 			if (i!=0 && i!=n_sea_level_input_points) {
-		sea_level = 	( (Time-var_sea_level[i-1][0])*var_sea_level[i][1] + 
-				  (var_sea_level[i][0]-Time)*var_sea_level[i-1][1] ) 
+		sea_level = 	( (current_time-var_sea_level[i-1][0])*var_sea_level[i][1] + 
+				  (var_sea_level[i][0]-current_time)*var_sea_level[i-1][1] ) 
 					 / (var_sea_level[i][0]-var_sea_level[i-1][0]);
 		}
  		else {
@@ -1323,7 +1312,7 @@ float calculate_sea_level()
 
 
 
-int calculate_water_load()
+int calculate_water_load(ModelConfig *cfg, ModelContext *ctx)
 {
 	float	water_volume=0;
 
@@ -1331,36 +1320,34 @@ int calculate_water_load()
 	  Calculates sea/lake water load due to the water column
 	*/
 
-	calculate_topo(topo);
+	//calculate_topo(cfg, ctx, topo); /* Assuming calculated previously */
 
 	if (!water_load) return(0);
 
-	for (int i=0; i<Nx; i++) {
+	for (int i=0; i<cfg->Nx; i++) {
 		int il;
 		float Dq_water, h_water_now=0;
-		if (hydro_model) {
+		if (cfg->hydro_model) {
 			if (il=drainage[i].lake) {
 				/*sea lake already has its proper level defined*/
-			h_water_now = MAX_2(0, Lake[il].alt-topo[i]);
+			h_water_now = MAX_2(0, Lake[il].alt-ctx->topo[i]);
 			}
 		}
 		else {
-			h_water_now = MAX_2(0, sea_level-topo[i]);
+			h_water_now = MAX_2(0, ctx->sea_level-ctx->topo[i]);
 		}
-		Dq_water = (h_water_now-h_water[i]) * g * (denswater-densenv);
+		Dq_water = (h_water_now-h_water[i]) * g * (cfg->denswater-cfg->densenv);
 //PRINT_ERROR("%.2f, %.2f %.2f %d %.2f %.2f %.2e", i*dx+x0, h_water_now, h_water[i], il, sea_level, topo[i], Dq_water);
 		h_water[i] = h_water_now;
 		/*Don't load the initial water column*/
-		if (Time>Timeini) Dq[i] += Dq_water;
+		if (ctx->Time>ctx->Timeini) Dq[i] += Dq_water;
 		water_volume += h_water[i];		
 	}
 
 	PRINT_ARRAY_INFO(h_water, "water", "m", "m2") 
 	if (n_sea_level_input_points) {
-		PRINT_SUMLINE("sea_level: %8.1f m   sea_volume = %.1f km2", sea_level, water_volume*dx*Nx/(Nx-1)/1e6);
+		PRINT_SUMLINE("sea_level: %8.1f m   sea_volume = %.1f km2", ctx->sea_level, water_volume*cfg->dx*cfg->Nx/(cfg->Nx-1)/1e6);
 	}
 	fflush(stdout);
 	return(1);
 }
-
-

@@ -1,5 +1,5 @@
 #------------------------------------------------------------------------
-VERSION = tAo_2025-11-17
+VERSION = tAo_2026-03-15_factorized
 #You may need to modify these variables
 CC	= gcc #gcc cc
 LIBS	= -L$(LIB) -lm -lc

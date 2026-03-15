@@ -319,7 +319,16 @@ int read_file_resume(char *filename)
 
 
 	/*Arrays:*/
-	Allocate_Memory();
+	ModelConfig cfg = {0}; ModelContext ctx = {0};
+	cfg.Nx = Nx; cfg.Nz = Nz; cfg.dx = dx; cfg.dz = dz;
+	cfg.x0 = x0; cfg.xf = xf; cfg.xmin = xmin; cfg.xmax = xmax;
+	cfg.hydro_model = hydro_model;
+	cfg.erosed_model = erosed_model;
+	cfg.verbose_level = verbose_level;
+	cfg.densenv = densenv; cfg.denssedim = denssedim;
+	cfg.denscrust = denscrust; cfg.denswater = denswater; 
+	cfg.densasthen = densasthen; cfg.densmantle = densmantle;
+	Allocate_Memory(&cfg, &ctx);
 	fread(w, 		sizeof(float),	Nx, 	file);
 	fread(D, 		sizeof(float),	Nx, 	file);
 	fread(q, 		sizeof(float),	Nx, 	file);
@@ -366,7 +375,10 @@ int read_file_resume(char *filename)
 
 	for (i=0; i<numBlocks_aux; i++) {
 		float *ptr1, *ptr2, *ptr3;
-		insert_new_Block(numBlocks);
+		ModelConfig tmp_cfg = {0}; ModelContext tmp_ctx = {0};
+		tmp_cfg.Nx = Nx; tmp_ctx.numBlocks = numBlocks; tmp_ctx.Time = Time;
+		insert_new_Block(&tmp_cfg, &tmp_ctx, numBlocks);
+		numBlocks = tmp_ctx.numBlocks;
 		ptr1 = Blocks[numBlocks-1].thick; 
 		fread(&Blocks[numBlocks-1], sizeof(struct BLOCK_1D), 1, file);
 		Blocks[numBlocks-1].thick = ptr1;
@@ -525,7 +537,7 @@ int read_file_Te()
 
 
 
-int read_file_Temperature()
+int read_file_Temperature(ModelConfig *cfg, ModelContext *ctx)
 {
 	/*READS TEMPERATURE FILE 'projectname.TMP'*/
 
@@ -537,12 +549,12 @@ int read_file_Temperature()
 		linea[MAXLENLINE];
 	float	a, b, x_first, x_last, 
 		*temp, *z_temp, x, z,
-		**temp_input,		/*Temperature at input points of .TMP file [ºC]*/
+		**temp_input,		/*Temperature at input points of .TMP file [ï¿½C]*/
 		*x_temp_input; 		/*positions of the given geotherms of .TMP file*/
 
 	if (isost_model<3 || switch_YSE_file) return(0);
 
-	Temperature = alloc_matrix(Nx, Nz);
+	Temperature = alloc_matrix(cfg->Nx, cfg->Nz);
 
 	sprintf(filename, "%s.TMP", projectname) ;
 	if ((file = fopen(filename, "rt")) == NULL) {
@@ -565,13 +577,13 @@ int read_file_Temperature()
 		if ((n_fld==2 && nx_temp_input==0)) { 
 			nx_temp_input=1;
 			x_temp_input[0]=xmin;
-			temp_input[nx_temp_input-1] =   (float *) calloc(Nz, sizeof(float));
+			temp_input[nx_temp_input-1] =   (float *) calloc(cfg->Nz, sizeof(float));
 			if (verbose_level>=1) fprintf(stdout, " Temperature laterally constant.");
 		}
 		if ((n_fld==1 && nx_temp_input>0) || !lin) {
 			/*Interpolates vertically the geotherm (temperature-z)*/
-			for (iz=0; iz<Nz; iz++) {
-				z = iz*dz;
+			for (iz=0; iz<cfg->Nz; iz++) {
+				z = iz*cfg->dz;
 				for (i_zinp=0; i_zinp<nz_temp_input-1; i_zinp++)
 					if (z<=z_temp[i_zinp+1]) break;
 				temp_input[nx_temp_input-1][iz] = temp[i_zinp] + (z-z_temp[i_zinp]) * 
@@ -584,7 +596,7 @@ int read_file_Temperature()
 			nx_temp_input++; 
 			nz_temp_input = 0; 
 			x_temp_input[nx_temp_input-1] = a;
-			temp_input[nx_temp_input-1] =   (float *) calloc(Nz, sizeof(float));
+			temp_input[nx_temp_input-1] =   (float *) calloc(cfg->Nz, sizeof(float));
 		}
 		if (n_fld==2) { 
 			nz_temp_input++; 
@@ -599,11 +611,11 @@ int read_file_Temperature()
 	if (verbose_level>=1 && nx_temp_input>1) fprintf(stdout, " %d geotherms read from x=%.1f to %.1f km", nx_temp_input, x_first/1000, x_last/1000);
 
 	/*Interpolates horizontally the geotherm (temperature-z)*/
-	for (ix=0; ix<Nx; ix++) {
-		x=ix*dx+x0;
+	for (ix=0; ix<cfg->Nx; ix++) {
+		x=ix*cfg->dx+cfg->x0;
 		for (i_x_temp=0; i_x_temp<nx_temp_input-1; i_x_temp++)
 			 if (x<=x_temp_input[i_x_temp+1]) break;
-		for (iz=0; iz<Nz; iz++) {
+		for (iz=0; iz<cfg->Nz; iz++) {
 			if (nx_temp_input>1) {
 			    if (x>x_temp_input[0] && x<x_temp_input[nx_temp_input-1]) {
 				Temperature[ix][iz] = temp_input[i_x_temp][iz] +
@@ -620,7 +632,7 @@ int read_file_Temperature()
 		}
 	}
 	
-	write_file_Temperature_initial();
+	write_file_Temperature_initial(cfg, ctx);
 	
 	free(z_temp);
 	free(temp);
@@ -640,7 +652,7 @@ int read_file_Temperature()
 
 
 
-int write_file_erosed (float *total_erosion)
+int write_file_erosed (ModelConfig *cfg, ModelContext *ctx, float *total_erosion)
 {
 	int 	i, ix_min, ix_max;
 	float	x ;
@@ -648,19 +660,19 @@ int write_file_erosed (float *total_erosion)
 
 	/*PRINTS A FILE with surface transport results*/
 
-	Write_Open_Filename_Return (".eros", "wt", !erosed_model);
+	Write_Open_Filename_Return (".eros", "wt", !cfg->erosed_model);
 
-	fprintf(file, "#Time: %.2fMy\n#x[km]\terosion[m]\teros_rate[m/My]\ttopo[m]", Time/Matosec);
-		if (erosed_model>=2) 
+	fprintf(file, "#Time: %.2fMy\n#x[km]\terosion[m]\teros_rate[m/My]\ttopo[m]", ctx->Time/Matosec);
+		if (cfg->erosed_model>=2) 
 			fprintf(file, "\tdischarge[m3/s]\tsedload[kg/s]\ttype\tprecipt[l/m2/yr]\tevap[l/m2/yr]");
-	ix_min = MAX_2((xmin-x0-.1*dx)/dx, 0) ;	ix_max = MIN_2(floor((xmax-x0+.1*dx)/dx) + 2, Nx);
+	ix_min = MAX_2((cfg->xmin-cfg->x0-.1*cfg->dx)/cfg->dx, 0) ;	ix_max = MIN_2(floor((cfg->xmax-cfg->x0+.1*cfg->dx)/cfg->dx) + 2, cfg->Nx);
 	for(i=ix_min; i<ix_max; i++) {
 		float drainage_aux;
-		x=x0+dx*i;
+		x=cfg->x0+cfg->dx*i;
 		fprintf(file, "\n%7.2f\t%8.1f\t%8.2f\t%7.1f", 
-			x/1000, total_erosion[i] / dx/riverbasinwidth/denscrust, 
-			eros_now[i]/(dt/Matosec) / dx/riverbasinwidth/denscrust, topo[i] );
-		if (erosed_model>=2) {
+			x/1000, total_erosion[i] / cfg->dx/cfg->riverbasinwidth/cfg->denscrust, 
+			eros_now[i]/(ctx->dt/Matosec) / cfg->dx/cfg->riverbasinwidth/cfg->denscrust, ctx->topo[i] );
+		if (cfg->erosed_model>=2) {
 			drainage_aux = drainage[i].discharge;
 			if (drainage[i].lake) if (Lake[drainage[i].lake].n_sd) 
 				drainage_aux = drainage[Lake[drainage[i].lake].sd[0]].discharge;
@@ -676,7 +688,7 @@ int write_file_erosed (float *total_erosion)
 }
 
 
-int write_file_grav_anom (float *gravanom, float *geoidanom)
+int write_file_grav_anom (ModelConfig *cfg, ModelContext *ctx, float *gravanom, float *geoidanom)
 {
 	int 	i, ix_min, ix_max;
 	float	x ;
@@ -686,10 +698,10 @@ int write_file_grav_anom (float *gravanom, float *geoidanom)
 
 	Write_Open_Filename_Return (".xg", "wt", !grav_anom_type);
 
-	fprintf(file, "#Time: %.2fMy\n#x[km]\tdg[mGal]  N[m]", Time/Matosec);
-	ix_min = MAX_2((xmin-x0-.1*dx)/dx, 0) ;	ix_max = MIN_2(floor((xmax-x0+.1*dx)/dx) + 2, Nx);
+	fprintf(file, "#Time: %.2fMy\n#x[km]\tdg[mGal]  N[m]", ctx->Time/Matosec);
+	ix_min = MAX_2((cfg->xmin-cfg->x0-.1*cfg->dx)/cfg->dx, 0) ;	ix_max = MIN_2(floor((cfg->xmax-cfg->x0+.1*cfg->dx)/cfg->dx) + 2, cfg->Nx);
 	for(i=ix_min; i<ix_max; i++) {
-		x=x0+dx*i; 
+		x=cfg->x0+cfg->dx*i; 
 		fprintf(file, "\n%6.2f\t%6.1f\t%6.2f", 
 			x/1000, (gravanom[i]-gravanom[ix_max-2]) * 1e5, geoidanom[i]-geoidanom[ix_max-2]);
 	}
@@ -699,7 +711,7 @@ int write_file_grav_anom (float *gravanom, float *geoidanom)
 }
 
 
-int write_file_maxmompoint ()
+int write_file_maxmompoint (ModelConfig *cfg, ModelContext *ctx)
 {
 	int	i ;
 	FILE 	*file ;
@@ -708,10 +720,10 @@ int write_file_maxmompoint ()
 
 	fprintf(file, 	"#MMP_x= %.2f km\n"
 			"#z(km)  Compress(MPa) Extens(MPa)  Temp(C)  Stress [MPa]\n",
-			(imomentmax*dx+x0)/1e3);
-	for (i=0; i<Nz; i++) {
+			(imomentmax*cfg->dx+cfg->x0)/1e3);
+	for (i=0; i<cfg->Nz; i++) {
 		fprintf(file, "%.2f\t%.2f\t%.2f\t%.2f\t%.2f\n", 
-			i*dz/1e3, 
+			i*cfg->dz/1e3, 
 			yieldcompres[imomentmax][i]/1e6, yieldextens[imomentmax][i]/1e6, 
 			(switch_YSE_file)? NO_DATA:Temperature[imomentmax][i], 
 			stress[imomentmax][i]/1e6);
@@ -722,7 +734,7 @@ int write_file_maxmompoint ()
 
 
 
-int write_file_stress ()
+int write_file_stress (ModelConfig *cfg, ModelContext *ctx)
 {
 	int	ix, iz, ix_min, ix_max ;
 	FILE 	*file ;
@@ -732,10 +744,10 @@ int write_file_stress ()
 	fprintf(file, "#2D Stress grid (x-z) distribution.\n") ;
 	fprintf(file, "#x(km)\tz(km)\tstress[MPa]\ttemp[C]\tyieldcomp\tyieldext[MPa]\n");
 	/*Write stresses in the grid file*/
-	ix_min = MAX_2((xmin-x0-.1*dx)/dx, 0) ;	ix_max = MIN_2(floor((xmax-x0+.1*dx)/dx) + 2, Nx);
-	for (ix=ix_min; ix<ix_max; ix++) for (iz=0; iz<Nz; iz++) {
+	ix_min = MAX_2((cfg->xmin-cfg->x0-.1*cfg->dx)/cfg->dx, 0) ;	ix_max = MIN_2(floor((cfg->xmax-cfg->x0+.1*cfg->dx)/cfg->dx) + 2, cfg->Nx);
+	for (ix=ix_min; ix<ix_max; ix++) for (iz=0; iz<cfg->Nz; iz++) {
 		fprintf (file, "%.2f\t%.2f\t%.2f\t%.2f\t%.2f\t%.2f\n", 
-			(ix*dx+x0)/1e3, (iz*dz+w[ix]-zini)/1e3, stress[ix][iz]/1e6, (switch_YSE_file)? NO_DATA:Temperature[ix][iz], 
+			(ix*cfg->dx+cfg->x0)/1e3, (iz*cfg->dz+w[ix]-zini)/1e3, stress[ix][iz]/1e6, (switch_YSE_file)? NO_DATA:Temperature[ix][iz], 
 			yieldcompres[ix][iz]/1e6, yieldextens[ix][iz]/1e6);
 	}
 	fclose(file);
@@ -744,7 +756,7 @@ int write_file_stress ()
 
 
 
-int write_file_Te () 
+int write_file_Te (ModelConfig *cfg, ModelContext *ctx) 
 {
 	int	i;
 	float	x;
@@ -754,10 +766,10 @@ int write_file_Te ()
 
 	/*Write a file with the calculated EET*/
 	fprintf(file, "# %s: Calculated EET.\n", projectname) ;
-	for (i=0; i<Nx; i++) {
-		x=x0+dx*i;
-		if (x>xmin-dx && x<xmax+dx) {
- 			fprintf(file, "%.2f\t%.2f\n", (i*dx+x0)/1e3, Te[i]);
+	for (i=0; i<cfg->Nx; i++) {
+		x=cfg->x0+cfg->dx*i;
+		if (x>cfg->xmin-cfg->dx && x<cfg->xmax+cfg->dx) {
+ 			fprintf(file, "%.2f\t%.2f\n", (i*cfg->dx+cfg->x0)/1e3, Te[i]);
 		}
 	}
 	fclose(file);
@@ -766,7 +778,7 @@ int write_file_Te ()
 
 
 
-int write_file_Temperature ()
+int write_file_Temperature (ModelConfig *cfg, ModelContext *ctx)
 {
 	int	ix, iz, ix_min, ix_max ;
 	FILE 	*file ;
@@ -774,12 +786,12 @@ int write_file_Temperature ()
 	Write_Open_Filename_Return (".temp", "wt", isost_model<3 || switch_YSE_file);
 
 	fprintf(file, "# 2D Temperature grid (x-z) distribution.\n") ;
-	fprintf(file, "# x (km)\t z (km)\t temperature (ºC)\n") ;
+	fprintf(file, "# x (km)\t z (km)\t temperature (ï¿½C)\n") ;
 	/*Write temperatures in the grid file*/
-	ix_min = MAX_2((xmin-x0-.1*dx)/dx, 0) ;	ix_max = MIN_2(floor((xmax-x0+.1*dx)/dx) + 2, Nx);
-	for (ix=ix_min; ix<ix_max; ix++) for (iz=0; iz<Nz; iz++) {
+	ix_min = MAX_2((cfg->xmin-cfg->x0-.1*cfg->dx)/cfg->dx, 0) ;	ix_max = MIN_2(floor((cfg->xmax-cfg->x0+.1*cfg->dx)/cfg->dx) + 2, cfg->Nx);
+	for (ix=ix_min; ix<ix_max; ix++) for (iz=0; iz<cfg->Nz; iz++) {
 		fprintf (file, "%.2f\t%.2f\t%.2f\n", 
-			(ix*dx+x0)/1e3, (topo[ix]-iz*dz)/1e3, Temperature[ix][iz]);
+			(ix*cfg->dx+cfg->x0)/1e3, (ctx->topo[ix]-iz*cfg->dz)/1e3, Temperature[ix][iz]);
 	}
 	fclose(file);
 	return (1);
@@ -787,21 +799,21 @@ int write_file_Temperature ()
 
 
 
-int write_file_Temperature_initial ()
+int write_file_Temperature_initial (ModelConfig *cfg, ModelContext *ctx)
 {
 	int	ix, iz, ix_min, ix_max ;
 	FILE 	*file ;
 
 	Write_Open_Filename_Return (".tempini", "wt", isost_model<3 || verbose_level<1);
 
-	calculate_topo(topo);
-	ix_min = MAX_2((xmin-x0-.1*dx)/dx, 0) ;	ix_max = MIN_2(floor((xmax-x0+.1*dx)/dx) + 2, Nx);
+	calculate_topo(cfg, ctx, ctx->topo);
+	ix_min = MAX_2((cfg->xmin-cfg->x0-.1*cfg->dx)/cfg->dx, 0) ;	ix_max = MIN_2(floor((cfg->xmax-cfg->x0+.1*cfg->dx)/cfg->dx) + 2, cfg->Nx);
 	fprintf(file, "# 2D Temperature grid (x-z) distribution.\n") ;
-	fprintf(file, "# x (km)\t z (km)\t temperature (ºC)\n") ;
+	fprintf(file, "# x (km)\t z (km)\t temperature (ï¿½C)\n") ;
 	/*Write temperatures in the grid file*/
-	for (ix=ix_min; ix<ix_max; ix++) for (iz=0; iz<Nz; iz++) {
+	for (ix=ix_min; ix<ix_max; ix++) for (iz=0; iz<cfg->Nz; iz++) {
 		fprintf (file, "%.2f\t%.2f\t%.2f\n", 
-			(ix*dx+x0)/1e3, (topo[ix]-iz*dz)/1e3, Temperature[ix][iz]);
+			(ix*cfg->dx+cfg->x0)/1e3, (ctx->topo[ix]-iz*cfg->dz)/1e3, Temperature[ix][iz]);
 	}
 	fclose(file);
 	return (1);
@@ -809,7 +821,7 @@ int write_file_Temperature_initial ()
 
 
 
-int write_file_time (float *w, float *topo)
+int write_file_time (ModelConfig *cfg, ModelContext *ctx, float *w, float *topo)
 {
 	/*
 	  WRITES deflection and elevation along time file
@@ -822,35 +834,35 @@ int write_file_time (float *w, float *topo)
 	BOOL	return_cond;
 	float	youngest_age=-1e16;
 
-	for (i=0; i<numBlocks; i++) youngest_age = MAX_2(Blocks[i].age, youngest_age);
-	return_cond = (!switch_write_file && (Timefinal-Time) >= dt) 
+	for (i=0; i<ctx->numBlocks; i++) youngest_age = MAX_2(Blocks[i].age, youngest_age);
+	return_cond = (!switch_write_file && (ctx->Timefinal-ctx->Time) >= ctx->dt) 
 		|| !isost_model 
-		|| (((Time-last_time_file_time) < dt_record*.9999 || (!dt_record && youngest_age!=Time)) && (Timefinal-Time) >= dt) 
-		|| (Time-last_time_file_time) == 0;
+		|| (((ctx->Time-last_time_file_time) < dt_record*.9999 || (!dt_record && youngest_age!=ctx->Time)) && (ctx->Timefinal-ctx->Time) >= ctx->dt) 
+		|| (ctx->Time-last_time_file_time) == 0;
 
-	calculate_topo(topo);
+	calculate_topo(cfg, ctx, topo);
 	if (!switch_write_file) nwrotenfiles=0;
 	if (nwrotenfiles==0) {
 		Write_Open_Filename_Return (".xzt", "wt", return_cond);
-		fprintf(file, "#Time: \t%.3f My\n#x(km)\tw(m)\th(m)", Time/Matosec);
+		fprintf(file, "#Time: \t%.3f My\n#x(km)\tw(m)\th(m)", ctx->Time/Matosec);
 	}
 	else {
 		if (return_cond) return (0);
 		sprintf(filename, "%s.xzt", projectname);
-		if (verbose_level>=3) fprintf(stdout, "\nInfo: Writing file '%s' (%d times).", filename, nwrotenfiles+1);
+		if (cfg->verbose_level>=3) fprintf(stdout, "\nInfo: Writing file '%s' (%d times).", filename, nwrotenfiles+1);
 		sprintf(filename1, "%s.aux1.xzt.tao.tmp", projectname);
 		sprintf(filename2, "%s.aux2.xzt.tao.tmp", projectname);
 		if ((file = fopen(filename1, "wt")) == NULL) {
 			PRINT_ERROR("Cannot open auxiliar output file %s.\n", filename1);
 			return (0);
 		}
-		fprintf(file,      "%.3f My\nw(m)\th(m)", Time/Matosec);
+		fprintf(file,      "%.3f My\nw(m)\th(m)", ctx->Time/Matosec);
 	}
 
-	for(i=0; i<Nx; i++) {
+	for(i=0; i<cfg->Nx; i++) {
 		float x;
-		x=x0+dx*i; 
-		if (x > xmin-dx && x < (xmax+dx)) {
+		x=cfg->x0+cfg->dx*i; 
+		if (x > cfg->xmin-cfg->dx && x < (cfg->xmax+cfg->dx)) {
 			if (nwrotenfiles==0)	fprintf(file, "\n%1.2f\t%1.3f\t%1.3f",
 							x/1000, w[i], topo[i] );
 			else			fprintf(file, "\n%1.3f\t%1.3f", 
@@ -869,13 +881,13 @@ int write_file_time (float *w, float *topo)
 
 	switch_write_file_Blocks=YES;
 	nwrotenfiles++;
-	last_time_file_time = Time;
+	last_time_file_time = ctx->Time;
 
 	return(1);
 }
 
 
-int write_file_Blocks()
+int write_file_Blocks(ModelConfig *cfg, ModelContext *ctx)
 {
 	FILE 	*file ;
 
@@ -883,30 +895,30 @@ int write_file_Blocks()
 
 	Write_Open_Filename_Return (".pfl", "wt", !switch_write_file_Blocks);
 
-	fprintf(file, "#tAo output file of project '%s'. t= %.2f My", projectname, Time/Matosec);
-	fprintf(file, "\n#Densities:\t%8.0f", denscrust);
-	for (int i=0; i<numBlocks; i++) fprintf(file, "\t%8.0f", Blocks[i].density);
-	if (erosed_model>=2) fprintf(file, "\t%8.0f", denswater);
-	fprintf(file, "\n#x(km),Ages->\t%8.2f", Timeini/Matosec);
-	for (int i=0; i<numBlocks; i++) fprintf(file, "\t%8.2f", Blocks[i].age/Matosec);
-	if (erosed_model>=2) fprintf(file, "\t   water");
-	for (int i=0; i<Nx; i++) {
+	fprintf(file, "#tAo output file of project '%s'. t= %.2f My", projectname, ctx->Time/Matosec);
+	fprintf(file, "\n#Densities:\t%8.0f", cfg->denscrust);
+	for (int i=0; i<ctx->numBlocks; i++) fprintf(file, "\t%8.0f", Blocks[i].density);
+	if (cfg->erosed_model>=2) fprintf(file, "\t%8.0f", cfg->denswater);
+	fprintf(file, "\n#x(km),Ages->\t%8.2f", ctx->Timeini/Matosec);
+	for (int i=0; i<ctx->numBlocks; i++) fprintf(file, "\t%8.2f", Blocks[i].age/Matosec);
+	if (cfg->erosed_model>=2) fprintf(file, "\t   water");
+	for (int i=0; i<cfg->Nx; i++) {
 		float x;
-		x=x0+dx*i; 
-		if (x > xmin-dx && x < xmax+dx) {
+		x=cfg->x0+cfg->dx*i; 
+		if (x > cfg->xmin-cfg->dx && x < cfg->xmax+cfg->dx) {
 			float thickness_above=0, top_block;
 			fprintf(file, "\n%8.2f", x/1000);
-			for (int i_Block=0; i_Block<numBlocks; i_Block++) 
+			for (int i_Block=0; i_Block<ctx->numBlocks; i_Block++) 
 				thickness_above += Blocks[i_Block].thick[i];
 			top_block = Blocks_base[i]-w[i];
 			fprintf(file, "\t%8.1f",  top_block);
-			for (int i_Block=0; i_Block<numBlocks; i_Block++) {
+			for (int i_Block=0; i_Block<ctx->numBlocks; i_Block++) {
 				thickness_above -= Blocks[i_Block].thick[i];
 				top_block += Blocks[i_Block].thick[i];
-				if (Blocks[i_Block].density==denssedim) top_block -= compaction(sed_porosity, compact_depth, thickness_above, thickness_above+Blocks[i_Block].thick[i]);
+				if (Blocks[i_Block].density==cfg->denssedim) top_block -= compaction(cfg->sed_porosity, compact_depth, thickness_above, thickness_above+Blocks[i_Block].thick[i]);
 				fprintf(file, "\t%8.1f",  top_block);
 			}
-			if (erosed_model>=2) {
+			if (cfg->erosed_model>=2) {
 				float top_water=top_block;
 				if (drainage[i].lake) top_water = Lake[drainage[i].lake].alt;
 				fprintf(file, "\t%8.1f", top_water);
@@ -919,7 +931,7 @@ int write_file_Blocks()
 
 
 
-int write_file_resume()
+int write_file_resume(ModelConfig *cfg, ModelContext *ctx)
 {
 	int 	i, j, end_check=12345;
 	FILE 	*file ;
@@ -932,12 +944,12 @@ int write_file_resume()
 	Write_Open_Filename_Return (".all", "wt", !switch_write_file_Blocks);
 
 	/*Defined in universal.h:*/
-	fwrite(&Nx, 		sizeof(int),		1, 	file);
-	fwrite(&Nz, 		sizeof(int),		1, 	file);
-	fwrite(&verbose_level, 	sizeof(int),		1, 	file);
+	fwrite(&cfg->Nx, 		sizeof(int),		1, 	file);
+	fwrite(&cfg->Nz, 		sizeof(int),		1, 	file);
+	fwrite(&cfg->verbose_level, 	sizeof(int),		1, 	file);
 
-	fwrite(&dx, 		sizeof(float),		1, 	file);
-	fwrite(&dz, 		sizeof(float),		1, 	file);
+	fwrite(&cfg->dx, 		sizeof(float),		1, 	file);
+	fwrite(&cfg->dz, 		sizeof(float),		1, 	file);
 
 	fwrite(version,		sizeof(char),		LENGTHVERS, 	file);
 	fwrite(version_input,	sizeof(char),		LENGTHVERS, 	file);
@@ -954,19 +966,19 @@ int write_file_resume()
 	fwrite(&Te_default, 	sizeof(float),		1, 	file);
 	fwrite(&crust_thick_default, sizeof(float),	1, 	file);
 	fwrite(&upper_crust_thick_default, sizeof(float),1, 	file);
-	fwrite(&densasthen, 	sizeof(float),		1, 	file);
-	fwrite(&densmantle, 	sizeof(float),		1, 	file);
-	fwrite(&denssedim, 	sizeof(float),		1, 	file);
-	fwrite(&denscrust, 	sizeof(float),		1, 	file);
-	fwrite(&densenv, 	sizeof(float),		1, 	file);
-	fwrite(&densinfill, 	sizeof(float),		1, 	file);
-	fwrite(&sea_level, 	sizeof(float),		1, 	file);
+	fwrite(&cfg->densasthen, 	sizeof(float),		1, 	file);
+	fwrite(&cfg->densmantle, 	sizeof(float),		1, 	file);
+	fwrite(&cfg->denssedim, 	sizeof(float),		1, 	file);
+	fwrite(&cfg->denscrust, 	sizeof(float),		1, 	file);
+	fwrite(&cfg->densenv, 	sizeof(float),		1, 	file);
+	fwrite(&cfg->densinfill, 	sizeof(float),		1, 	file);
+	fwrite(&ctx->sea_level, 	sizeof(float),		1, 	file);
 	fwrite(&temp_sea_level, 	sizeof(float),		1, 	file);
-	fwrite(&Time, 		sizeof(float),		1, 	file);
-	fwrite(&Timefinal, 	sizeof(float),		1, 	file);
-	fwrite(&Timeini, 	sizeof(float),		1, 	file);
-	fwrite(&dt, 		sizeof(float),		1, 	file);
-	fwrite(&dt_eros, 		sizeof(float),		1, 	file);
+	fwrite(&ctx->Time, 		sizeof(float),		1, 	file);
+	fwrite(&ctx->Timefinal, 	sizeof(float),		1, 	file);
+	fwrite(&ctx->Timeini, 	sizeof(float),		1, 	file);
+	fwrite(&ctx->dt, 		sizeof(float),		1, 	file);
+	fwrite(&ctx->dt_eros, 		sizeof(float),		1, 	file);
 	fwrite(&tau, 		sizeof(float),		1, 	file);
 
 	fwrite(projectname, 	sizeof(char),	MAXLENFILE, 	file);
@@ -984,13 +996,13 @@ int write_file_resume()
 	fwrite(&n_record_times, 	sizeof(int),		1, 	file);
 	fwrite(&i_first_Block_load, sizeof(int),	1, 	file);
 	fwrite(&i_Block_insert, sizeof(int),		1, 	file);
-	fwrite(&numBlocks, 	sizeof(int),		1, 	file);
+	fwrite(&ctx->numBlocks, 	sizeof(int),		1, 	file);
 	fwrite(&nwrotenfiles, 	sizeof(int),		1, 	file);
 	fwrite(&run_type, 	sizeof(int),		1, 	file);
 
 	fwrite(&zini, 		sizeof(float),		1, 	file);
 	fwrite(&dt_record, 	sizeof(float),		1, 	file);
-	fwrite(&sed_porosity, 	sizeof(float),		1, 	file);
+	fwrite(&cfg->sed_porosity, 	sizeof(float),		1, 	file);
 	fwrite(&compact_depth, 	sizeof(float),		1, 	file);
 	fwrite(&Kerosdif, 	sizeof(float),		1, 	file);
 	fwrite(&last_time_file_time, 	sizeof(float),		1, 	file);
@@ -1007,16 +1019,16 @@ int write_file_resume()
 	fwrite(&imomentmax, 	sizeof(int),		1, 	file);
 	fwrite(&nx_temp_input, 	sizeof(int),		1, 	file);
 	fwrite(&nbasins, 	sizeof(int),		1, 	file);
-	fwrite(&nlakes,	 	sizeof(int),		1, 	file);
+	fwrite(&ctx->nlakes,	 	sizeof(int),		1, 	file);
 	fwrite(&n_image, 	sizeof(int),		1, 	file);
-	fwrite(&hydro_model,	sizeof(int),		1, 	file);
-	fwrite(&erosed_model,	sizeof(int),		1, 	file);
+	fwrite(&cfg->hydro_model,	sizeof(int),		1, 	file);
+	fwrite(&cfg->erosed_model,	sizeof(int),		1, 	file);
 	fwrite(&eros_bound_cond,	sizeof(char),		2, 	file);
 
-	fwrite(&x0, 		sizeof(float),		1, 	file);
-	fwrite(&xf, 		sizeof(float),		1, 	file);
-	fwrite(&xmin, 		sizeof(float),		1, 	file);
-	fwrite(&xmax, 		sizeof(float),		1, 	file);
+	fwrite(&cfg->x0, 		sizeof(float),		1, 	file);
+	fwrite(&cfg->xf, 		sizeof(float),		1, 	file);
+	fwrite(&cfg->xmin, 		sizeof(float),		1, 	file);
+	fwrite(&cfg->xmax, 		sizeof(float),		1, 	file);
 	fwrite(&zmin, 		sizeof(float),		1, 	file);
 	fwrite(&zmax, 		sizeof(float),		1, 	file);
 	fwrite(&horz_force, 	sizeof(float),		1, 	file);
@@ -1031,7 +1043,7 @@ int write_file_resume()
 	fwrite(&l_fluv_sedim, 	sizeof(float),		1, 	file);
 	fwrite(&lost_rate, 	sizeof(float),		1, 	file);
 	fwrite(&evaporation_ct, 	sizeof(float),		1, 	file);
-	fwrite(&riverbasinwidth, 	sizeof(float),		1, 	file);
+	fwrite(&cfg->riverbasinwidth, 	sizeof(float),		1, 	file);
 	fwrite(&rain, 		sizeof(float),		1, 	file);
 	fwrite(&Krain,	 	sizeof(float),		1, 	file);
 	fwrite(&CXrain, 		sizeof(float),		1, 	file);
@@ -1041,18 +1053,18 @@ int write_file_resume()
 
 
 	/*Arrays:*/
-	fwrite(w, 		sizeof(float),	Nx, 	file);
-	fwrite(D, 		sizeof(float),	Nx, 	file);
-	fwrite(q, 		sizeof(float),	Nx, 	file);
-	fwrite(Dw, 		sizeof(float),	Nx, 	file);
-	fwrite(Dq, 		sizeof(float),	Nx, 	file);
-	fwrite(h_water, 		sizeof(float),	Nx, 	file);
-	fwrite(h_last_unit, 	sizeof(float),	Nx, 	file);
-	fwrite(Te, 		sizeof(float),	Nx, 	file);
-	fwrite(crust_thick, 	sizeof(float),	Nx, 	file);
-	fwrite(upper_crust_thick,sizeof(float),	Nx, 	file);
-	fwrite(topo, 		sizeof(float),	Nx, 	file);
-	fwrite(Blocks_base, 	sizeof(float),	Nx, 	file);
+	fwrite(w, 		sizeof(float),	cfg->Nx, 	file);
+	fwrite(D, 		sizeof(float),	cfg->Nx, 	file);
+	fwrite(q, 		sizeof(float),	cfg->Nx, 	file);
+	fwrite(Dw, 		sizeof(float),	cfg->Nx, 	file);
+	fwrite(Dq, 		sizeof(float),	cfg->Nx, 	file);
+	fwrite(h_water, 		sizeof(float),	cfg->Nx, 	file);
+	fwrite(h_last_unit, 	sizeof(float),	cfg->Nx, 	file);
+	fwrite(Te, 		sizeof(float),	cfg->Nx, 	file);
+	fwrite(crust_thick, 	sizeof(float),	cfg->Nx, 	file);
+	fwrite(upper_crust_thick,sizeof(float),	cfg->Nx, 	file);
+	fwrite(ctx->topo, 		sizeof(float),	cfg->Nx, 	file);
+	fwrite(Blocks_base, 	sizeof(float),	cfg->Nx, 	file);
 	fwrite(horiz_record_time, sizeof(float), n_record_times, file);
 
 	for (i=0; i<n_sea_level_input_points; i++) 
@@ -1061,37 +1073,37 @@ int write_file_resume()
 		fwrite(var_eros_level[i], sizeof(float), 2, file);
 
 	if (isost_model>=3 && !switch_YSE_file) {
-		for (i=0; i<Nx; i++) 
-			fwrite(Temperature[i], sizeof(float), Nz, file);
+		for (i=0; i<cfg->Nx; i++) 
+			fwrite(Temperature[i], sizeof(float), cfg->Nz, file);
 	}
 	if (isost_model>=3) {
-		for (i=0; i<Nx; i++) {
-			fwrite(stress[i], sizeof(float), Nz, file);
-			fwrite(yieldcompres[i], sizeof(float), Nz, file);
-			fwrite(yieldextens[i], sizeof(float), Nz, file);
+		for (i=0; i<cfg->Nx; i++) {
+			fwrite(stress[i], sizeof(float), cfg->Nz, file);
+			fwrite(yieldcompres[i], sizeof(float), cfg->Nz, file);
+			fwrite(yieldextens[i], sizeof(float), cfg->Nz, file);
 		}
 	}
 
-	fwrite(Blocks, 		sizeof(struct BLOCK_1D),	numBlocks, file);
-	for (i=0; i<numBlocks; i++) {
-		fwrite(Blocks[i].thick, 		sizeof(float),	Nx, 	file);
+	fwrite(Blocks, 		sizeof(struct BLOCK_1D),	ctx->numBlocks, file);
+	for (i=0; i<ctx->numBlocks; i++) {
+		fwrite(Blocks[i].thick, 		sizeof(float),	cfg->Nx, 	file);
 	}
-	for (i=0; i<numBlocks; i++) {
+	for (i=0; i<ctx->numBlocks; i++) {
 	    if (Blocks[i].type == 'S') {
-		fwrite(Blocks[i].detr_ratio, 	sizeof(float),	Nx, 	file);
-		fwrite(Blocks[i].detr_grsize, 	sizeof(float),	Nx, 	file);
+		fwrite(Blocks[i].detr_ratio, 	sizeof(float),	cfg->Nx, 	file);
+		fwrite(Blocks[i].detr_grsize, 	sizeof(float),	cfg->Nx, 	file);
 	    }
 	}
 
-	if (erosed_model) {
-		fwrite(eros_now, 	sizeof(float),	Nx, 	file);
-		fwrite(total_erosion, 	sizeof(float),	Nx, 	file);
+	if (cfg->erosed_model) {
+		fwrite(eros_now, 	sizeof(float),	cfg->Nx, 	file);
+		fwrite(total_erosion, 	sizeof(float),	cfg->Nx, 	file);
 	}
-	if (hydro_model) {
-		fwrite(precipitation, 	sizeof(float),	Nx, 	file);
-		fwrite(evaporation, 	sizeof(float),	Nx, 	file);
-		fwrite(Lake, sizeof(struct LAKE_INFO_1D), nlakes+1, file);
-		for (j=1; j<=nlakes; j++) {
+	if (cfg->hydro_model) {
+		fwrite(precipitation, 	sizeof(float),	cfg->Nx, 	file);
+		fwrite(evaporation, 	sizeof(float),	cfg->Nx, 	file);
+		fwrite(Lake, sizeof(struct LAKE_INFO_1D), ctx->nlakes+1, file);
+		for (j=1; j<=ctx->nlakes; j++) {
 			fwrite(Lake[j].cell, sizeof(int), Lake[j].n, file);
 			fwrite(Lake[j].sd, sizeof(int), Lake[j].n_sd, file);
 		}
@@ -1102,4 +1114,3 @@ int write_file_resume()
 	fclose(file);
 	return(1);
 }
-

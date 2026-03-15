@@ -1,3 +1,6 @@
+#ifndef TYPES_N_DEFS_H
+#define TYPES_N_DEFS_H
+
 /*
 	include file for most of my programs.
 */
@@ -8,6 +11,7 @@
 #include <string.h>
 #include <memory.h>
 //#include <malloc.h>
+#include <stdbool.h>
 #include <time.h>
 
 #define	MAXLENFILE	256			/*Max. length for filenames*/
@@ -26,6 +30,13 @@
 #define PRINT_WARNING(...)	{if (verbose_level>=3) {fprintf(stderr, "\nWarning: In %s: ", __func__); fprintf(stderr, __VA_ARGS__);}}	/**/
 #define PRINT_DEBUG(...)	{if (verbose_level>=4) {fprintf(stderr, "\nDebug: In %s: ", __func__); fprintf(stderr, __VA_ARGS__);}} 	/*Used to track position in the code*/
 #define PRINT_DEBUGPLUS(...){if (verbose_level>=5) {fprintf(stderr, "\nDebug+: In %s: ", __func__); fprintf(stderr, __VA_ARGS__);}} 	/*Used to help on code debugging*/
+#define PRINT_ARRAY_INFO(array, name, units) {\
+	    float max=-1e19, min=1e19, vol=0;\
+	    for (int i=0; i<Nx; i++) {\
+	    	    vol += array[i]*dx;\
+	    	    if (max<array[i])  max=array[i];\
+	    	    if (min>array[i])  min=array[i];}\
+	    PRINT_SUMLINE("%s:  max= %.1f %s\tmin= %.1f %s\tintegr=%.2e %s*m", name, max, units, min, units, vol, units);}
 #define PRINT_GRID_INFO(grid, name, units) {\
 	    float max=-1e19, min=1e19, vol=0;\
 	    for (int i=0; i<Ny; i++)    for (int j=0; j<Nx; j++) {\
@@ -81,10 +92,6 @@
 
 
 #define AUTHORSHIP		{ fprintf(stderr, "\n\t\t\t\t2018, Daniel Garcia-Castellanos\n");}
-
-/*YES=1;  NO=0. Defines boolean type for switches with values true or false (YES or NO)*/
-typedef enum BOOLEAN	{NO, YES} BOOL;
-#define SI YES
 
 struct BLOCK { 		/*for TISC*/
 	float	**thick;		/*Present thickness at each x point*/
@@ -172,3 +179,4 @@ struct LAKE_INFO_1D {		/*For lakes*/
 	float vol;		/*Volume of the lake water body*/
 };
 
+#endif /* TYPES_N_DEFS_H */
