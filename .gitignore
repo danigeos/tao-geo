@@ -4,7 +4,7 @@ runs/
 more_on_tAo/
 
 # === General Ignores ===
-/bin/*
+bin/*
 *.o
 *.a
 *.so
