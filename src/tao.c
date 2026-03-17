@@ -25,27 +25,6 @@ valgrind --dsymutil=yes --track-origins=yes --tool=memcheck --leak-check=full `w
 #include "taolib.c"
 #include "taoio.c"
 
-/* Global variable definitions for tao */
-int *sortcell;
-struct DRAINAGE_1D  *drainage;
-struct LAKE_INFO_1D *Lake;
-struct BLOCK_1D	*Blocks ;
-
-int 	imomentmax, nmax_input_points, nx_temp_input;
-char	eros_bound_cond[2];
-int	erosed_model, hydro_model, mode_interp, nbasins, nlakes, boundary_conds, n_image;
-
-float 	evaporation_ct, riverbasinwidth, total_evap_water, total_lost_water, total_rain;
-float   x0, xf, xmin, xmax, zmin, zmax, horz_force, vert_force, appmoment;
-
-float	*crust_thick, *D, *Dq, *Dw, *h_water, *h_last_unit, *q, *Te;
-float   *eros_now, *precipitation, *evaporation, *total_erosion, *topo;
-float   *Blocks_base, *upper_crust_thick, *w;
-float   **Temperature, **stress, **yieldcompres, **yieldextens;
-
-char 	gif_geom[MAXLENLINE];
-BOOL	switch_insert_load=NO, switch_strs_history, switch_YSE_file=NO;
-
 
 int main(int argc, char **argv)
 {
@@ -134,23 +113,24 @@ int inputs(ModelConfig *cfg, ModelContext *ctx, int argc, char **argv)
 	char 	resume_filename[MAXLENFILE], 
 		command[MAXLENLINE], 
 		load_file_name[MAXLENLINE];
-	BOOL	success_def_prm=NO, switch_initial_geom=NO;
+	bool	success_def_prm=false, switch_initial_geom=false;
 
 	run_type = 0;
 	nmax_input_points = 5000;
-	switch_strs_history = YES;
+	switch_strs_history = true;
 	setbuf(stdout, NULL);
 
 	putenv("tao_dir=" TAODIR); 
 	
 	/*Version of tAo will be matched against the parameters file *.PRM*/
 	/*¡¡ UPDATE template.PRM !!*/
-	strcpy(version, VERSION);
+	strncpy(version, VERSION, sizeof(version) - 1);
+	version[sizeof(version) - 1] = '\0';
 
 	/*Default parameter values are read from ./tao/doc/template.PRM*/
-	sprintf(projectname, "%s/doc/template", TAODIR);
+	snprintf(projectname, sizeof(projectname), "%s/doc/template", TAODIR);
 	success_def_prm = read_file_parameters(0, 0);
-	sprintf(projectname, "");
+	projectname[0] = '\0';
 
 	for (int iarg=1; iarg<argc; iarg++) {
 		if (argv[iarg][0] == '-') {
@@ -166,24 +146,27 @@ int inputs(ModelConfig *cfg, ModelContext *ctx, int argc, char **argv)
 					break;
 				case 'F':
 					run_type=2;
-					if (strlen(prm)>0) strcpy (resume_filename, prm);
-					else		   sprintf(resume_filename, "%s"".all", projectname);
+					if (strlen(prm)>0) {
+						strncpy(resume_filename, prm, sizeof(resume_filename) - 1);
+						resume_filename[sizeof(resume_filename) - 1] = '\0';
+					}
+					else snprintf(resume_filename, sizeof(resume_filename), "%s.all", projectname);
 					break;
 				case 'h':
 					switch (argv[iarg][2]) {
 						case 'p':
 							fprintf(stderr, "\nFile ./tao/doc/template.PRM (sample parameters file) follows in stdout:\n") ;
-						sprintf(command, "cat %s/doc/template.PRM", TAODIR);
+						snprintf(command, sizeof(command), "cat %s/doc/template.PRM", TAODIR);
 						system(command) ;
 						break;
 						case 'c':
 							fprintf(stderr, "\nFile ./tao/doc/template.PRM (sample parameters file) follows in stdout:\n") ;
-						sprintf(command, "cat %s/doc/template.PRM | %s/script/cleanPRM", TAODIR, TAODIR);
+						snprintf(command, sizeof(command), "cat %s/doc/template.PRM | %s/script/cleanPRM", TAODIR, TAODIR);
 						system(command) ;
 						break;
 						case 'u':
 							fprintf(stderr, "\nFile ./tao/doc/template.UNIT (sample unit file) follows in stdout:\n") ;
-						sprintf(command, "cat %s/doc/template.UNIT", TAODIR);
+						snprintf(command, sizeof(command), "cat %s/doc/template.UNIT", TAODIR);
 						system(command) ;
 						break;
 						default:
@@ -196,14 +179,15 @@ int inputs(ModelConfig *cfg, ModelContext *ctx, int argc, char **argv)
 				case '-':
 					if (strcmp(argv[iarg], "--help") == 0) {
 						fprintf(stderr, "\nFile ./tao/doc/tao.info.txt follows:\n") ;
-						sprintf(command, "more %s/doc/tao.info.txt", TAODIR);
+						snprintf(command, sizeof(command), "more %s/doc/tao.info.txt", TAODIR);
 						system(command) ;
 						exit(0);
 					}
 					break;
 				case 'Q':
 					run_type=1;
-					strcpy(load_file_name, prm);
+					strncpy(load_file_name, prm, sizeof(load_file_name) - 1);
+					load_file_name[sizeof(load_file_name) - 1] = '\0';
 					break;
 				case 'V':
 					verbose_level = 1;
@@ -213,7 +197,10 @@ int inputs(ModelConfig *cfg, ModelContext *ctx, int argc, char **argv)
 		}
 		else {
 			if (run_type != 2) run_type=10;
-			if (strlen(projectname)<1) strcpy(projectname, argv[iarg]);
+			if (strlen(projectname)<1) {
+				strncpy(projectname, argv[iarg], sizeof(projectname) - 1);
+				projectname[sizeof(projectname) - 1] = '\0';
+			}
 		}
 	}
 
@@ -232,7 +219,7 @@ int inputs(ModelConfig *cfg, ModelContext *ctx, int argc, char **argv)
 
 	nloads=0; n_image=0; nlakes=0;
 	numBlocks=0; i_first_Block_load=0; i_Block_insert=0;
-	nwrotenfiles=0; switch_topoest=NO;
+	nwrotenfiles=0; switch_topoest=false;
 
 	switch (run_type)
 	{
@@ -260,7 +247,7 @@ int inputs(ModelConfig *cfg, ModelContext *ctx, int argc, char **argv)
 				exit(0);
 			}
 			if (reformat) {
-				sprintf(projectname, "%s/doc/template", TAODIR);
+				snprintf(projectname, sizeof(projectname), "%s/doc/template", TAODIR);
 				read_file_parameters(0, reformat);
 				exit(0);
 			}
@@ -279,7 +266,7 @@ int inputs(ModelConfig *cfg, ModelContext *ctx, int argc, char **argv)
 
 	{
 		char filename[MAXLENLINE]; FILE *file;
-		sprintf(filename, "%s.out", projectname);
+		snprintf(filename, sizeof(filename), "%s.out", projectname);
 		if (switch_file_out) {
 			if ((file = fopen(filename, "w")) == NULL) {
 				PRINT_ERROR("Cannot open standard output file %s.\n", filename);
@@ -323,7 +310,7 @@ int inputs(ModelConfig *cfg, ModelContext *ctx, int argc, char **argv)
 
 
 	/*Test of incompatibilities between parameters*/
-	if (densenv && water_load)		{ water_load=NO; 	PRINT_WARNING("Sea not possible when densenv<>0. Sea switch turned off.") ; }
+	if (densenv && water_load)		{ water_load=0; 	PRINT_WARNING("Sea not possible when densenv<>0. Sea switch turned off.") ; }
 	if (!erosed_model && (Ksedim || Kerosdif || Keroseol))	{ Ksedim=Kerosdif=Keroseol=0 ; if (verbose_level>=1) PRINT_WARNING("Erosion-sedimentation unswitched. Parameters Ksedim, Kerosdif & Keroseol have no effect.") ; }
 	if (!water_load && Ksedim)		{ Ksedim=0;			PRINT_WARNING("Warning: Sea presence isn't switched, Ksedim has no effect.");}
 	if (!erosed_model)  			{ Ksedim=Kerosdif=Keroseol=0 ; }
@@ -335,7 +322,7 @@ int inputs(ModelConfig *cfg, ModelContext *ctx, int argc, char **argv)
 	if (boundary_conds == 2)		{ vert_force=0; appmoment = 0; }
 
 
-	sprintf(command, "rm -f %s.temp0 %s.mtrz %s.grv_mod", projectname, projectname, projectname);
+	snprintf(command, sizeof(command), "rm -f %s.temp0 %s.mtrz %s.grv_mod", projectname, projectname, projectname);
 	system(command);
 
 	read_file_sea_level(); 
@@ -421,7 +408,7 @@ int interpr_command_line_opts(int argc, char **argv)
 					break;
 				case 'M':
 					isost_model = value;
-					if (prm[1] == 't') switch_strs_history = NO;
+					if (prm[1] == 't') switch_strs_history = false;
 					break;
 				case 'm':
 					appmoment = value;
@@ -430,20 +417,26 @@ int interpr_command_line_opts(int argc, char **argv)
 					Nx = value;
 					break;
 				case 'o':
-					switch_file_out=YES;
+					switch_file_out=true;
 					break;
 				case 'P':
 					switch_ps=(strlen(prm)>0)?value:1; /*default is 1 to keep old command line syntax with -Pc*/
-					switch_write_file_Blocks=YES;
+					switch_write_file_Blocks=true;
 					if (argv[iarg][2] == 'c') {
 						switch_ps=2;
-						strcpy(gif_geom, "");
-						if (strlen(prm2)>0) strcpy(gif_geom, prm2);
+						gif_geom[0] = '\0';
+						if (strlen(prm2)>0) {
+							strncpy(gif_geom, prm2, sizeof(gif_geom) - 1);
+							gif_geom[sizeof(gif_geom) - 1] = '\0';
+						}
 					}
 					if (argv[iarg][2] == 'p') {
 						switch_ps=3;
-						strcpy(gif_geom, "");
-						if (strlen(prm2)>0) strcpy(gif_geom, prm2);
+						gif_geom[0] = '\0';
+						if (strlen(prm2)>0) {
+							strncpy(gif_geom, prm2, sizeof(gif_geom) - 1);
+							gif_geom[sizeof(gif_geom) - 1] = '\0';
+						}
 					}
 					break;
 				case 'p':
@@ -581,7 +574,7 @@ int tectload(ModelConfig *cfg, ModelContext *ctx)
 	flexure must be done (i.e, if changes in load  occurred), 0 otherwise.
 	*/
 
-	PRINT_ARRAY_INFO(topo, "topogr.", "m", "m2") 
+	PRINT_ARRAY_INFO_1D(topo, "topogr.", "m", "m2") 
 
 	/*Reads external load from file(s)*/
 	while (read_file_unit(cfg, ctx));
@@ -603,7 +596,7 @@ int tectload(ModelConfig *cfg, ModelContext *ctx)
 int Elastoplastic_Deflection(ModelConfig *cfg, ModelContext *ctx)
 {
 	int 	i;
-	BOOL	load_changes=NO;
+	bool	load_changes=false;
 
 	/*
 	CALLS SUBROUTINES TO SOLVE ELASTIC OR ELASTIC-PLASTIC FLEXURE WITH 
@@ -611,7 +604,7 @@ int Elastoplastic_Deflection(ModelConfig *cfg, ModelContext *ctx)
 	TOTAL DEFLECTION.
 	*/
 	
-	for (i=0; i<cfg->Nx; i++) if (Dq[i]) load_changes = YES;
+	for (i=0; i<cfg->Nx; i++) if (Dq[i]) load_changes = true;
 	if (isost_model>0 && (load_changes || (ctx->Time==ctx->Timeini && (horz_force || vert_force || appmoment)))) {
 		fprintf(stdout, " e");	  fflush(stdout);
 		if (isost_model<3) {
@@ -633,10 +626,10 @@ int Elastoplastic_Deflection(ModelConfig *cfg, ModelContext *ctx)
 					A = alloc_matrix_dbl (cfg->Nx, NDi+1+NDs);
 					b = (double *) calloc (cfg->Nx , sizeof(double));
 					moment = (float *) calloc (cfg->Nx , sizeof(float));
-					LES_matrix(cfg, ctx, A, b, D, q, Dq, w, NO) ;
+					LES_matrix(cfg, ctx, A, b, D, q, Dq, w, false) ;
 					solveLES(A, b, cfg->Nx, NDs, NDi, Dw) ;
-					for (i=0; i<cfg->Nx; i++) free(A[i]);
-				free(A); free(b); 
+					free_matrix_dbl(A, cfg->Nx);
+				free(b); 
 
 					for (i=0;i<cfg->Nx;i++) {
 					w[i] += Dw[i] ;
@@ -662,12 +655,12 @@ int Elastoplastic_Deflection(ModelConfig *cfg, ModelContext *ctx)
 		}
 	}
 
-	PRINT_ARRAY_INFO(Dq, "load_incrm", "N/m2", "N/m") 
+	PRINT_ARRAY_INFO_1D(Dq, "load_incrm", "N/m2", "N/m") 
 
 	/*Adds all this load to the total load array*/
 	for (int i=0; i<cfg->Nx; i++)  {
 		q[i] += Dq[i];
-		if (Dq[i]) load_changes = YES;
+		if (Dq[i]) load_changes = true;
 	}
 	if (load_changes) fprintf(stdout, " d");
 	/*Resets deflection and load arrays*/
@@ -685,14 +678,14 @@ int surface_processes(ModelConfig *cfg, ModelContext *ctx)
 	CALCULATES EROSION AND SEDIMENTATION:
 	*/
 	float 	eros_level;
-	BOOL	switch_horiz_record=NO;
+	bool	switch_horiz_record=false;
 
 	PRINT_DEBUG("erosed_model=%d hydro_model=%d", erosed_model, hydro_model);
 
 	total_sed_mass=total_bedrock_eros_mass=0;
 
 	if (!erosed_model && !hydro_model) return (0);
-	switch_topoest=NO;
+	switch_topoest=false;
 	
 
 	/*Creates a new sediment Block if necessary*/
@@ -704,7 +697,7 @@ int surface_processes(ModelConfig *cfg, ModelContext *ctx)
 		if (Blocks[i].age > TimelastBlock && Blocks[i].density==denssedim) TimelastBlock = Blocks[i].age;
 		for (int i=0; i<n_record_times; i++) 
 		if (Time>horiz_record_time[i]-dt/2 && Time<=horiz_record_time[i]+dt/2) 
-			switch_horiz_record=YES;
+			switch_horiz_record=true;
 		if (Time == Timeini 
 		  || ((Time-TimelastBlock)>(dt_record-.001*dt) && dt_record && !n_record_times)
 		  || switch_horiz_record) {
@@ -1099,7 +1092,7 @@ int read_file_unit(ModelConfig *cfg, ModelContext *ctx)
 	float	time_stop=9999/*My*/, time_unit, 
 		erodibility_aux=NO_DATA, fill_up_to=NO_DATA, 
 		vel=0, density=NO_DATA;
-	BOOL 	insert, cut_seds, cut_Blocks, cut_all, top, fault, switch_move, 
+	bool 	insert, cut_seds, cut_Blocks, cut_all, top, fault, switch_move,
 		ride, hidden, z_absol;
 	FILE 	*file;
 	char 	filename[MAXLENFILE];
@@ -1129,9 +1122,9 @@ int read_file_unit(ModelConfig *cfg, ModelContext *ctx)
 	if (time_unit>ctx->Time+.1*ctx->dt || time_unit<ctx->Timeini) return(0);
 
 	PRINT_INFO("Reading '%s'", filename);
-	switch_move = fault = switch_gradual = 
-		insert = hidden = cut_seds = cut_Blocks = cut_all = 
-		top = ride = z_absol = NO;
+	switch_move = fault = switch_gradual = false; // Reset flags for each unit file
+	insert = hidden = cut_seds = cut_Blocks = cut_all = false; // Reset flags
+	top = ride = z_absol = false; // Reset flags
 	i_Block_insert = ctx->numBlocks;
 	cut_Block = 0;
 
@@ -1182,7 +1175,7 @@ int read_file_unit(ModelConfig *cfg, ModelContext *ctx)
 	/*Check incompatibilities between unit file signals*/
 	if (switch_gradual && switch_move) {
 		PRINT_WARNING("Gradual+moving units not implemented. It won't be gradual.");
-		switch_gradual = NO;
+		switch_gradual = false;
 	}
 
 	vel *= 1e3/Matosec;
@@ -1190,7 +1183,7 @@ int read_file_unit(ModelConfig *cfg, ModelContext *ctx)
 
 	/*ACT ACCORDING TO THE SIGNALS*/
 	if (fault) {
-		switch_move = YES;
+		switch_move = true;
 	}
 	/*Creates a Block of infill if switch_topoest; it will be filled during Deflection*/
 	if (switch_topoest) {
@@ -1212,7 +1205,7 @@ int read_file_unit(ModelConfig *cfg, ModelContext *ctx)
 		}
 	}
 	if (cut_all) {
-		cut_Blocks = YES;
+		cut_Blocks = true;
 	}
 
 	if (fault && !top && !cut_all) i_Block_insert = 0;
@@ -1515,7 +1508,7 @@ int Viscous_Relaxation(ModelConfig *cfg, ModelContext *ctx)
 	dwdt   = (float *) calloc (cfg->Nx , sizeof(float));
 
 	fprintf(stdout, " v");
-	LES_matrix(cfg, ctx, A, b, D, q, Dq, w, YES) ;
+	LES_matrix(cfg, ctx, A, b, D, q, Dq, w, true) ;
 	solveLES(A, b, cfg->Nx, NDs, NDi, dwdt) ;
 	for (i=0; i<cfg->Nx; i++) {
 		w[i] += dwdt[i]*ctx->dt;	Dw[i] = dwdt[i]*ctx->dt;
@@ -1540,8 +1533,7 @@ int Viscous_Relaxation(ModelConfig *cfg, ModelContext *ctx)
 	flexural_stats(cfg, ctx, moment);
 
 	free(moment);
-	for (i=0; i<cfg->Nx; i++) free(A[i]);
-	free(A);
+	free_matrix_dbl(A, cfg->Nx);
 	free(b);
 	free(dwdt);
 	return(1);

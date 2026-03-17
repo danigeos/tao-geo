@@ -1,6 +1,9 @@
 /*
 INPUT/OUTPUT  FUNCTIONS  FOR  tao.c
 */
+#include "param_config.h" // Include the new parameter config header
+#include <stdlib.h> // For EXIT_FAILURE
+#include <string.h> // For strncpy
 
 int read_file_horiz_record_time()
 {
@@ -16,10 +19,16 @@ int read_file_horiz_record_time()
 	Read_Open_Filename_Return(".REC", "rt", "Horizon recording times")
 
 	n_record_times=0;
-	aux1 = calloc(nmax_input_points, sizeof(float));
-	for (;;) {
-		TAKE_LINE_1(aux1[n_record_times]);
+	aux1 = (float*)calloc(nmax_input_points, sizeof(float));
+	if (!aux1) { PRINT_ERROR("Memory allocation failed for aux1 in %s.", __func__); return 0; }
+
+	char line[MAXLENLINE];
+	while (fgets(line, sizeof(line), file) != NULL) {
+		// Skip comments and empty lines
+		if (line[0] == '#' || line[0] == '\n' || line[0] == '\r') continue;
+		if (sscanf(line, "%f", &aux1[n_record_times]) != 1) continue;
 		n_record_times++;
+
 		if (n_record_times>=nmax_input_points-1 ) {
 			PRINT_ERROR("Too many points (>%d) in horizon recording times file.", n_record_times-1);
 			break;
@@ -28,7 +37,9 @@ int read_file_horiz_record_time()
 	fclose(file);
 	if (verbose_level>=1) fprintf(stdout, "\nHorizon recording times at '%s'. %d times were read.", filename, n_record_times);
 
-	horiz_record_time = calloc(n_record_times, sizeof(float));
+	horiz_record_time = (float*)calloc(n_record_times, sizeof(float));
+	if (!horiz_record_time) { PRINT_ERROR("Memory allocation failed for horiz_record_time in %s.", __func__); free(aux1); return 0; }
+
 	for (i=0; i<n_record_times; i++) {
 		horiz_record_time[i] = aux1[i]*Matosec;
 	}
@@ -128,7 +139,7 @@ int read_file_parameters (int show, int reformat)
 	char 	*lineptr, str1[MAXLENLINE], str2[MAXLENLINE], 
 		line[MAXLENLINE+200], PRMfilename[MAXLENFILE];
 	FILE 	*file;
-	BOOL	switch_matched_vers=NO;
+	bool	switch_matched_vers=false;
 
 	/*
 	READ THE PARAMETERS FILE NAMED  'projectname.PRM'
@@ -142,39 +153,42 @@ int read_file_parameters (int show, int reformat)
 	if (show && verbose_level>=3) fprintf(stdout, "\nCurrent tAo project: %s", projectname);
 	if ((file = fopen(PRMfilename, "rt")) == NULL) {
 		PRINT_ERROR("Can't open parameters file '%s'.\n", PRMfilename);
-		return(0);
+		return 0;
 	}
 
-	x0=NO_DATA; xf=NO_DATA;
-	if (show) fprintf(stdout, "\nParameters at '%s'.", PRMfilename);
-	while ((lineptr=fgets(line, MAXLENLINE+200-1, file)) != NULL) {
+	x0 = NO_DATA; xf = NO_DATA;
+	if (show) fprintf(stdout, "\nParameters at '%s'.", PRMfilename); fflush(stdout); // Flush stdout to ensure message appears before potential errors
+	while (fgets(line, sizeof(line), file) != NULL) { // Read line by line
 		int status;
 		status=0;
-		nread=sscanf(lineptr, "%s %s", str1, str2);
+		// Skip comments and empty lines (already handled by fgets and sscanf)
+		if (line[0] == '#' || line[0] == '\n' || line[0] == '\r') continue;
+		// Attempt to read two strings (parameter name and value)
+		if (line[0] == '#' || line[0] == '\n' || line[0] == '\r') continue;
+		nread=sscanf(line, "%s %s", str1, str2);
 		if (nread >= 2) {
 			if (!strcmp(str1, "version")) {
 				strcpy(version_input, str2);
 				if (!strcmp(version_input, version)) {
-					switch_matched_vers = YES;
+					switch_matched_vers = true;
 					nparams++;
 				}
-				if ((show && verbose_level>=3) || (reformat && verbose_level>=3)) PRINT_INFO("Input file version: %s\n", version_input);
+				if ((show && verbose_level>=3) || (reformat && verbose_level>=3)) PRINT_INFO("Input file version: %s", version_input);
 				if (reformat) {fprintf(stdout, "version\t%s\n", version); }
 			}
 			status=match_parameter(str1, str2, show, reformat, line);
-			nparams += status; 
+			nparams += status;
 			if (!strcmp(str1, "version")) status=1;
 		}
 		/*If no parameter matched then just reproduce the entire line*/
 		if (reformat==1 && !status) fprintf(stdout, "%s", line);
 		nline++;
-	}
-	if (verbose_level_ant>=2) fprintf(stdout, " (%d parameters matched)", nparams);
+	} // End while
+	if (verbose_level_ant >= 2) fprintf(stdout, " (%d parameters matched)", nparams);
 	if (!switch_matched_vers) {
-		if (verbose_level_ant>=2) 
-		    fprintf(stderr,
-			"\nInfo: Present version '%s' not matched in PRM file. See 'tisc/doc/template.PRM'.", version);
-		if (nparams<2) {
+		if (verbose_level_ant >= 2)
+		    fprintf(stderr, "\nInfo: Present version '%s' not matched in PRM file. See 'tisc/doc/template.PRM'.", version);
+		if (nparams < 2) {
 		    PRINT_ERROR("\aWrong format in parameters file '%s'. Only %d parameters were matched. Current version is '%s'. "
 			"\nSee example file 'tisc/doc/template.PRM'.\nEND.\n", 
 			PRMfilename, nparams, version);
@@ -183,7 +197,7 @@ int read_file_parameters (int show, int reformat)
 	}
 
 	if (x0==NO_DATA) x0 = xmin;
-	if (xf==NO_DATA) xf = xmax;
+	if (xf == NO_DATA) xf = xmax;
 	if (Kerosdif>1e5) PRINT_WARNING("Kerosdif expected in Blocks [m2/yr] !") ;
 
 	fclose(file);
@@ -204,7 +218,7 @@ int read_file_resume(char *filename)
 	  REQUIRED TO RESTART THE PROGRAM
 	*/
 
-	if ((file = fopen(filename,"r")) == NULL) {PRINT_ERROR("Cannot read ""Resume"" input file '%s'.\n", filename); exit(0);}\
+	if ((file = fopen(filename,"rb")) == NULL) {PRINT_ERROR("Cannot read ""Resume"" input file '%s'.\n", filename); exit(EXIT_FAILURE);}\
 	if (verbose_level>=1) fprintf(stdout, "\n""Model-run data at '%s'", filename);
 
 	/*Defined in universal.h:*/
@@ -219,9 +233,9 @@ int read_file_resume(char *filename)
 	if (strcmp(version, version_aux)) PRINT_WARNING("restart file '%s' does not match present tAo version '%s'.", filename, version);
 	fread(version_input,	sizeof(char),		LENGTHVERS, 	file);
 
-	fread(&switch_geograph_coor, sizeof(BOOL),	1, 	file);
-	fread(&switch_ps, 	sizeof(BOOL),		1, 	file);
-	fread(&switch_write_file, sizeof(BOOL),		1, 	file);
+	fread(&switch_geograph_coor, sizeof(bool),	1, 	file);
+	fread(&switch_ps, 	sizeof(bool),		1, 	file);
+	fread(&switch_write_file, sizeof(bool),		1, 	file);
 
 
 	/*Defined in geomodel.h:*/
@@ -250,7 +264,7 @@ int read_file_resume(char *filename)
 	if (strcmp(projectname, projectname_aux)) fprintf(stdout, "\nERROR: restart file '%s' does not match present tAo project name '%s'.", filename, version);
 	fread(gif_geom, 	sizeof(char),	MAXLENLINE, 	file);
 
-	fread(&water_load, 	sizeof(BOOL),		1, 	file);
+	fread(&water_load, 	sizeof(bool),		1, 	file);
 
 
 	/*Defined in tao+tisc.h:*/
@@ -274,12 +288,12 @@ int read_file_resume(char *filename)
 	fread(&last_time_file_time, 	sizeof(float),		1, 	file);
 	fread(&random_topo, 	sizeof(float),		1, 	file);
 
-	fread(&switch_file_out, 	sizeof(BOOL),		1, 	file);
-	fread(&switch_gradual, 	sizeof(BOOL),		1, 	file);
-	fread(&switch_insert_load, 	sizeof(BOOL),		1, 	file);
-	fread(&switch_topoest, 		sizeof(BOOL),		1, 	file);
-	fread(&switch_write_file_Blocks, sizeof(BOOL),		1, 	file);
-	fread(&deform_sed, sizeof(BOOL),		1, 	file);
+	fread(&switch_file_out, 	sizeof(bool),		1, 	file);
+	fread(&switch_gradual, 	sizeof(bool),		1, 	file);
+	fread(&switch_insert_load, 	sizeof(bool),		1, 	file);
+	fread(&switch_topoest, 		sizeof(bool),		1, 	file);
+	fread(&switch_write_file_Blocks, sizeof(bool),		1, 	file);
+	fread(&deform_sed, sizeof(bool),		1, 	file);
 
 	/*Defined in tao.h:*/
 	fread(&imomentmax, 	sizeof(int),		1, 	file);
@@ -314,8 +328,8 @@ int read_file_resume(char *filename)
 	fread(&Krain,	 	sizeof(float),		1, 	file);
 	fread(&CXrain, 		sizeof(float),		1, 	file);
 
-	fread(&switch_strs_history, 	sizeof(BOOL),		1, 	file);
-	fread(&switch_YSE_file, 	sizeof(BOOL),		1, 	file);
+	fread(&switch_strs_history, 	sizeof(bool),		1, 	file);
+	fread(&switch_YSE_file, 	sizeof(bool),		1, 	file);
 
 
 	/*Arrays:*/
@@ -358,18 +372,15 @@ int read_file_resume(char *filename)
 
 	if (isost_model>=3 && !switch_YSE_file) {
 		Temperature = alloc_matrix(Nx, Nz);
-		for (i=0; i<Nx; i++) 
-			fread(Temperature[i], sizeof(float), Nz, file);
+		if (fread(Temperature[0], sizeof(float), Nx * Nz, file) != (size_t)(Nx * Nz)) { PRINT_ERROR("Failed to read Temperature array."); goto error_read_resume; }
 	}
 	if (isost_model>=3) {
 		stress = alloc_matrix(Nx, Nz);
 		yieldcompres = alloc_matrix(Nx, Nz);
 		yieldextens = alloc_matrix(Nx, Nz);
-		for (i=0; i<Nx; i++) {
-			fread(stress[i], sizeof(float), Nz, file);
-			fread(yieldcompres[i], sizeof(float), Nz, file);
-			fread(yieldextens[i], sizeof(float), Nz, file);
-		}
+		if (fread(stress[0], sizeof(float), Nx * Nz, file) != (size_t)(Nx * Nz)) { PRINT_ERROR("Failed to read stress array."); goto error_read_resume; }
+		if (fread(yieldcompres[0], sizeof(float), Nx * Nz, file) != (size_t)(Nx * Nz)) { PRINT_ERROR("Failed to read yieldcompres array."); goto error_read_resume; }
+		if (fread(yieldextens[0], sizeof(float), Nx * Nz, file) != (size_t)(Nx * Nz)) { PRINT_ERROR("Failed to read yieldextens array."); goto error_read_resume; }
 	}
 
 
@@ -385,8 +396,8 @@ int read_file_resume(char *filename)
 	}
 	if (numBlocks_aux != numBlocks) PRINT_ERROR("in '%s', %d Blocks?!", filename, numBlocks_aux);
 	i_Block_insert=i_Block_insert_aux;
-	for (i=0; i<numBlocks; i++) {
-		fread(Blocks[i].thick, 		sizeof(float),	Nx, 	file);
+	for (i=0; i<numBlocks; i++) { // Blocks[i].thick is a 1D array, so read directly
+		if (fread(Blocks[i].thick, sizeof(float), Nx, file) != (size_t)Nx) { PRINT_ERROR("Failed to read Blocks[%d].thick array.", i); goto error_read_resume; } // Check return value
 	}
 	for (i=0; i<numBlocks; i++) {
 	    if (Blocks[i].type == 'S') {
@@ -397,17 +408,16 @@ int read_file_resume(char *filename)
 	    }
 	}
 
-	if (erosed_model) {
-		fread(eros_now, 	sizeof(float),	Nx, 	file);
-		fread(total_erosion, 	sizeof(float),	Nx, 	file);
+	if (erosed_model) { // These are 1D arrays, so read directly
+		if (fread(eros_now, sizeof(float), Nx, file) != (size_t)Nx) { PRINT_ERROR("Failed to read eros_now array."); goto error_read_resume; } // Check return value
+		if (fread(total_erosion, sizeof(float), Nx, file) != (size_t)Nx) { PRINT_ERROR("Failed to read total_erosion array."); goto error_read_resume; } // Check return value
 	}
-	if (hydro_model) {
-		int j;
-		fread(precipitation, 	sizeof(float),	Nx, 	file);
-		fread(evaporation, 	sizeof(float),	Nx, 	file);
+	if (hydro_model) { // These are 1D arrays, so read directly
+		if (fread(precipitation, sizeof(float), Nx, file) != (size_t)Nx) { PRINT_ERROR("Failed to read precipitation array."); goto error_read_resume; } // Check return value
+		if (fread(evaporation, sizeof(float), Nx, file) != (size_t)Nx) { PRINT_ERROR("Failed to read evaporation array."); goto error_read_resume; } // Check return value
 		Lake = calloc (nlakes+1, sizeof(struct LAKE_INFO_1D));
 		fread(Lake, sizeof(struct LAKE_INFO_1D), nlakes+1, file);
-		for (j=1; j<=nlakes; j++) {
+		for (int j=1; j<=nlakes; j++) {
 			Lake[j].cell = calloc (Lake[j].n, sizeof(int));
 			fread(Lake[j].cell, sizeof(int), Lake[j].n, file);
 			Lake[j].sd = calloc (Lake[j].n_sd, sizeof(int));
@@ -418,7 +428,7 @@ int read_file_resume(char *filename)
 	fread(&end_check,	sizeof(int),		1, 	file);
 	if (end_check != 12345) {
 		PRINT_ERROR("\achecking the end of resume file (%d).\n", end_check);
-		exit(0);
+		goto error_read_resume;
 	}
 	else {
 		PRINT_INFO("Check of resume file '%s' is ok.", filename);
@@ -438,6 +448,8 @@ int read_file_resume(char *filename)
 	}
 
 	fclose(file);
+	return 1;
+error_read_resume:
 	return(1);
 }
 
@@ -458,14 +470,22 @@ int read_file_sea_level()
 	Read_Open_Filename_Return(".SLV", "rt", "Sea level")
 
 	n_sea_level_input_points=n_eros_level_input_points=0;
-	aux1 = calloc(nmax_input_points, sizeof(float));
-	aux2 = calloc(nmax_input_points, sizeof(float));
-	aux3 = calloc(nmax_input_points, sizeof(float));
+	aux1 = (float*)calloc(nmax_input_points, sizeof(float));
+	if (!aux1) { PRINT_ERROR("Memory allocation failed for aux1 in read_file_sea_level."); return 0; }
+	aux2 = (float*)calloc(nmax_input_points, sizeof(float));
+	if (!aux2) { PRINT_ERROR("Memory allocation failed for aux2 in read_file_sea_level."); free(aux1); return 0; }
+	aux3 = (float*)calloc(nmax_input_points, sizeof(float));
+	if (!aux3) { PRINT_ERROR("Memory allocation failed for aux3 in read_file_sea_level."); free(aux1); free(aux2); return 0; }
 	for (i=0; i<nmax_input_points; i++) aux3[i]=NO_DATA;
-	
-	for (;;) {
-		/*TAKE_LINE_2(aux1[n_sea_level_input_points], aux2[n_sea_level_input_points]);*/
-		{char auxstr[MAXLENLINE], *lin; int nfields=0; while (nfields<2) {lin=fgets(auxstr, MAXLENLINE-1, file); if (lin==NULL) break; nfields=sscanf(lin, "%f %f %f", &aux1[n_sea_level_input_points], &aux2[n_sea_level_input_points], &aux3[n_sea_level_input_points]);}; if (lin==NULL) break;}
+
+	char line[MAXLENLINE];
+	while (fgets(line, sizeof(line), file) != NULL) {
+		// Skip comments and empty lines
+		if (line[0] == '#' || line[0] == '\n' || line[0] == '\r') continue;
+		// Use a temporary variable for nfields to avoid issues with macro expansion
+		// if (sscanf(line, "%f %f %f", &aux1[n_sea_level_input_points], &aux2[n_sea_level_input_points], &aux3[n_sea_level_input_points]) != 3) continue;
+		int nfields = sscanf(line, "%f %f %f", &aux1[n_sea_level_input_points], &aux2[n_sea_level_input_points], &aux3[n_sea_level_input_points]);
+		if (nfields < 2) continue;
 		n_sea_level_input_points++;
 		if (aux3[n_sea_level_input_points-1]!=NO_DATA) 
 			n_eros_level_input_points++;
@@ -475,15 +495,19 @@ int read_file_sea_level()
 		}
 	}
 	fclose(file); 
-	if (verbose_level>=1) fprintf(stdout, "\nSea level variations file contains %d points.", n_sea_level_input_points);
-	var_sea_level = calloc(n_sea_level_input_points, sizeof(float *));
-	var_eros_level = calloc(n_eros_level_input_points, sizeof(float *));
+	if (verbose_level >= 1) fprintf(stdout, "\nSea level variations file contains %d points.", n_sea_level_input_points);
+	var_sea_level = (float**)calloc(n_sea_level_input_points, sizeof(float *));
+	if (!var_sea_level) { PRINT_ERROR("Memory allocation failed for var_sea_level."); free(aux1); free(aux2); free(aux3); return 0; }
+	var_eros_level = (float**)calloc(n_eros_level_input_points, sizeof(float *));
+	if (!var_eros_level) { PRINT_ERROR("Memory allocation failed for var_eros_level."); free(aux1); free(aux2); free(aux3); free(var_sea_level); return 0; }
 	for (i=0, j=0; i<n_sea_level_input_points; i++) {
-		var_sea_level[i] = calloc(2, sizeof(float));
+		var_sea_level[i] = (float*)calloc(2, sizeof(float));
+		if (!var_sea_level[i]) { PRINT_ERROR("Memory allocation failed for var_sea_level[%d].", i); free(aux1); free(aux2); free(aux3); free(var_sea_level); free(var_eros_level); return 0; }
 		var_sea_level[i][0] = aux1[i]*Matosec;
 		var_sea_level[i][1] = aux2[i];
 		if (aux3[i]!=NO_DATA) {
-			var_eros_level[j] = calloc(2, sizeof(float));
+			var_eros_level[j] = (float*)calloc(2, sizeof(float));
+			if (!var_eros_level[j]) { PRINT_ERROR("Memory allocation failed for var_eros_level[%d].", j); free(aux1); free(aux2); free(aux3); free(var_sea_level); free(var_eros_level); return 0; }
 			var_eros_level[j][0] = aux1[i]*Matosec;
 			var_eros_level[j][1] = aux3[i];
 			j++;
@@ -544,7 +568,7 @@ int read_file_Temperature(ModelConfig *cfg, ModelContext *ctx)
 	int 	i, n_fld, ix, iz, i_x_temp, i_zinp, 
 		nz_temp_input, n_max_input_temp=100;
 	FILE 	*file;
-	BOOL	last_line=NO;
+	bool	last_line=false;
 	char 	filename[MAXLENFILE], *lin, 
 		linea[MAXLENLINE];
 	float	a, b, x_first, x_last, 
@@ -572,7 +596,7 @@ int read_file_Temperature(ModelConfig *cfg, ModelContext *ctx)
 	nx_temp_input = 0; 
 	do {
 		lin=fgets(linea, MAXLENLINE-1, file);
-		if (!lin) last_line=YES;
+		if (!lin) last_line=true;
 		n_fld = sscanf(linea, "%f %f", &a, &b);
 		if ((n_fld==2 && nx_temp_input==0)) { 
 			nx_temp_input=1;
@@ -831,7 +855,7 @@ int write_file_time (ModelConfig *cfg, ModelContext *ctx, float *w, float *topo)
 	FILE 	*file;
 	char 	filename[MAXLENLINE], filename1[MAXLENLINE], filename2[MAXLENLINE], 
 		command[MAXLENLINE];
-	BOOL	return_cond;
+	bool	return_cond;
 	float	youngest_age=-1e16;
 
 	for (i=0; i<ctx->numBlocks; i++) youngest_age = MAX_2(Blocks[i].age, youngest_age);
@@ -879,7 +903,7 @@ int write_file_time (ModelConfig *cfg, ModelContext *ctx, float *w, float *topo)
 		rename(filename2, filename); remove(filename1);
 	}
 
-	switch_write_file_Blocks=YES;
+	switch_write_file_Blocks=true;
 	nwrotenfiles++;
 	last_time_file_time = ctx->Time;
 
@@ -954,9 +978,9 @@ int write_file_resume(ModelConfig *cfg, ModelContext *ctx)
 	fwrite(version,		sizeof(char),		LENGTHVERS, 	file);
 	fwrite(version_input,	sizeof(char),		LENGTHVERS, 	file);
 
-	fwrite(&switch_geograph_coor, sizeof(BOOL),	1, 	file);
-	fwrite(&switch_ps, 	sizeof(BOOL),		1, 	file);
-	fwrite(&switch_write_file, sizeof(BOOL),		1, 	file);
+	fwrite(&switch_geograph_coor, sizeof(bool),	1, 	file);
+	fwrite(&switch_ps, 	sizeof(bool),		1, 	file);
+	fwrite(&switch_write_file, sizeof(bool),		1, 	file);
 
 
 	/*Defined in geomodel.h:*/
@@ -984,7 +1008,7 @@ int write_file_resume(ModelConfig *cfg, ModelContext *ctx)
 	fwrite(projectname, 	sizeof(char),	MAXLENFILE, 	file);
 	fwrite(gif_geom, 	sizeof(char),	MAXLENLINE, 	file);
 
-	fwrite(&water_load, 	sizeof(BOOL),		1, 	file);
+	fwrite(&water_load, 	sizeof(bool),		1, 	file);
 
 
 	/*Defined in tao+tisc.h:*/
@@ -1008,12 +1032,12 @@ int write_file_resume(ModelConfig *cfg, ModelContext *ctx)
 	fwrite(&last_time_file_time, 	sizeof(float),		1, 	file);
 	fwrite(&random_topo, 	sizeof(float),		1, 	file);
 
-	fwrite(&switch_file_out, 	sizeof(BOOL),		1, 	file);
-	fwrite(&switch_gradual, 	sizeof(BOOL),		1, 	file);
-	fwrite(&switch_insert_load, 	sizeof(BOOL),		1, 	file);
-	fwrite(&switch_topoest, 		sizeof(BOOL),		1, 	file);
-	fwrite(&switch_write_file_Blocks, sizeof(BOOL),		1, 	file);
-	fwrite(&deform_sed, sizeof(BOOL),		1, 	file);
+	fwrite(&switch_file_out, 	sizeof(bool),		1, 	file);
+	fwrite(&switch_gradual, 	sizeof(bool),		1, 	file);
+	fwrite(&switch_insert_load, 	sizeof(bool),		1, 	file);
+	fwrite(&switch_topoest, 		sizeof(bool),		1, 	file);
+	fwrite(&switch_write_file_Blocks, sizeof(bool),		1, 	file);
+	fwrite(&deform_sed, sizeof(bool),		1, 	file);
 
 	/*Defined in tao.h:*/
 	fwrite(&imomentmax, 	sizeof(int),		1, 	file);
@@ -1048,8 +1072,8 @@ int write_file_resume(ModelConfig *cfg, ModelContext *ctx)
 	fwrite(&Krain,	 	sizeof(float),		1, 	file);
 	fwrite(&CXrain, 		sizeof(float),		1, 	file);
 
-	fwrite(&switch_strs_history, 	sizeof(BOOL),		1, 	file);
-	fwrite(&switch_YSE_file, 	sizeof(BOOL),		1, 	file);
+	fwrite(&switch_strs_history, 	sizeof(bool),		1, 	file);
+	fwrite(&switch_YSE_file, 	sizeof(bool),		1, 	file);
 
 
 	/*Arrays:*/
@@ -1073,15 +1097,12 @@ int write_file_resume(ModelConfig *cfg, ModelContext *ctx)
 		fwrite(var_eros_level[i], sizeof(float), 2, file);
 
 	if (isost_model>=3 && !switch_YSE_file) {
-		for (i=0; i<cfg->Nx; i++) 
-			fwrite(Temperature[i], sizeof(float), cfg->Nz, file);
+		if (fwrite(Temperature[0], sizeof(float), cfg->Nx * cfg->Nz, file) != (size_t)(cfg->Nx * cfg->Nz)) { PRINT_ERROR("Failed to write Temperature array."); return 0; }
 	}
 	if (isost_model>=3) {
-		for (i=0; i<cfg->Nx; i++) {
-			fwrite(stress[i], sizeof(float), cfg->Nz, file);
-			fwrite(yieldcompres[i], sizeof(float), cfg->Nz, file);
-			fwrite(yieldextens[i], sizeof(float), cfg->Nz, file);
-		}
+		if (fwrite(stress[0], sizeof(float), cfg->Nx * cfg->Nz, file) != (size_t)(cfg->Nx * cfg->Nz)) { PRINT_ERROR("Failed to write stress array."); return 0; }
+		if (fwrite(yieldcompres[0], sizeof(float), cfg->Nx * cfg->Nz, file) != (size_t)(cfg->Nx * cfg->Nz)) { PRINT_ERROR("Failed to write yieldcompres array."); return 0; }
+		if (fwrite(yieldextens[0], sizeof(float), cfg->Nx * cfg->Nz, file) != (size_t)(cfg->Nx * cfg->Nz)) { PRINT_ERROR("Failed to write yieldextens array."); return 0; }
 	}
 
 	fwrite(Blocks, 		sizeof(struct BLOCK_1D),	ctx->numBlocks, file);

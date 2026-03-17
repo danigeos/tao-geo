@@ -8,7 +8,9 @@ bin/*
 *.o
 *.a
 *.so
+*.d
 *.dSYM/
+build/
 .DS_Store
 
 # === Ignored Untracked Files ===

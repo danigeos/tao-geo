@@ -12,46 +12,24 @@
 
 include config.mk
 
+.PHONY: all clean clean_for_tar help
 
-all:
-	@echo; echo; echo Compiling version $(VERSION)
-	(cd src; make all)
-	@echo; echo; echo Compilation succeeded!
-	@(echo "ADD TO YOUR PATH: `pwd`/bin/  AND  `pwd`/script/")
-	@(echo "ADD IN .cshrc:    setenv tao_dir `pwd` ")
-	@(echo "ADD IN .bashrc:   export tao_dir=`pwd` ")
+.DEFAULT_GOAL := all
+
+all: ## Compile the project
+	@printf "\n\nCompiling version $(VERSION)\n"
+	$(MAKE) -C src all
+	@printf "\n\nCompilation succeeded!\n"
+	@echo "ADD TO YOUR PATH: $(CURDIR)/bin/  AND  $(CURDIR)/script/"
+	@echo "ADD IN .cshrc:    setenv tao_dir $(CURDIR) "
+	@echo "ADD IN .bashrc:   export tao_dir=$(CURDIR) "
+
+clean: ## Clean generated files for packaging
+	$(MAKE) -C src clean
 
 clean_for_tar:
-	(cd src; make clean)
-	#rm -f src/*.o lib/libreria.o lib/libreria.a 
-	(cd demo; rm -f `find . -name '*[0-9][0-9][2-9].jpg' -print` `find . -name '*[0-9][0-9][2-9].png' -print`)
+	$(MAKE) -C src clean
+	find demo -type f \( -name '*[0-9][0-9][2-9].jpg' -o -name '*[0-9][0-9][2-9].png' \) -delete
 
-
-vers: 	clean_for_tar
-	echo "CLEANING for packing"
-	rm -R -f tmp tao_copy_for_upload
-	mkdir tmp tmp/bin
-	cp -R -L Makefile config.mk README demo doc include lib script src   tmp
-	rm -f tmp/doc/.first_compilation.txt #tmp/lib/sistbanda* version_tmp/lib/surf_proc* version_tmp/lib/thin_sheet* 
-	rm -r -f tmp/demo/Andes
-	echo "PACKING"
-	tar -chf $(VERSION).tar tmp
-	chmod og-r $(VERSION).tar
-	gzip -f $(VERSION).tar
-	touch tmp/bin/touch_something #needed by git add
-	mv tmp tao_copy_for_upload
-	#make upload
-
-
-upload:
-	echo "UPLOADING to github."
-	cd tao_copy_for_upload; 
-	#For initialization:  
-	#git init; 
-	#git remote add tao https://github.com/danigeos/tao-geo; 
-	#git add .; 
-	git commit -a -m$(VERSION)
-	git config http.postBuffer 524288000; git config http.maxRequestBuffer 100M; git config core.compression 0; 
-	#add --force to pass by the remote version 
-	git push -u -f tao master
-
+help: ## Show this help message
+	@awk 'BEGIN {FS = ":.*##"; printf "\nUsage:\n  make \033[36m<target>\033[0m\n\nTargets:\n"} /^[a-zA-Z_-]+:.*?##/ { printf "  \033[36m%-15s\033[0m %s\n", $$1, $$2 }' $(MAKEFILE_LIST)

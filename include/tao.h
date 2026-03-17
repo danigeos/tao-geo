@@ -4,11 +4,7 @@ INCLUDE FILE FOR tao.c
 
 #include <stdbool.h>
 
-#define BOOL bool
-#define YES true
-#define NO false
-#define SI true
-
+#include "param_config.h"
 #include "geomodel.h"			/*General definitions and types for geophysical models*/
 
 /* ===================================================================== */
@@ -43,8 +39,7 @@ typedef struct {
 #define Read_Param(x, y)  {char line[MAXLENLINE+200]; while ((sscanf(lineptr=fgets(line, MAXLENLINE+200, file), x, y )) < 1) \
 	if (lineptr==NULL) {fprintf(stderr, "\nERROR reading parameters file: parameter not found.\n");	break;}}
 
-#undef PRINT_ARRAY_INFO
-#define PRINT_ARRAY_INFO(array, name, units, unitsintegr) {\
+#define PRINT_ARRAY_INFO_1D(array, name, units, unitsintegr) {\
 	    int i,imin=SIGNAL,imax=SIGNAL; float max=-1e19, min=1e19, vol=0;\
 	    for (i=(xmin-x0)/dx; i<Nx-(xf-xmax)/dx; i++) {\
 	    	    vol += array[i]*dx;\
@@ -118,9 +113,10 @@ extern char 	gif_geom[MAXLENLINE];
 
 
 /*Boolean type variables:*/
-extern BOOL	switch_insert_load,		/*Si to insert the load height beneath the first load Block*/
+extern bool	switch_insert_load,		/*Si to insert the load height beneath the first load Block*/
 	switch_strs_history, 
 	switch_YSE_file;			/*SI if yield stress is given directly from a .YSE file*/
+extern bool switch_debug;
 
 
 
@@ -217,7 +213,7 @@ int insert_new_Block(ModelConfig *cfg, ModelContext *ctx, int num_new_Block);
 int Allocate_Memory(ModelConfig *cfg, ModelContext *ctx);
 int Init_Stress(ModelConfig *cfg);
 int make_gravi_body(ModelConfig *cfg, float *upper_hor, float *lower_hor, float *body_x, float *body_z);
-int LES_matrix (ModelConfig *cfg, ModelContext *ctx, double **A, double *b, float *D, float *q, float *Dq, float *w, BOOL doing_visco);
+int LES_matrix (ModelConfig *cfg, ModelContext *ctx, double **A, double *b, float *D, float *q, float *Dq, float *w, bool doing_visco);
 float geoidanompolyg(
 	float *y_pol, 			/*horizontal coordinate of line points clock-wise sorted*/
 	float *z_pol, 			/*vertical coordinate of line points clock-wise sorted. z>0 downwards*/

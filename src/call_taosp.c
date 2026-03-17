@@ -1,9 +1,8 @@
 /*
 	Used for external calls to the SURFACE PROCESSES library
-	(i.e., from PARAVOZ)
+	(i.e., from PARAVOZ or UHURU)
 
 	Daniel Garcia-Castellanos, 2003
-
 
 The first routine init_surf_proc is to be called at the begining of the external program, 
 as initialization, before the time loop.: To this routine you pass the 
@@ -51,8 +50,8 @@ int init_surf_proc_ (
 	rain=*ad_rain,  Krain=*ad_Krain,  
 	CXrain=*ad_CXrain, evaporation=*ad_evaporation;
 
-	switch_verbose = SI;
-	switch_debug = NO;
+	switch_verbose = 1;
+	switch_debug = false;
 
 	if (switch_verbose) fprintf(stdout, "\nRunning tAo model: \n\t%d nodes ; x=[%.1f,%.1f]",
 		Nx, xmin, xmax);
@@ -61,9 +60,9 @@ int init_surf_proc_ (
 	if (switch_debug) fprintf(stdout, "\n\terodability=%.2f m ; erodability_sed=%.2f m ; l_fluv_sedim=%.2f m",
 		erodability, erodability_sed, l_fluv_sedim);
 
-/*	if (rain || Krain) switch_hydro = SI; else switch_hydro = NO;*/
-	erosed_type = SI;
-	switch_write_file = SI;
+/*	if (rain || Krain) switch_hydro = true; else switch_hydro = false;*/
+	erosed_type = 1;
+	switch_write_file = true;
 	strcpy(projectname, "drainage");
 	
 	dx = (xmax-xmin) / (Nx-1);

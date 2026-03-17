@@ -6,10 +6,6 @@ Daniel Garcia-Castellanos, 1994-2003
 
 #include "tao.h"
 
-/*convert between sediment thickness and sediment grain mass*/
-#define MASS2SEDTHICK_1D(cfg, mass)	((mass) /(cfg->denssedim-cfg->sed_porosity*cfg->denswater)/cfg->dx/cfg->riverbasinwidth)	/*converts sediment mass into sediment thickness*/
-#define THICK2SEDMASS_1D(cfg, thick)	((thick)*(cfg->denssedim-cfg->sed_porosity*cfg->denswater)*cfg->dx*cfg->riverbasinwidth)	/*converts sediment thickness into sediment mass*/
-
 /*Declaration of functions at libreria.c*/
 float 	**alloc_matrix  (int num_fil, int num_col);
 int 	free_matrix 	(float **matrix, int num_fil);
@@ -67,8 +63,8 @@ int Surface_Transport (ModelConfig *cfg, ModelContext *ctx, float *topo)
 	/*Print relevant statistics*/
 	if (cfg->verbose_level>=1) {
 		float 	error;
-		PRINT_ARRAY_INFO (secsperyr*precipitation, "precipit.", "m/yr", "m2/yr");
-		PRINT_ARRAY_INFO (secsperyr*evaporation,   "evaporat.", "m/yr", "m2/yr");
+		PRINT_ARRAY_INFO_1D(secsperyr*precipitation, "precipit.", "m/yr", "m2/yr");
+		PRINT_ARRAY_INFO_1D(secsperyr*evaporation,   "evaporat.", "m/yr", "m2/yr");
 		PRINT_SUMLINE("rain_now : %+8.2e m3/s  evap_wat: %+8.2e m3/s outp_water: %+8.2e m3/s", ctx->total_rain, total_evap_water, total_lost_water); 
 		if (ctx->total_rain) error=-(ctx->total_rain-total_evap_water-total_lost_water)/ctx->total_rain*100; else error = -9999;
 			if (fabs(error)>=1)
@@ -393,7 +389,7 @@ int Define_Drainage_Net (int *sortcell, ModelConfig *cfg, ModelContext *ctx)
 		int undef_lake_adj=0, n_nonposders=0, n_zeroders=0, n_negders=0, n_posders=0;
 		int imaxderneg=SIGNAL, imaxderneg_noundef=SIGNAL, n_negders_nonundef_lake=0; 
 		float deriv=SIGNAL,   maxderneg=0, maxderneg_noundef=0;
-		BOOL switch_change_in_next_height=NO, switch_saddle=NO;
+		bool switch_change_in_next_height=false, switch_saddle=false;
 
 		i = sortcell[isort]; 
 
@@ -448,7 +444,7 @@ int Define_Drainage_Net (int *sortcell, ModelConfig *cfg, ModelContext *ctx)
 				if (n_negders_nonundef_lake) {
 					Add_Node_To_Lake(i, undef_lake_adj);
 					Add_Saddle_To_Lake(i, imaxderneg_noundef, undef_lake_adj);
-					switch_saddle=YES;
+					switch_saddle=true;
 				}
 				/*Add node to the undefined lake.*/
 				else {
@@ -466,7 +462,7 @@ int Define_Drainage_Net (int *sortcell, ModelConfig *cfg, ModelContext *ctx)
 						int i_lake;
 						Add_Node_To_Lake(i, i_lake=New_Lake(cfg, ctx));
 						Add_Saddle_To_Lake(i, imaxderneg, i_lake);
-						switch_saddle=YES;
+						switch_saddle=true;
 					}
 					else {
 						Add_Node_To_Lake(i, New_Lake(cfg, ctx));
@@ -495,7 +491,7 @@ int Define_Drainage_Net (int *sortcell, ModelConfig *cfg, ModelContext *ctx)
 			  overburden lakes that have the present height.
 			*/
 			if (isort>0)  if (ctx->topo[i] != ctx->topo[sortcell[isort-1]]) 
-				switch_change_in_next_height=YES;
+				switch_change_in_next_height=true;
 			if (switch_change_in_next_height || isort==0) {
 				for (l=1; l<=ctx->nlakes; l++) {
 					if (Lake[l].n_sd)
@@ -686,8 +682,8 @@ int Diffusive_Eros_1D (ModelConfig *cfg, ModelContext *ctx, float Kerosdif)
 	int i, n_iters, conteros;
 	float *Dheros;
 
-	Dheros = (float *) calloc(cfg->Nx, sizeof(float));
 	if (!cfg->erosed_model || !Kerosdif) return (0);
+	Dheros = (float *) calloc(cfg->Nx, sizeof(float));
 
 	/*Divides erosion into substeps to transmit the effect more far away*/
 	n_iters = MAX_2(floor(ctx->dt/ctx->dt_eros+.5), 1);
@@ -1546,7 +1542,7 @@ int Divide_Lake (ModelConfig *cfg, ModelContext *ctx, int ind)
 		imaxderneg, 
 		local_num_lakes=0;
 	float 	lake_evaporation, maxderneg=0;
-	BOOL 	became_overburden_1, became_overburden_2;
+	bool 	became_overburden_1, became_overburden_2;
 
 	il=drainage[ind].lake;
 	if (Lake[il].n<3) return(0);
@@ -1588,13 +1584,13 @@ int Divide_Lake (ModelConfig *cfg, ModelContext *ctx, int ind)
 	  Check overburdening of the new lakes after separation 
 	  and determine the role of the node to be deleted.
 	*/
-	became_overburden_1=became_overburden_2=NO;
+	became_overburden_1=became_overburden_2=false;
     	lake_evaporation=0;
 	for (i=0; i<Lake[ctx->nlakes-1].n; i++) lake_evaporation += evaporation[Lake[ctx->nlakes-1].cell[i]] * cfg->riverbasinwidth * cfg->dx;
-	if (lake_evaporation < Lake_Input_Discharge(cfg, ctx->nlakes-1)) became_overburden_1=YES;
+	if (lake_evaporation < Lake_Input_Discharge(cfg, ctx->nlakes-1)) became_overburden_1=true;
     	lake_evaporation=0;
 	for (i=0; i<Lake[ctx->nlakes].n; i++) lake_evaporation += evaporation[Lake[ctx->nlakes].cell[i]] * cfg->riverbasinwidth * cfg->dx;
-	if (lake_evaporation < Lake_Input_Discharge(cfg, ctx->nlakes))   became_overburden_2=YES;
+	if (lake_evaporation < Lake_Input_Discharge(cfg, ctx->nlakes))   became_overburden_2=true;
 	if (became_overburden_1 && became_overburden_2) 
 		PRINT_WARNING("no lake remained underburden among 2.");
 

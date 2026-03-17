@@ -3,7 +3,6 @@ AT_BORDER	../include/types_n_defs.h	/^#define AT_BORDER(i,j)		((i==0) || (i==Ny-
 AT_BORDER_1D	../include/types_n_defs.h	/^#define AT_BORDER_1D(i)		((i==0) || (i==Nx-1))$/
 Add_Node_To_Lake	taosp.c	/^int Add_Node_To_Lake (int ncell, int i_lake)$/
 Add_Saddle_To_Lake	taosp.c	/^int Add_Saddle_To_Lake (int sd, int tr, int i_lake/
-Allocate_Memory	taolib.c	/^int Allocate_Memory(ModelConfig *cfg, ModelContext/
 Allocate_Memory_for_external_use	call_taosp.c	/^int Allocate_Memory_for_external_use()$/
 Attempt_Delete_Node_From_Lake	taosp.c	/^int Attempt_Delete_Node_From_Lake (ModelConfig *cf/
 BLOCK	../include/types_n_defs.h	/^struct BLOCK { 		\/*for TISC*\/$/
@@ -46,19 +45,18 @@ Lake_Input_Discharge	taosp.c	/^float Lake_Input_Discharge (ModelConfig *cfg, int
 Lake_Node_Number	taosp.c	/^int Lake_Node_Number(int ind)$/
 Lake_Saddle_Number	taosp.c	/^int Lake_Saddle_Number (int ind)$/
 Landslide_Transport	taosp.c	/^int Landslide_Transport (ModelConfig *cfg, ModelCo/
-MASS2SEDTHICK_1D	taosp.c	/^#define MASS2SEDTHICK_1D(cfg, mass)	((mass) \/(cfg/
+MASS2SEDTHICK_1D	../include/tao.h	/^#define MASS2SEDTHICK_1D(cfg, mass)	((mass) \/(cfg/
 MAX_2	../include/types_n_defs.h	/^#define MAX_2(x,y)	(((x)>(y))? (x) : (y))	\/*Gives/
 MIN_2	../include/types_n_defs.h	/^#define MIN_2(x,y)	(((x)<(y))? (x) : (y))	\/*Gives/
 Match_Param_Replace_chr	../include/tao+tisc.h	/^#define Match_Param_Replace_chr(x, y, old)  if (!s/
 Match_Param_Replace_flt	../include/tao+tisc.h	/^#define Match_Param_Replace_flt(x, y, old)  if (!s/
 Match_Param_Replace_int	../include/tao+tisc.h	/^#define Match_Param_Replace_int(x, y, old)  if (!s/
-Match_Param_char	../lib/libreria.c	/^#define Match_Param_char(x, y) if (!strcasecmp(str/
+Match_Param_char	../include/tao+tisc.h	/^#define Match_Param_char(x, y) if (!strcasecmp(str/
 Match_Param_char_old	../include/tao+tisc.h	/^#define Match_Param_char_old(x, y) if (!strcasecmp/
-Match_Param_flt	../lib/libreria.c	/^#define Match_Param_flt(x, y)  if (!strcasecmp(str/
+Match_Param_flt	../include/tao+tisc.h	/^#define Match_Param_flt(x, y)  if (!strcasecmp(str/
 Match_Param_flt_old	../include/tao+tisc.h	/^#define Match_Param_flt_old(x, y)  if (!strcasecmp/
-Match_Param_int	../lib/libreria.c	/^#define Match_Param_int(x, y)  if (!strcasecmp(str/
+Match_Param_int	../include/tao+tisc.h	/^#define Match_Param_int(x, y)  if (!strcasecmp(str/
 Match_Param_int_old	../include/tao+tisc.h	/^#define Match_Param_int_old(x, y)  if (!strcasecmp/
-Minvertfile	invertfile.c	/^int main (int argc, char **argv)$/
 ModelConfig	../include/tao.h	/^} ModelConfig;$/
 ModelContext	../include/tao.h	/^} ModelContext;$/
 Mtao	tao.c	/^int main(int argc, char **argv)$/
@@ -73,7 +71,8 @@ OUT_DOMAIN	../include/types_n_defs.h	/^#define OUT_DOMAIN(i,j) 	((i<0)  || (i>=N
 OUT_DOMAIN_1D	../include/types_n_defs.h	/^#define OUT_DOMAIN_1D(i)	((i<0)  || (i>=Nx))$/
 Orographic_Precipitation	taosp.c	/^float Orographic_Precipitation (ModelConfig *cfg, /
 Orographic_Precipitation_Evaporation_conservative	taosp.c	/^int Orographic_Precipitation_Evaporation_conservat/
-PRINT_ARRAY_INFO	../include/tao.h	/^#define PRINT_ARRAY_INFO(array, name, units, units/
+PRINT_ARRAY_INFO	../include/types_n_defs.h	/^#define PRINT_ARRAY_INFO(array, name, units) {\\$/
+PRINT_ARRAY_INFO_1D	../include/tao.h	/^#define PRINT_ARRAY_INFO_1D(array, name, units, un/
 PRINT_DEBUG	../include/types_n_defs.h	/^#define PRINT_DEBUG(...)	{if (verbose_level>=4) {f/
 PRINT_DEBUGPLUS	../include/types_n_defs.h	/^#define PRINT_DEBUGPLUS(...){if (verbose_level>=5)/
 PRINT_ERROR	../include/types_n_defs.h	/^#define PRINT_ERROR(...)	{if (verbose_level>=0) {f/
@@ -81,6 +80,8 @@ PRINT_GRID_INFO	../include/types_n_defs.h	/^#define PRINT_GRID_INFO(grid, name, 
 PRINT_INFO	../include/types_n_defs.h	/^#define PRINT_INFO(...) 	{if (verbose_level>=2) {f/
 PRINT_SUMLINE	../include/types_n_defs.h	/^#define PRINT_SUMLINE(...)	{if (verbose_level>=1) /
 PRINT_WARNING	../include/types_n_defs.h	/^#define PRINT_WARNING(...)	{if (verbose_level>=3) /
+ParamType	../include/param_config.h	/^} ParamType;$/
+ParameterEntry	../include/param_config.h	/^} ParameterEntry;$/
 RIG2ET	../include/geomodel.h	/^#define	RIG2ET(x)	(pow((x)\/E*12.*(1.-nu*nu), 1.\//
 ReSort_Array	../lib/libreria.c	/^float ReSort_Array (float *array, int *orden, int /
 Read_Header_File	../include/tao+tisc.h	/^#define Read_Header_File(file) {\\$/
@@ -101,7 +102,7 @@ TEMPERATURE	../include/types_n_defs.h	/^#define TEMPERATURE(altitude)	(temp_sea_
 TEMPERATURE_AIR	../include/types_n_defs.h	/^#define TEMPERATURE_AIR(topo,height)	(TEMPERATURE_/
 TEMPERATURE_GROUND	../include/types_n_defs.h	/^#define TEMPERATURE_GROUND(topo)	(temp_sea_level -/
 TEMPERATURE_ICE	../include/types_n_defs.h	/^#define TEMPERATURE_ICE(altitude)	(temp_sea_level /
-THICK2SEDMASS_1D	taosp.c	/^#define THICK2SEDMASS_1D(cfg, thick)	((thick)*(cfg/
+THICK2SEDMASS_1D	../include/tao.h	/^#define THICK2SEDMASS_1D(cfg, thick)	((thick)*(cfg/
 The_End	tao.c	/^int The_End(ModelConfig *cfg, ModelContext *ctx)$/
 TriangularizeAlmostDiagonalEquationSystem	../lib/libreria.c	/^int TriangularizeAlmostDiagonalEquationSystem($/
 Unify_Lakes	taosp.c	/^int Unify_Lakes (ModelConfig *cfg, ModelContext *c/

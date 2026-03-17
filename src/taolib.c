@@ -5,6 +5,7 @@
 
 
 
+#include "param_config.h" // Include the new parameter config header
 int Allocate_Memory(ModelConfig *cfg, ModelContext *ctx)
 {
 	/* Allocates dynamic memory for the arrays and initializes them to zero*/
@@ -219,83 +220,53 @@ int insert_new_Block(ModelConfig *cfg, ModelContext *ctx, int num_new_Block)
 
 int match_parameter(char *str1, char *str2, int show, int replace, char *line)
 {
-	BOOL switch_debug=NO;
-	int nparams=0;
+    extern ParameterEntry param_table[];
+    extern const int num_params;
+    
+    for (int i = 0; i < num_params; i++) {
+        if (strcmp(str1, param_table[i].name) == 0) {
+            if (param_table[i].is_old_version && verbose_level >= 2) {
+                fprintf(stderr, "\nWarning: Old parameter '%s' used. Please update your PRM file.", str1);
+            }
 
-	Match_Param_Replace_int ( "Nx", 	Nx, 	0 )
-	Match_Param_Replace_int ( "Nz", 	Nz, 	0 )
-	Match_Param_Replace_flt ( "x0", 	x0, 	0 )
-	Match_Param_Replace_flt ( "xf", 	xf, 	0 )
-	Match_Param_Replace_flt ( "xmin", 	xmin, 	0 )
-	Match_Param_Replace_flt ( "xmax", 	xmax, 	0 )
-	Match_Param_Replace_flt ( "zmin", 	zmin, 	0 )
-	Match_Param_Replace_flt ( "zmax", 	zmax, 	0 )
-	Match_Param_Replace_flt ( "Te",		Te_default, 	0 )
-	Match_Param_Replace_flt ( "crust",	crust_thick_default, 	0 )
-	Match_Param_Replace_flt ( "ucrust",	upper_crust_thick_default, 	0 )
-	Match_Param_Replace_flt ( "zini",	zini, 	0 )
-	Match_Param_Replace_flt ( "random_topo",	random_topo, 	0 )
-	Match_Param_Replace_flt ( "densasthen",	densasthen, 	0 )
-	Match_Param_Replace_flt ( "densmantle",	densmantle, 	0 )
-	Match_Param_Replace_flt ( "denscrust",	denscrust, 	0 )
-	Match_Param_Replace_flt ( "densinfill",	densinfill, 	0 )
-	Match_Param_Replace_flt ( "denssedim",	denssedim, 	0 )
-	Match_Param_Replace_flt ( "densenv",	densenv, 	0 )
-	Match_Param_Replace_flt ( "sed_porosity",	sed_porosity, 	0 )
-	Match_Param_Replace_flt ( "compact_depth",	compact_depth, 	0 )
-	Match_Param_Replace_int ( "erosed_model",	erosed_model, 	0 )
-	Match_Param_Replace_flt ( "Kerosdif",	Kerosdif, 	0 )
-	Match_Param_Replace_flt ( "Keroseol",	Keroseol, 	0 )
-	Match_Param_Replace_flt ( "Ksedim",	Ksedim, 	0 )
-	Match_Param_Replace_int ( "hydro_model",	hydro_model, 	0 )
-	Match_Param_Replace_flt ( "rain",	rain, 	0 )
-	Match_Param_Replace_flt ( "Krain",	Krain, 	0 )
-	Match_Param_Replace_flt ( "relhumid",	relative_humidity, 	0 )
-	Match_Param_Replace_flt ( "CXrain",	CXrain, 	0 )
-	Match_Param_Replace_flt ( "evaporation",	evaporation_ct, 	0 )
-	Match_Param_Replace_flt ( "riverbasinwidth",	riverbasinwidth, 	0 )
-	Match_Param_Replace_flt ( "lost_rate",	lost_rate, 	0 )
-	Match_Param_Replace_flt ( "K_river_cap",	K_river_cap, 	0 )
-	Match_Param_Replace_flt ( "erodibility",	erodibility, 	0 )
-	Match_Param_Replace_flt ( "erodibility_sed",	erodibility_sed, 	0 )
-	Match_Param_Replace_flt ( "l_fluv_sedim",	l_fluv_sedim, 	0 )
-	Match_Param_Replace_flt ( "temp_sea_level",	temp_sea_level, 	0 )
-	Match_Param_Replace_int ( "deform_sed",  	deform_sed, 	0 )
-	Match_Param_Replace_chr ( "eros_bound_cond",	eros_bound_cond,  	0 )
-	Match_Param_Replace_flt ( "Timeini",	Timeini, 	0 )
-	Match_Param_Replace_flt ( "Timefinal",	Timefinal, 	0 )
-	Match_Param_Replace_flt ( "tau",	tau, 	0 )
-	Match_Param_Replace_flt ( "dt",		dt, 	0 )
-	Match_Param_Replace_flt ( "dt_eros",	dt_eros, 	0 )
-	Match_Param_Replace_flt ( "dt_record",	dt_record, 	0 )
-	Match_Param_Replace_int ( "boundary_conds",	boundary_conds, 	0 )
-	Match_Param_Replace_flt ( "horz_force",	horz_force, 	0 )
-	Match_Param_Replace_flt ( "vert_force",	vert_force, 	0 )
-	Match_Param_Replace_flt ( "moment",	appmoment, 	0 )
-	Match_Param_Replace_int ( "isost_model",	isost_model, 	0 )
-	Match_Param_Replace_int ( "water_load", 	water_load, 	0 )
-	Match_Param_Replace_int ( "switch_topoest", switch_topoest, 	0 )
-	Match_Param_Replace_int ( "grav_anom",	grav_anom_type, 	0 )
-	Match_Param_Replace_int ( "switch_files",	switch_write_file, 	0 )
-	Match_Param_Replace_int ( "switch_ps",  	switch_ps, 	0 )
-	Match_Param_Replace_int ( "verbose_level",	verbose_level, 	0 )
-
-	/*old version*/
-	Match_Param_Replace_flt ( "erodability",	erodibility, 	1 )
-	Match_Param_Replace_flt ( "erodability_sed",	erodibility_sed, 	1 )
-	Match_Param_Replace_int ( "switch_verbose",	verbose_level, 	1 )
-	Match_Param_Replace_int ( "switch_debug",	switch_debug, 	1 )
-	if (switch_debug) verbose_level=3;
-	Match_Param_Replace_flt ( "alt0",	zini, 	1 )
-	Match_Param_Replace_int ( "lith_type",	isost_model, 	1 )
-	Match_Param_Replace_int ( "erosed_type",	erosed_model, 	1 )
-	Match_Param_Replace_int ( "switch_erosed",	erosed_model, 	1 )
-	Match_Param_Replace_int ( "switch_sea", 	water_load, 	1 )
-	Match_Param_Replace_flt ( "ymin", 	zmin, 	1 )
-	Match_Param_Replace_flt ( "ymax", 	zmax, 	1 )
-	Match_Param_Replace_flt ( "dtmemounit",	dt_record, 	1 )
-
-	return (nparams);
+            if (replace) {
+                if (show) {
+                    switch (param_table[i].type) {
+                        case PARAM_TYPE_INT:    fprintf(stdout, "%s\t%d\n", str1, *(int*)param_table[i].ptr); break;
+                        case PARAM_TYPE_FLOAT:  fprintf(stdout, "%s\t%f\n", str1, *(float*)param_table[i].ptr); break;
+                        case PARAM_TYPE_STRING: fprintf(stdout, "%s\t%s\n", str1, (char*)param_table[i].ptr); break;
+                        case PARAM_TYPE_BOOL:   fprintf(stdout, "%s\t%d\n", str1, *(bool*)param_table[i].ptr); break;
+                    }
+                }
+            } else {
+                switch (param_table[i].type) {
+                    case PARAM_TYPE_INT:
+                        *(int*)param_table[i].ptr = atoi(str2);
+                        if (show) fprintf(stdout, "%s\t%d\n", str1, *(int*)param_table[i].ptr);
+                        break;
+                    case PARAM_TYPE_FLOAT:
+                        *(float*)param_table[i].ptr = atof(str2);
+                        if (show) fprintf(stdout, "%s\t%f\n", str1, *(float*)param_table[i].ptr);
+                        break;
+                    case PARAM_TYPE_STRING:
+                        strncpy((char*)param_table[i].ptr, str2, param_table[i].size - 1);
+                        ((char*)param_table[i].ptr)[param_table[i].size - 1] = '\0';
+                        if (show) fprintf(stdout, "%s\t%s\n", str1, (char*)param_table[i].ptr);
+                        break;
+                    case PARAM_TYPE_BOOL:
+                        *(bool*)param_table[i].ptr = (bool)atoi(str2);
+                        if (show) fprintf(stdout, "%s\t%d\n", str1, *(bool*)param_table[i].ptr);
+                        break;
+                }
+            }
+            // Special handling for switch_debug which sets verbose_level
+            if (strcmp(str1, "switch_debug") == 0 && *(bool*)param_table[i].ptr) {
+                verbose_level = 3;
+            }
+            return 1; // Parameter matched and processed
+        }
+    }
+    return 0; // Parameter not matched
 }
 
 
@@ -337,7 +308,7 @@ int LES_matrix (ModelConfig *cfg, ModelContext *ctx,
 		float *q,	/* Total load (not including restitutive force).*/
 		float *Dq,	/* Load increment [N] which effect (deflection) is to be calculated (not including restitutive force).*/
 		float *w, 
-		BOOL doing_visco)	/* Uses present deflection for certain terms. */
+		bool doing_visco)	/* Uses present deflection for certain terms. */
 {
 	register int 	i, j, NDi=3, NDs=3;
 	double		Krest, dx2, dx3, dx4;
@@ -518,7 +489,7 @@ float moment_calculator (ModelConfig *cfg,
 			Dsigma, 
 			backpressure, refstress=0, 
 			*refstressv; 					/*Stress due to tect. force.*/
-	BOOL	switch_saturatedlayer;			/*YES if that decoupled layer is entirely at the yield stress due to horz_force*/
+	bool	switch_saturatedlayer;			/*true if that decoupled layer is entirely at the yield stress due to horz_force*/
 
 	refstressv = (float *) calloc(cfg->Nz, sizeof(float));
 
@@ -585,12 +556,12 @@ float moment_calculator (ModelConfig *cfg,
 		/*We need to find the depth where flexural bending stress is zero, crossing from positive to negative. This depth must accomplish that the integrated force equals horz_force*/
 		z_null_strs = (zfloorlayer[layer]+ztoplayer[layer])/2 ;
 		itop=ztoplayer[layer]/cfg->dz ; ifloor=zfloorlayer[layer]/cfg->dz ;
-		for (j=itop, switch_saturatedlayer=YES; j<=ifloor; j++) {
+		for (j=itop, switch_saturatedlayer=true; j<=ifloor; j++) {
 			if ((refstressv[j]>0 && refstressv[j]<yieldextens[j]) || (refstressv[j]<=0 && refstressv[j]>yieldcompres[j])) {
-				switch_saturatedlayer=NO ;
+				switch_saturatedlayer=false ;
 			}
 		}
-		if (switch_saturatedlayer==NO) {
+		if (switch_saturatedlayer==false) {
 			for (i=1 ; i<=numiter; i++) {
 				/*Iterates until null stress point position reach convergence.*/
 				pressurelayer = abspressure = momentlayer = 0 ;
@@ -654,7 +625,7 @@ float moment_calculator_hist (ModelConfig *cfg,
 		mecanthick=0, 
 		Dsigma, 
 		*newstress;
-	BOOL	switch_saturatedlayer;
+	bool	switch_saturatedlayer;
 
 	/*Define the n decoupled layers (top and bottom).*/
 	for (i=0; i<cfg->Nz; i++) {
@@ -701,12 +672,12 @@ float moment_calculator_hist (ModelConfig *cfg,
 			layer_thick = zbotlayer[layer]-ztoplayer[layer];
 
 		itop=ztoplayer[layer]/cfg->dz; ibot=zbotlayer[layer]/cfg->dz;
-		for (j=itop, switch_saturatedlayer=YES; j<=ibot; j++) {
+		for (j=itop, switch_saturatedlayer=true; j<=ibot; j++) {
 			if ((stress[j]>0 && stress[j]<yieldextens[j]) || (stress[j]<=0 && stress[j]>yieldcompres[j])) {
-				switch_saturatedlayer=NO ;
+				switch_saturatedlayer=false ;
 			}
 		}
-		if (switch_saturatedlayer==NO) {
+		if (switch_saturatedlayer==false) {
 			/*Iterates until null stress point position reach convergence.*/
 			for (i=1; i<=numiter; i++) {
 				layerforceincre = layerabsforceincre = cumulmomentlayer = incremomentlayer = 0;
@@ -791,7 +762,7 @@ int read_file_YSE(ModelConfig *cfg)
 	sprintf(filename, "%s.YSE", projectname);
 	if ((file = fopen(filename, "rt")) == NULL) {
 		if (verbose_level>=3) fprintf(stderr, "\nYSE file '%s' not found. ", filename);
-		switch_YSE_file = NO;
+		switch_YSE_file = false;
 		return(0);
 	}
 	else if (verbose_level>=1) fprintf(stdout, "\nYSE at '%s'.", filename);
@@ -799,13 +770,16 @@ int read_file_YSE(ModelConfig *cfg)
 	yse_comp = calloc(10000, sizeof(float));
 	yse_extn = calloc(10000, sizeof(float));
 	z_yse =	calloc(10000, sizeof(float));
-	nz_input = 0;
-	for (;;) {
-		TAKE_LINE_3(z_yse[nz_input], yse_comp[nz_input], yse_extn[nz_input]); 
+	nz_input = 0; // Initialize nz_input
+	char line[MAXLENLINE];
+	while (fgets(line, sizeof(line), file) != NULL) {
+		// Skip comments and empty lines
+		if (line[0] == '#' || line[0] == '\n' || line[0] == '\r') continue;
+		if (sscanf(line, "%f %f %f", &z_yse[nz_input], &yse_comp[nz_input], &yse_extn[nz_input]) != 3) continue; // Ensure 3 fields are read
 		nz_input++;
 	}
 	fclose (file);
-	switch_YSE_file = YES;
+	switch_YSE_file = true;
 
 	/*Interpolates vertically the YSE*/
 	for (ix=0; ix<cfg->Nx; ix++) {
@@ -858,7 +832,7 @@ int Rheo_Flex_Iter (ModelConfig *cfg, ModelContext *ctx) {
 		want =   (float *) calloc (cfg->Nx , sizeof(float));
 		for (i=0;i<cfg->Nx;i++) want[i] = w[i];
 		/*Calculates a pure elastic Initial deflection*/
-		LES_matrix(cfg, ctx, A, b, D, q, Dq, w, NO);
+		LES_matrix(cfg, ctx, A, b, D, q, Dq, w, false);
 		solveLES(A, b, cfg->Nx, 3, 3, w);
 		/*
 		  Uses this w deflection as a first value for an iteration that
@@ -905,7 +879,7 @@ int Rheo_Flex_Iter (ModelConfig *cfg, ModelContext *ctx) {
 			}
 
 			/*Calculates new deflection with present EET*/
-			LES_matrix(cfg, ctx, A, b, D, q, Dq, w, NO) ;
+			LES_matrix(cfg, ctx, A, b, D, q, Dq, w, false) ;
 			solveLES(A, b, cfg->Nx, 3, 3, w) ;
 
 			/*Checks convergence*/
@@ -924,13 +898,13 @@ int Rheo_Flex_Iter (ModelConfig *cfg, ModelContext *ctx) {
 
 
 	else {
-		BOOL 	switch_last_repeat=NO;
+		bool 	switch_last_repeat=false;
 		float 	point_moment, max_Te_var;
 
 		x_stress = calloc (cfg->Nz , sizeof(float));
 
 		/*Calculates a pure elastic initial deflection*/
-		LES_matrix(cfg, ctx, A, b, D, q, Dq, w, NO);
+		LES_matrix(cfg, ctx, A, b, D, q, Dq, w, false);
 		solveLES(A, b, cfg->Nx, 3, 3, Dw);
 
 		/*
@@ -987,13 +961,13 @@ int Rheo_Flex_Iter (ModelConfig *cfg, ModelContext *ctx) {
 			}
 
 			/*Calculates new deflection with present EET*/
-			LES_matrix(cfg, ctx, A, b, D, q, Dq, w, NO) ;
+			LES_matrix(cfg, ctx, A, b, D, q, Dq, w, false) ;
 			solveLES(A, b, cfg->Nx, 3, 3, Dw) ;
 		
 			/*Checks convergence*/
 			if ((criterioconv*cfg->dx < MAXETERR && max_Te_var<MAX_Te_LOC_VAR) || switch_last_repeat) {
 				if (switch_last_repeat) break;
-				else {switch_last_repeat=YES; rheoiter--;}
+				else {switch_last_repeat=true; rheoiter--;}
 			}
 		}
 		fprintf(stdout, "\b\b") ;
@@ -1009,6 +983,8 @@ int Rheo_Flex_Iter (ModelConfig *cfg, ModelContext *ctx) {
 	flexural_stats(cfg, ctx, moment);
 
 	free (moment);
+	free_matrix_dbl(A, cfg->Nx); // Free the solver matrix
+	free(b); // Free the independent term vector
 	return(1);
 }
 
@@ -1127,7 +1103,7 @@ int yield_stress_envelope_semibrittle (
 		ductil_Dorn_law, 
 		ductil, 
 		aux1,aux2,aux3;
-	BOOL	switch_competente=NO;
+	bool	switch_competente=false;
 
 
 	/*Oceans: Bodine et al. 1981 */
@@ -1164,9 +1140,9 @@ int yield_stress_envelope_semibrittle (
 		if (yieldextens[i] > mecanlimit || yieldcompres[i] < -mecanlimit || z<=Lowercrustbase) { 
 			espmecan += cfg->dz ;
 			if (!switch_competente) numlayers++ ; 
-			switch_competente = YES;
+			switch_competente = true;
 		}
-		else	switch_competente = NO;
+		else	switch_competente = false;
 	}
 	*espmecanptr = espmecan;
 
@@ -1220,7 +1196,7 @@ int yield_stress_envelope (
 		ductil_Dorn_law, 
 		ductil, 
 		aux1,aux2,aux3;
-	BOOL	switch_competente=NO;
+	bool	switch_competente=false;
 
 
 	/*Oceans: Bodine et al. 1981 */
@@ -1269,9 +1245,9 @@ int yield_stress_envelope (
 		if (yieldextens[i] > mecanlimit || yieldcompres[i] < -mecanlimit || z<=Lowercrustbase) { 
 			espmecan += cfg->dz ;
 			if (!switch_competente) numlayers++ ; 
-			switch_competente = YES;
+			switch_competente = true;
 		}
-		else	switch_competente = NO;
+		else	switch_competente = false;
 	}
 	*espmecanptr = espmecan;
 
@@ -1344,7 +1320,7 @@ int calculate_water_load(ModelConfig *cfg, ModelContext *ctx)
 		water_volume += h_water[i];		
 	}
 
-	PRINT_ARRAY_INFO(h_water, "water", "m", "m2") 
+	PRINT_ARRAY_INFO_1D(h_water, "water", "m", "m2") 
 	if (n_sea_level_input_points) {
 		PRINT_SUMLINE("sea_level: %8.1f m   sea_volume = %.1f km2", ctx->sea_level, water_volume*cfg->dx*cfg->Nx/(cfg->Nx-1)/1e6);
 	}
