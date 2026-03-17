@@ -187,14 +187,20 @@ int inputs(ModelConfig *cfg, ModelContext *ctx, int argc, char **argv)
 						system(command) ;
 						break;
 						default:
-						fprintf(stderr, "\nFile ./tao/doc/tao.info.txt follows:\n") ;
-						sprintf(command, "more %s/doc/tao.info.txt", TAODIR);
+						syntax();
 						AUTHORSHIP;
-						system(command) ;
 						break;
 					}
 					fprintf(stderr, "\n") ;
 					exit(0);
+				case '-':
+					if (strcmp(argv[iarg], "--help") == 0) {
+						fprintf(stderr, "\nFile ./tao/doc/tao.info.txt follows:\n") ;
+						sprintf(command, "more %s/doc/tao.info.txt", TAODIR);
+						system(command) ;
+						exit(0);
+					}
+					break;
 				case 'Q':
 					run_type=1;
 					strcpy(load_file_name, prm);
@@ -1373,25 +1379,24 @@ int read_file_unit(ModelConfig *cfg, ModelContext *ctx)
 int syntax()
 {
 	/*
-		Displays the command line syntax of the program
+		Displays the hardcoded command line syntax of the program
 	*/
-	char 	filename[MAXLENFILE], line[MAXLENLINE], *lineptr;
-	FILE 	*file;
-	BOOL 	print=NO;
-
-	sprintf(filename, "%s/doc/tao.info.txt", TAODIR);
-	if ((file = fopen(filename, "rt")) == NULL) {
-		if (verbose_level>=3) fprintf(stderr, "\nWarning: Cannot find file %s. You shouldn't have moved tAo directory after compilation...", filename);
-		return(0);
-	}
 	fprintf(stderr, "\nSyntax:\n");
-	while (1) {
-		fgets(line, MAXLENLINE-1, file);
-		if (lineptr=strstr(line, "Signals")) break;;
-		if (print==YES) fprintf(stderr, "%s", line);
-		if (strstr(line, "SYNTAX")) print=YES;
-	}
-	fclose(file);
+	fprintf(stderr, "  tao  project  -A[1|2] -B<bound_type> -D[x0/xf] -d<dx> -F[file] -f[2] \n");
+	fprintf(stderr, "        -h[i|u|p|c] -M<lih_type>[t] -m<app_mom> -N<Nx> -o -P[c[geom]|p]\n");
+	fprintf(stderr, "        -p<tec_force> -q<param=value> -Q<file>  -r<a|c|i|m|a><density>\n");
+	fprintf(stderr, "        -S<b>/<n> -s<app_force> -T<eet> -t<i|f|d|v|r><time> -V[<level>] \n");
+	fprintf(stderr, "        -v[<num>/<vel>]\n\n");
+	fprintf(stderr, "  Options:\n");
+	fprintf(stderr, "    'project'\tRoot name for all files (e.g. 'test' looks for 'test.PRM')\n");
+	fprintf(stderr, "    -F\t\tResume a previous run from a .all file\n");
+	fprintf(stderr, "    -P\t\tProduce graphic output (-Pp for Python, -Pc for GMT)\n");
+	fprintf(stderr, "    -q\t\tOverride any parameter in the PRM file (-qparam=value)\n");
+	fprintf(stderr, "    -Q\t\tDirect elastic deflection mode for a given load file\n");
+	fprintf(stderr, "    -h\t\tShow this help (or -hc for clean PRM, -hu for UNIT example)\n");
+	fprintf(stderr, "    --help\tOpen the full documentation file\n\n");
+	fprintf(stderr, "For full documentation, please read doc/tAo_Documentation.md\n");
+	
 	return (1);
 }
 
