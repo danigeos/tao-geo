@@ -87,6 +87,7 @@ int init_surf_proc_ (
 	
 	if (switch_verbose) fprintf(stdout, "\ntAo initialisation done.");
 /*	if (switch_debug)   fprintf(stdout, "\tswitch_hydro=%d", switch_hydro);*/
+	return 1;
 }
 
 
@@ -150,6 +151,7 @@ int call_surf_proc_ (
 	fflush (commstdout);
 
         fprintf(commstdout, "\n  noSed er.: %+8.2e N    sed.incr.: %+8.2e N outp.seds: %+8.2e N  ",  total_bedrock_eros_mass*g, total_sed_mass*g, total_lost_sed_mass*g);
+	return 1;
 }
 
 

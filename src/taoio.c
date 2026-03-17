@@ -1,7 +1,7 @@
 /*
 INPUT/OUTPUT  FUNCTIONS  FOR  tao.c
 */
-#include "param_config.h" // Include the new parameter config header
+#include "tao.h"
 #include <stdlib.h> // For EXIT_FAILURE
 #include <string.h> // For strncpy
 

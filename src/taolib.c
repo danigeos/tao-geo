@@ -4,8 +4,7 @@
 */
 
 
-
-#include "param_config.h" // Include the new parameter config header
+#include "tao.h"
 int Allocate_Memory(ModelConfig *cfg, ModelContext *ctx)
 {
 	/* Allocates dynamic memory for the arrays and initializes them to zero*/

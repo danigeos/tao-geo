@@ -1,21 +1,22 @@
 AREA_TRIANGLE	../lib/libreria.c	/^#define AREA_TRIANGLE(area, a, b, c)	{\/*Heron's f/
-AT_BORDER	../include/types_n_defs.h	/^#define AT_BORDER(i,j)		((i==0) || (i==Ny-1) || (j/
-AT_BORDER_1D	../include/types_n_defs.h	/^#define AT_BORDER_1D(i)		((i==0) || (i==Nx-1))$/
+AT_BORDER	../include/geomodel.h	/^#define AT_BORDER(i,j)		((i==0) || (i==Ny-1) || (j/
+AT_BORDER_1D	../include/geomodel.h	/^#define AT_BORDER_1D(i)		((i==0) || (i==Nx-1))$/
 Add_Node_To_Lake	taosp.c	/^int Add_Node_To_Lake (int ncell, int i_lake)$/
 Add_Saddle_To_Lake	taosp.c	/^int Add_Saddle_To_Lake (int sd, int tr, int i_lake/
+Allocate_Memory	taolib.c	/^int Allocate_Memory(ModelConfig *cfg, ModelContext/
 Allocate_Memory_for_external_use	call_taosp.c	/^int Allocate_Memory_for_external_use()$/
 Attempt_Delete_Node_From_Lake	taosp.c	/^int Attempt_Delete_Node_From_Lake (ModelConfig *cf/
-BLOCK	../include/types_n_defs.h	/^struct BLOCK { 		\/*for TISC*\/$/
-BLOCK_1D	../include/types_n_defs.h	/^struct BLOCK_1D {	\/*for tAo*\/$/
-BORDER_INDEX	../include/types_n_defs.h	/^#define BORDER_INDEX(i,j)	(((j)==0)? 3 : ((j)==Nx-/
-BORDER_LIMIT	../include/types_n_defs.h	/^#define BORDER_LIMIT(i,j)	DOMAIN_LIMIT(i,j)$/
-CS2D	../include/types_n_defs.h	/^struct CS2D {$/
+BLOCK	../include/tao+tisc.h	/^struct BLOCK { 		\/*for TISC*\/$/
+BLOCK_1D	../include/tao+tisc.h	/^struct BLOCK_1D {	\/*for tAo*\/$/
+BORDER_INDEX	../include/geomodel.h	/^#define BORDER_INDEX(i,j)	(((j)==0)? 3 : ((j)==Nx-/
+BORDER_LIMIT	../include/geomodel.h	/^#define BORDER_LIMIT(i,j)	DOMAIN_LIMIT(i,j)$/
+CS2D	../include/tao+tisc.h	/^struct CS2D {$/
 Calculate_Discharge	taosp.c	/^int Calculate_Discharge (int *sortcell, ModelConfi/
 Calculate_Precipitation_Evaporation	taosp.c	/^int Calculate_Precipitation_Evaporation (ModelConf/
-DOMAIN_LIMIT	../include/types_n_defs.h	/^#define DOMAIN_LIMIT(i,j)	{if (i<0) i=0;  if (i>=N/
-DOMAIN_LIMIT_1D	../include/types_n_defs.h	/^#define DOMAIN_LIMIT_1D(i)	{if (i<0) i=0;  if (i>N/
-DRAINAGE	../include/types_n_defs.h	/^struct DRAINAGE {$/
-DRAINAGE_1D	../include/types_n_defs.h	/^struct DRAINAGE_1D {$/
+DOMAIN_LIMIT	../include/geomodel.h	/^#define DOMAIN_LIMIT(i,j)	{if (i<0) i=0;  if (i>=N/
+DOMAIN_LIMIT_1D	../include/geomodel.h	/^#define DOMAIN_LIMIT_1D(i)	{if (i<0) i=0;  if (i>N/
+DRAINAGE	../include/tao+tisc.h	/^struct DRAINAGE {$/
+DRAINAGE_1D	../include/tao+tisc.h	/^struct DRAINAGE_1D {$/
 Deallocate_Lake	taosp.c	/^int Deallocate_Lake (ModelContext *ctx, int i_lake/
 Define_Drainage_Net	taosp.c	/^int Define_Drainage_Net (int *sortcell, ModelConfi/
 Define_Lake	taosp.c	/^int Define_Lake (int i_lake)$/
@@ -29,25 +30,25 @@ Elastoplastic_Deflection	tao.c	/^int Elastoplastic_Deflection(ModelConfig *cfg, 
 Erode	taosp.c	/^int Erode (ModelConfig *cfg, ModelContext *ctx, do/
 Fluvial_Transport	taosp.c	/^int Fluvial_Transport (ModelConfig *cfg, ModelCont/
 GET_KREST	../include/tao.h	/^#define GET_KREST(Krest, q, i) { \/*Define the res/
-GRIDNODE	../include/types_n_defs.h	/^struct GRIDNODE {$/
-IF_LAKE_IS_SEA	../include/types_n_defs.h	/^#define IF_LAKE_IS_SEA(il) 	if (il) if (Lake[il].n/
-INSIDE_BORDER	../include/types_n_defs.h	/^#define INSIDE_BORDER(i,j)  	IN_DOMAIN(i,j)$/
-IN_DOMAIN	../include/types_n_defs.h	/^#define IN_DOMAIN(i,j)		((i>=0) && (i<Ny)    && (j/
-IN_DOMAIN_1D	../include/types_n_defs.h	/^#define IN_DOMAIN_1D(i)		((i>=0) && (i<Nx))$/
+GRIDNODE	../include/tao+tisc.h	/^struct GRIDNODE {$/
+IF_LAKE_IS_SEA	../include/geomodel.h	/^#define IF_LAKE_IS_SEA(il) 	if (il) if (Lake[il].n/
+INSIDE_BORDER	../include/geomodel.h	/^#define INSIDE_BORDER(i,j)  	IN_DOMAIN(i,j)$/
+IN_DOMAIN	../include/geomodel.h	/^#define IN_DOMAIN(i,j)		((i>=0) && (i<Ny)    && (j/
+IN_DOMAIN_1D	../include/geomodel.h	/^#define IN_DOMAIN_1D(i)		((i>=0) && (i<Nx))$/
 Init_Stress	taolib.c	/^int Init_Stress(ModelConfig *cfg)$/
-LAKE_INFO	../include/types_n_defs.h	/^struct LAKE_INFO {		\/*For lakes*\/$/
-LAKE_INFO_1D	../include/types_n_defs.h	/^struct LAKE_INFO_1D {		\/*For lakes*\/$/
+LAKE_INFO	../include/tao+tisc.h	/^struct LAKE_INFO {		\/*For lakes*\/$/
+LAKE_INFO_1D	../include/tao+tisc.h	/^struct LAKE_INFO_1D {		\/*For lakes*\/$/
 LES_matrix	taolib.c	/^int LES_matrix (ModelConfig *cfg, ModelContext *ct/
-LIMIT	../include/types_n_defs.h	/^#define LIMIT(x,y,z)	(((x)<(y))? (y) : ((x)>(z))? /
-LININTERP	../include/types_n_defs.h	/^#define LININTERP(x, x1,x2, y1,y2)	((x<=x1)? y1 : /
+LIMIT	../include/geomodel.h	/^#define LIMIT(x,y,z)	(((x)<(y))? (y) : ((x)>(z))? /
+LININTERP	../include/geomodel.h	/^#define LININTERP(x, x1,x2, y1,y2)	((x<=x1)? y1 : /
 Lake_Fill	taosp.c	/^int Lake_Fill ($/
 Lake_Input_Discharge	taosp.c	/^float Lake_Input_Discharge (ModelConfig *cfg, int /
 Lake_Node_Number	taosp.c	/^int Lake_Node_Number(int ind)$/
 Lake_Saddle_Number	taosp.c	/^int Lake_Saddle_Number (int ind)$/
 Landslide_Transport	taosp.c	/^int Landslide_Transport (ModelConfig *cfg, ModelCo/
 MASS2SEDTHICK_1D	../include/tao.h	/^#define MASS2SEDTHICK_1D(cfg, mass)	((mass) \/(cfg/
-MAX_2	../include/types_n_defs.h	/^#define MAX_2(x,y)	(((x)>(y))? (x) : (y))	\/*Gives/
-MIN_2	../include/types_n_defs.h	/^#define MIN_2(x,y)	(((x)<(y))? (x) : (y))	\/*Gives/
+MAX_2	../include/geomodel.h	/^#define MAX_2(x,y)	(((x)>(y))? (x) : (y))	\/*Gives/
+MIN_2	../include/geomodel.h	/^#define MIN_2(x,y)	(((x)<(y))? (x) : (y))	\/*Gives/
 Match_Param_Replace_chr	../include/tao+tisc.h	/^#define Match_Param_Replace_chr(x, y, old)  if (!s/
 Match_Param_Replace_flt	../include/tao+tisc.h	/^#define Match_Param_Replace_flt(x, y, old)  if (!s/
 Match_Param_Replace_int	../include/tao+tisc.h	/^#define Match_Param_Replace_int(x, y, old)  if (!s/
@@ -61,27 +62,27 @@ ModelConfig	../include/tao.h	/^} ModelConfig;$/
 ModelContext	../include/tao.h	/^} ModelContext;$/
 Mtao	tao.c	/^int main(int argc, char **argv)$/
 Mtaofit	taofit.c	/^int main(int argc, char **argv)$/
-NEIGHBOURS	../include/types_n_defs.h	/^#define NEIGHBOURS(i,j,ni,nj)	(fabs(i-ni) <= 1 && /
-NOT_AT_BORDER	../include/types_n_defs.h	/^#define NOT_AT_BORDER(i,j)	((i>0)  && (i<Ny-1)  &&/
-NOT_AT_BORDER_1D	../include/types_n_defs.h	/^#define NOT_AT_BORDER_1D(i)	((i>0)  && (i<Nx-1))$/
-NOT_OUT_BORDER	../include/types_n_defs.h	/^#define NOT_OUT_BORDER(i,j)  	IN_DOMAIN(i,j)$/
+NEIGHBOURS	../include/geomodel.h	/^#define NEIGHBOURS(i,j,ni,nj)	(fabs(i-ni) <= 1 && /
+NOT_AT_BORDER	../include/geomodel.h	/^#define NOT_AT_BORDER(i,j)	((i>0)  && (i<Ny-1)  &&/
+NOT_AT_BORDER_1D	../include/geomodel.h	/^#define NOT_AT_BORDER_1D(i)	((i>0)  && (i<Nx-1))$/
+NOT_OUT_BORDER	../include/geomodel.h	/^#define NOT_OUT_BORDER(i,j)  	IN_DOMAIN(i,j)$/
 New_Lake	taosp.c	/^int New_Lake (ModelConfig *cfg, ModelContext *ctx)/
-OUT_BORDER	../include/types_n_defs.h	/^#define OUT_BORDER(i,j) 	OUT_DOMAIN(i,j)$/
-OUT_DOMAIN	../include/types_n_defs.h	/^#define OUT_DOMAIN(i,j) 	((i<0)  || (i>=Ny)   || (/
-OUT_DOMAIN_1D	../include/types_n_defs.h	/^#define OUT_DOMAIN_1D(i)	((i<0)  || (i>=Nx))$/
+OUT_BORDER	../include/geomodel.h	/^#define OUT_BORDER(i,j) 	OUT_DOMAIN(i,j)$/
+OUT_DOMAIN	../include/geomodel.h	/^#define OUT_DOMAIN(i,j) 	((i<0)  || (i>=Ny)   || (/
+OUT_DOMAIN_1D	../include/geomodel.h	/^#define OUT_DOMAIN_1D(i)	((i<0)  || (i>=Nx))$/
 Orographic_Precipitation	taosp.c	/^float Orographic_Precipitation (ModelConfig *cfg, /
 Orographic_Precipitation_Evaporation_conservative	taosp.c	/^int Orographic_Precipitation_Evaporation_conservat/
-PRINT_ARRAY_INFO	../include/types_n_defs.h	/^#define PRINT_ARRAY_INFO(array, name, units) {\\$/
+PRINT_ARRAY_INFO	../include/geomodel.h	/^#define PRINT_ARRAY_INFO(array, name, units) {\\$/
 PRINT_ARRAY_INFO_1D	../include/tao.h	/^#define PRINT_ARRAY_INFO_1D(array, name, units, un/
-PRINT_DEBUG	../include/types_n_defs.h	/^#define PRINT_DEBUG(...)	{if (verbose_level>=4) {f/
-PRINT_DEBUGPLUS	../include/types_n_defs.h	/^#define PRINT_DEBUGPLUS(...){if (verbose_level>=5)/
-PRINT_ERROR	../include/types_n_defs.h	/^#define PRINT_ERROR(...)	{if (verbose_level>=0) {f/
-PRINT_GRID_INFO	../include/types_n_defs.h	/^#define PRINT_GRID_INFO(grid, name, units) {\\$/
-PRINT_INFO	../include/types_n_defs.h	/^#define PRINT_INFO(...) 	{if (verbose_level>=2) {f/
-PRINT_SUMLINE	../include/types_n_defs.h	/^#define PRINT_SUMLINE(...)	{if (verbose_level>=1) /
-PRINT_WARNING	../include/types_n_defs.h	/^#define PRINT_WARNING(...)	{if (verbose_level>=3) /
-ParamType	../include/param_config.h	/^} ParamType;$/
-ParameterEntry	../include/param_config.h	/^} ParameterEntry;$/
+PRINT_DEBUG	../include/geomodel.h	/^#define PRINT_DEBUG(...)	{if (verbose_level>=4) {f/
+PRINT_DEBUGPLUS	../include/geomodel.h	/^#define PRINT_DEBUGPLUS(...){if (verbose_level>=5)/
+PRINT_ERROR	../include/geomodel.h	/^#define PRINT_ERROR(...)	{if (verbose_level>=0) {f/
+PRINT_GRID_INFO	../include/geomodel.h	/^#define PRINT_GRID_INFO(grid, name, units) {\\$/
+PRINT_INFO	../include/geomodel.h	/^#define PRINT_INFO(...) 	{if (verbose_level>=2) {f/
+PRINT_SUMLINE	../include/geomodel.h	/^#define PRINT_SUMLINE(...)	{if (verbose_level>=1) /
+PRINT_WARNING	../include/geomodel.h	/^#define PRINT_WARNING(...)	{if (verbose_level>=3) /
+ParamType	../include/tao+tisc.h	/^} ParamType;$/
+ParameterEntry	../include/tao+tisc.h	/^} ParameterEntry;$/
 RIG2ET	../include/geomodel.h	/^#define	RIG2ET(x)	(pow((x)\/E*12.*(1.-nu*nu), 1.\//
 ReSort_Array	../lib/libreria.c	/^float ReSort_Array (float *array, int *orden, int /
 Read_Header_File	../include/tao+tisc.h	/^#define Read_Header_File(file) {\\$/
@@ -89,19 +90,15 @@ Read_Open_Filename_Return	../include/tao+tisc.h	/^#define Read_Open_Filename_Ret
 Read_Param	../include/tao.h	/^#define Read_Param(x, y)  {char line[MAXLENLINE+20/
 Repare_Blocks	taolib.c	/^int Repare_Blocks(ModelConfig *cfg, ModelContext */
 Rheo_Flex_Iter	taolib.c	/^int Rheo_Flex_Iter (ModelConfig *cfg, ModelContext/
-SIGN	../include/types_n_defs.h	/^#define SIGN(x)		(((x)<0)? (-1) : (((x)>0)? (+1) :/
-SQUARE	../include/types_n_defs.h	/^#define SQUARE(x)	((x)*(x))$/
+SIGN	../include/geomodel.h	/^#define SIGN(x)		(((x)<0)? (-1) : (((x)>0)? (+1) :/
+SQUARE	../include/geomodel.h	/^#define SQUARE(x)	((x)*(x))$/
 Sediment	taosp.c	/^int Sediment (ModelConfig *cfg, ModelContext *ctx,/
 SolveAlmostDiagonalTriangularEquationSystem	../lib/libreria.c	/^int SolveAlmostDiagonalTriangularEquationSystem ($/
 Surface_Transport	taosp.c	/^int Surface_Transport (ModelConfig *cfg, ModelCont/
-TAKE_LINE_1	../include/types_n_defs.h	/^#define TAKE_LINE_1(x)		{ char auxstr[MAXLENLINE],/
-TAKE_LINE_2	../include/types_n_defs.h	/^#define TAKE_LINE_2(x, y)	{ char auxstr[MAXLENLINE/
-TAKE_LINE_3	../include/types_n_defs.h	/^#define TAKE_LINE_3(x, y, z)	{ char auxstr[MAXLENL/
-TAKE_LINE_4	../include/types_n_defs.h	/^#define TAKE_LINE_4(x, y, z, t)	{ char auxstr[MAXL/
-TEMPERATURE	../include/types_n_defs.h	/^#define TEMPERATURE(altitude)	(temp_sea_level - GA/
-TEMPERATURE_AIR	../include/types_n_defs.h	/^#define TEMPERATURE_AIR(topo,height)	(TEMPERATURE_/
-TEMPERATURE_GROUND	../include/types_n_defs.h	/^#define TEMPERATURE_GROUND(topo)	(temp_sea_level -/
-TEMPERATURE_ICE	../include/types_n_defs.h	/^#define TEMPERATURE_ICE(altitude)	(temp_sea_level /
+TEMPERATURE	../include/geomodel.h	/^#define TEMPERATURE(altitude)	(temp_sea_level - GA/
+TEMPERATURE_AIR	../include/geomodel.h	/^#define TEMPERATURE_AIR(topo,height)	(TEMPERATURE_/
+TEMPERATURE_GROUND	../include/geomodel.h	/^#define TEMPERATURE_GROUND(topo)	(temp_sea_level -/
+TEMPERATURE_ICE	../include/geomodel.h	/^#define TEMPERATURE_ICE(altitude)	(temp_sea_level /
 THICK2SEDMASS_1D	../include/tao.h	/^#define THICK2SEDMASS_1D(cfg, thick)	((thick)*(cfg/
 The_End	tao.c	/^int The_End(ModelConfig *cfg, ModelContext *ctx)$/
 TriangularizeAlmostDiagonalEquationSystem	../lib/libreria.c	/^int TriangularizeAlmostDiagonalEquationSystem($/

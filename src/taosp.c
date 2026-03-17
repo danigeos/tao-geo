@@ -183,7 +183,7 @@ int Calculate_Discharge (int *sortcell, ModelConfig *cfg, ModelContext *ctx)
 			break;
 		    case 'R':
 		    	if (dind==ind) {
-				PRINT_ERROR("\aNo deberia pasar por aqui!.", ind, drainage[ind].discharge);
+				PRINT_ERROR("\aNo deberia pasar por aqui!. ind=%d, discharge=%f", ind, drainage[ind].discharge);
 				total_evap_water += drainage[ind].discharge; 
 			}
 			else 	
@@ -567,8 +567,8 @@ int Define_Drainage_Net (int *sortcell, ModelConfig *cfg, ModelContext *ctx)
 	  Add transferring and other information to 'drainage'.
 	*/
 	for (l=1; l<=ctx->nlakes; l++) {
-		register float 	dist, mindist;
-		register int 	imindist=-1, ls;
+		float 	dist, mindist;
+		int 	imindist=-1, ls;
 		/*Saddles*/
 		for (m=0; m<Lake[l].n_sd; m++) {
 			ls = Lake[l].sd[m];
@@ -1537,7 +1537,7 @@ int Divide_Lake (ModelConfig *cfg, ModelContext *ctx, int ind)
 	  removed from the lake (by evaporation) is 
 	  the only connexion between two or more parts of the lake.
 	*/
-	register int 	i, j, k, lake_delete, il, i_saddle, 
+	int 	i, j, k, lake_delete, il, i_saddle, 
 		indi, indj, 
 		imaxderneg, 
 		local_num_lakes=0;
@@ -1765,7 +1765,7 @@ int Calculate_Precipitation_Evaporation (ModelConfig *cfg, ModelContext *ctx)
 		float altitude;     int il;
 		for (i=0; i<cfg->Nx; i++) {
 		    altitude = ctx->topo[i];
-		    if (il=drainage[i].lake) {
+		    if ((il = drainage[i].lake)) {
 		    	/*!!*/
 		    	altitude = ctx->topo[Lake[il].cell[Lake[il].n-1]];
 		    }
@@ -1848,7 +1848,7 @@ float Orographic_Precipitation (ModelConfig *cfg, ModelContext *ctx, int i, floa
 		slope=0, esat, topoC, topoR, topoL;
 	int 	il;
 	/*Surface temperature*/
-	topoC = ctx->topo[i];   if (il=drainage[i].lake) topoC = ctx->topo[Lake[il].cell[Lake[il].n-1]];
+	topoC = ctx->topo[i];   if ((il = drainage[i].lake)) topoC = ctx->topo[Lake[il].cell[Lake[il].n-1]];
 	Ts = TEMPERATURE_GROUND(topoC); 
 		/*Tetens formula for Clausius-Clapeyron, giving the saturation vapor pressure in the surface*/
 	esat = es0 * exp(a*(Ts-TEMP_FREEZE_WATER)/(Ts-b));
@@ -1902,7 +1902,7 @@ int Orographic_Precipitation_Evaporation_conservative (ModelConfig *cfg, ModelCo
 	if (windvel) for (i=istart; i>=0 && i<cfg->Nx; i+=incr) {
 	    /*calculate maximum possible water content (saturation) in column i, in m*/
 	    Wmax=0;
-	    topoC = ctx->topo[i];   if (il=drainage[i].lake) topoC = ctx->topo[Lake[il].cell[Lake[il].n-1]];
+	    topoC = ctx->topo[i];   if ((il = drainage[i].lake)) topoC = ctx->topo[Lake[il].cell[Lake[il].n-1]];
 	    for (z=0; z<10000; z+=dz) {
 		float temp_air;
 		temp_air = TEMPERATURE_AIR(topoC, z);

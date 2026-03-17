@@ -1,5 +1,5 @@
 #Read and modify options in ../config.mk
-#Type  'make'  in this directory to compile.
+#Then type  'make'  in this directory to compile.
 
 -include ../config.mk
 
@@ -14,10 +14,22 @@ OBJ	= ../build
 LIB	= ../lib
 INCL	= ../include 
 
-.PHONY: all backup clean libreria.o notify help
+# --- Fancy output & verbosity control ---
+V ?= 0
+ifeq ($(V),0)
+  Q = @
+else
+  Q =
+endif
+
+BLUE  = \033[34m
+GREEN = \033[32m
+RESET = \033[0m
+
+.PHONY: all backup clean notify help
 
 all: ## Compile all binaries
-	$(MAKE) tao taofit
+	@$(MAKE) tao taofit
 
 backup: ## Copy source files to backup directory
 	$(CP) -f tao* $(BACKUPS)
@@ -28,35 +40,40 @@ clean: ## Remove generated object files and binaries
 DEPFLAGS = -MMD -MP
 CFLAGS = $(OPTS) -I$(INCL) $(DEPFLAGS)
 	
-TAO_OBJS = $(OBJ)/tao.o $(OBJ)/taosp.o $(OBJ)/globals.o
+TAO_OBJS = $(OBJ)/tao.o $(OBJ)/taosp.o $(OBJ)/globals.o $(OBJ)/taolib.o $(OBJ)/taoio.o
 
 $(OBJ):
 	mkdir -p $(OBJ)
 
-tao :	$(TAO_OBJS) libreria.o notify
-	$(CC) $(TAO_OBJS) $(LIB)/libreria.o $(LIBS) -o $(BIN)/tao
-	chmod a+x $(BIN)/tao
+tao :	$(TAO_OBJS) $(OBJ)/libreria.o notify
+	@printf "$(GREEN)[LD]$(RESET) $@\n"
+	$(Q)$(CC) $(TAO_OBJS) $(OBJ)/libreria.o $(LIBS) -o $(BIN)/tao
+	$(Q)chmod a+x $(BIN)/tao
 
 $(OBJ)/tao.o : tao.c | $(OBJ)
-	@printf "\ntao HOME DIRECTORY: $(tao_DIR)\nARCH=$(ARCH)\nOP. SYSTEM=$(OS)\nUser home: $(HOME_DIR)\nYou are currently $(shell whoami) using the shell $(SHELL)\n\n"
-	$(CC) $(CFLAGS) -c -o $@ -DVERSION=\"$(VERSION)\" -D'TAODIR="$(tao_DIR)"' tao.c
-	@if [ -x /usr/bin/ctags ]; then \
-		ctags *.c ../lib/libreria.c ../include/*.h;\
+	@printf "$(BLUE)[CC]$(RESET) $<\n"
+	$(Q)$(CC) $(CFLAGS) -c -o $@ -DVERSION=\"$(VERSION)\" -D'TAODIR="$(tao_DIR)"' tao.c
+	$(Q)if [ -x /usr/bin/ctags ]; then \
+		ctags *.c ../lib/libreria.c ../include/*.h 2>/dev/null;\
 		mv -f tags tao.tags; echo tags file produced.;\
 	fi
 
 $(OBJ)/%.o: %.c | $(OBJ)
-	$(CC) $(CFLAGS) -c $< -o $@
+	@printf "$(BLUE)[CC]$(RESET) $<\n"
+	$(Q)$(CC) $(CFLAGS) -c $< -o $@
 
 $(OBJ)/call_taosp.o : call_taosp.c | $(OBJ)
-	$(CC) $(CFLAGS) -c -o $@ call_taosp.c
+	@printf "$(BLUE)[CC]$(RESET) $<\n"
+	$(Q)$(CC) $(CFLAGS) -c -o $@ call_taosp.c
 
-libreria.o :
-	$(MAKE) -C $(LIB) libreria.o
+$(OBJ)/libreria.o : ../lib/libreria.c | $(OBJ)
+	@printf "$(BLUE)[CC]$(RESET) $<\n"
+	$(Q)$(CC) $(CFLAGS) -c $< -o $@
 
-taofit : libreria.o $(OBJ)/globals.o $(OBJ)/taofit.o | $(OBJ)
-	$(CC) $(OBJ)/taofit.o $(OBJ)/globals.o $(LIB)/libreria.o -lc -lm -o $(BIN)/taofit
-	chmod a+x $(BIN)/taofit
+taofit : $(OBJ)/libreria.o $(OBJ)/globals.o $(OBJ)/taofit.o | $(OBJ)
+	@printf "$(GREEN)[LD]$(RESET) $@\n"
+	$(Q)$(CC) $(OBJ)/taofit.o $(OBJ)/globals.o $(OBJ)/libreria.o -lc -lm -o $(BIN)/taofit
+	$(Q)chmod a+x $(BIN)/taofit
 
 notify :
 	@if [ -f ../doc/.first_compilation.txt ]; \

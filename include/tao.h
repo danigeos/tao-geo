@@ -4,7 +4,6 @@ INCLUDE FILE FOR tao.c
 
 #include <stdbool.h>
 
-#include "param_config.h"
 #include "geomodel.h"			/*General definitions and types for geophysical models*/
 
 /* ===================================================================== */
@@ -195,9 +194,20 @@ int surface_processes(ModelConfig *cfg, ModelContext *ctx);
 int Write_Ouput(ModelConfig *cfg, ModelContext *ctx);
 int syntax();
 int The_End(ModelConfig *cfg, ModelContext *ctx);
-int interpr_command_line_opts();
+int interpr_command_line_opts(int argc, char **argv);
 int Direct_mode(ModelConfig *cfg, ModelContext *ctx, char *load_file_name);
 int read_file_unit(ModelConfig *cfg, ModelContext *ctx);
+int read_file_parameters(int show, int reformat);
+int read_file_resume(char *filename);
+int read_file_sea_level();
+int read_file_horiz_record_time();
+int read_file_Te();
+int read_file_Crust_Thick(float crust_thick_default);
+int read_file_Upper_Crust_Thick(float crust_thick_supdefault);
+int read_file_initial_topo(float *h);
+int read_file_initial_deflection(float *w);
+int read_file_Temperature(ModelConfig *cfg, ModelContext *ctx);
+int match_parameter(char *str1, char *str2, int show, int replace, char *line);
 int write_file_erosed (ModelConfig *cfg, ModelContext *ctx, float *total_erosion);
 int write_file_grav_anom (ModelConfig *cfg, ModelContext *ctx, float *gravanom, float *geoidanom);
 int write_file_maxmompoint (ModelConfig *cfg, ModelContext *ctx);

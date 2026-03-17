@@ -17,11 +17,10 @@
 				Daniel Garcia-Castellanos, I-1996
 */
 
-#define SYNTAX	fprintf(stderr, "Syntax:\t%s  <project_name> [-a<f|g>] [-m<moment>] [-p<tecforce>] [-s<shear>] [-M<d_mo> [-S<d_sh>] [-W]\n", *argv);
-
-#include "../include/geomodel.h"
+#include "tao.h"
 
 float 	evaluate_xy_points (FILE *file_true, FILE *file_guess, char mode);
+int match_parameter(char *str1, char *str2, int show, int replace, char *line);
 
 int main(int argc, char **argv)
 {
@@ -93,7 +92,7 @@ int main(int argc, char **argv)
 		}
 	}
 	if (argc<2) {
-		SYNTAX;
+		fprintf(stderr, "Syntax:\t%s  <project_name> [-a<f|g>] [-m<moment>] [-p<tecforce>] [-s<shear>] [-M<d_mo>] [-S<d_sh>] [-W]\n", argv[0]);
 		fprintf(stderr, "  Two columns (x-y) will be read from files.\n");
 		fprintf(stderr, "  True-file can optionally be weighted in a third column.\n");
 		exit(0);
@@ -216,4 +215,3 @@ int main(int argc, char **argv)
 	sprintf(command, "tao %s -S -m%.3e -s%.3e -p%.3e -P", argv[1], moment_err_min, shear_err_min, tecforce);
 	system(command);
 }
-

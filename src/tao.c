@@ -2,28 +2,9 @@
 ***********						tAo main source file					********
 ********************************************************************************
 	For compilation and installation check the file ../tao/README.
-	Main author: Daniel Garcia-Castellanos, danielgc@ictja.csic.es. 
-	Copyright details and other information in ../tao/doc/ 
-********************************************************************************
-
-Memory debugging with: 
-valgrind --dsymutil=yes --track-origins=yes --tool=memcheck --leak-check=full `which tisc` linear_range -tf0
-
-	COMMENTS (programmer's agenda)
-	-[Edit here]
-	-Gravity and geoid stopped working (2023-04).
-	-Track rock particles in thrusts and sediments. 
-	-Implement grain size in transport. This to calculate grain size distribution in sediment blocks, and as a first step for the next point once transitory flow is implemented. 
-	-Implement sediment load effect on erosion (Sklar). Interesting for acceleration of erosion during lake overtopping.
-	-Implement transitory water flow.
-	-See also list in tisc.c.
-	-DONE. Implement sediment compaction (easy in calculate_topo and when writting the pfl file).
-*/
-
+*******************************************************************************/
 
 #include "tao.h"
-#include "taolib.c"
-#include "taoio.c"
 
 
 int main(int argc, char **argv)
@@ -214,7 +195,7 @@ int inputs(ModelConfig *cfg, ModelContext *ctx, int argc, char **argv)
 	if (!run_type) {
 		syntax();
 		fprintf(stdout, "\n\nType %s -h for further information.\n", argv[0]);
-		exit(0);
+		exit(EXIT_FAILURE);
 	}
 
 	nloads=0; n_image=0; nlakes=0;
@@ -244,7 +225,7 @@ int inputs(ModelConfig *cfg, ModelContext *ctx, int argc, char **argv)
 				if (!success_def_prm) {
 					PRINT_ERROR("\t\aDefault parameters file './tao/doc/template.PRM' could not be read.\n"); 
 				}
-				exit(0);
+				exit(EXIT_FAILURE);
 			}
 			if (reformat) {
 				snprintf(projectname, sizeof(projectname), "%s/doc/template", TAODIR);
