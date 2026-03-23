@@ -1,5 +1,16 @@
 # tAo
 
+
+**Since March 2026, tAO is distribute together with TISC:**
+
+https://github.com/danigeos/tisc
+
+-
+-
+
+
+
+
 **1D (Pseudo-2D, Vertical Cross-Section) Modelling of Flexural Isostasy, Erosion, Orographic Precipitation, and Foreland Basin Formation Using Finite Differences**
 
 tAo is a C program for Linux and macOS designed to calculate the flexure of the lithosphere and, more generally, to numerically simulate the formation of foreland basins in pseudo-2D (vertical cross section). 
