@@ -1,7 +1,7 @@
 # tAo
 
 
-**Since March 2026, tAO is distribute together with TISC:**
+**Since March 2026, tAo is distribute together with its pseudo-3D version TISC:**
 
 https://github.com/danigeos/tisc
 
